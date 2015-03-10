@@ -38,7 +38,7 @@ module.exports = function(grunt) {
             },
             dev : {
                 files: {
-                    'public/js/main.js': ['public/js/src/**/*.js']
+                    'public/js/main.js': ['public/js/src/main.js']
                 },
                 options: {
                     transform: ['babelify'],
