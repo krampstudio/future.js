@@ -36,22 +36,33 @@ var menu = {
 
 
 
-var props = {};
+var props = {
+    createdCallback : {
+        value(){ console.log('created with selection', this, this.selected); }
+    },
+    attachedCallback : {
+        value(){ console.log('attached', arguments); }
+    },
+    detachedCallback : {
+        value(){ console.log('detached', arguments); }
+    },
+    attributeChangedCallback : {
+        value(){ console.log('attr change ', arguments); }
+    },
+};
 Object.keys(menu.attributes).forEach(function (prop) {
     props[prop] = {
         get(){
             console.log('get', prop);
-            if(!this.data){
-                this.data = {};
-            }
-            return this.data[prop];
+            return this.getAttribute(prop);
         },
         set(val){
             console.log('set', prop, val);
-            if(!this.data){
-                this.data = {};
-            }
-            this.data[prop] = val;
+            this.setAttribute(prop, val);
+            //if(!this.data){
+                //this.data = {};
+            //}
+            //this.data[prop] = val;
         }
     };
 
@@ -77,11 +88,7 @@ Object.keys(menu.attributes).forEach(function (prop) {
         //}
     //});
 });
-console.log(props);
 var proto = Object.create(HTMLElement.prototype, props);
-proto.createdCallback = function() {
-    console.log('Created');
-};
 
 
 document.registerElement('f-menu', {
