@@ -1,4 +1,4 @@
-var menu = {
+/*var menu = {
     states : {
         active () {
 
@@ -13,16 +13,16 @@ var menu = {
 
         }
     },
-    attributes : {
+    attributes : [
         //selected : {
             //set (value){
                 //this.data.selected = value;
             //}
         //},
-        id : true,
-        selected : true
-    }
-};
+        'id',
+        'selected'
+    ]
+};*/
 
 
 //<template id="sdtemplate">
@@ -35,7 +35,7 @@ var menu = {
 //<script>
 
 
-
+/*
 var props = {
     createdCallback : {
         value(){ console.log('created with selection', this, this.selected); }
@@ -50,7 +50,7 @@ var props = {
         value(){ console.log('attr change ', arguments); }
     },
 };
-Object.keys(menu.attributes).forEach(function (prop) {
+menu.attributes.forEach(function (prop) {
     props[prop] = {
         get(){
             console.log('get', prop);
@@ -85,7 +85,8 @@ Object.keys(menu.attributes).forEach(function (prop) {
         //set(value){
             //console.log('setter');
             //proto.data[prop] = value;
-        //}
+
+//}
     //});
 });
 var proto = Object.create(HTMLElement.prototype, props);
@@ -94,3 +95,38 @@ var proto = Object.create(HTMLElement.prototype, props);
 document.registerElement('f-menu', {
     prototype : proto
 });
+*/
+var fwc = require('../fwc.js');
+
+fwc('menu')
+
+//define DOM attributes
+    .attributes(['id', 'selected'])
+
+//map accessors
+    .access('selected', {
+        get(){
+            console.log('getter called from access');
+        },
+        set(val){
+            console.log('setter called from access', val);
+        }
+    })
+
+//lifecycle
+
+    .on('flow',     (cycle)=> console.log('lifecycle', cycle) )
+    .on('create',   ()=> console.log('create') )
+    .on('attach',   ()=> console.log('create') )
+    .on('detach',   ()=> console.log('create') )
+    .on('destroy',  ()=> console.log('create') )
+
+//state
+
+    .on('state',    (state)=> console.log('statechange', state) )
+    .on('active',   ()=> console.log('active') )
+    .on('show',     ()=> console.log('show') )
+    .on('hide',     ()=> console.log('hide') )
+    .on('disable',  ()=> console.log('disable') )
+
+    .register();
