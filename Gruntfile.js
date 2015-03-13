@@ -49,6 +49,20 @@ module.exports = function(grunt) {
                     }
                 }
             }
+        },
+
+        karma : {
+            options : {
+                configFile:"karma.conf.js",
+            },
+            test : {
+                autoWatch: false,
+                singleRun: true
+            },
+            dev : {
+                autoWatch: true,
+                singleRun: false
+            }
         }
     });
 
