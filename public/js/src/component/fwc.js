@@ -1,7 +1,21 @@
-var emitter =  require('events').EventEmitter;
+var EventEmitter =  require('events').EventEmitter;
+var _ = require('lodash');
 
+//evenApi is
+var eventApi =
+    _(new EventEmitter())
+        .functions()
+        .reduce( (acc, name) => {
+            acc[name] = name;
+            return acc;
+        }, {
+            trigger : 'emit',
+            off : 'removeListener'
+        });
 
 var fwc = function futureWebComponent(name, options){
+
+    var emitter = new EventEmitter();
 
     var comp = {
 
@@ -20,6 +34,12 @@ var fwc = function futureWebComponent(name, options){
             });
         }
     };
+
+    _.forEach(eventApi, (method, alias) => {
+        comp[alias] = function delegate (){
+            return emitter[method].apply(comp, [].slice.call(arguments));
+        };
+    });
 
     return comp;
 };

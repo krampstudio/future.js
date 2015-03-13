@@ -24,7 +24,8 @@
     "mocha": "^2.2.1",
     "time-grunt": "^1.1.0"
   },
-  "dependencies" : {
+  "dependencies": {
+    "lodash": "^3.5.0",
     "webcomponents.js": "^0.5.5-1"
   }
 }
