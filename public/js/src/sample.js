@@ -1,4 +1,15 @@
 
+
+/**
+ * test
+ *
+ * @param {Object} options -  test
+ * @returns {undefined}
+ */
+function test(options){
+
+}
+
 //simple
 
 //var XFoo = document.registerElement('x-foo');

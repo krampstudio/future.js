@@ -115,11 +115,11 @@ fwc('menu')
 
 //lifecycle
 
-    .on('flow',     (cycle)=> console.log('lifecycle', cycle) )
+    .on('flow',     (cycle) => console.log('lifecycle', cycle) )
     .on('create',   ()=> console.log('create') )
-    .on('attach',   ()=> console.log('create') )
-    .on('detach',   ()=> console.log('create') )
-    .on('destroy',  ()=> console.log('create') )
+    .on('attach',   ()=> console.log('attach') )
+    .on('detach',   ()=> console.log('detach') )
+    .on('destroy',  ()=> console.log('destroy') )
 
 //state
 
