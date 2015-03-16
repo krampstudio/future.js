@@ -4,7 +4,9 @@ var eventDelegator = require('./events.js');
 
 var fwc = function futureWebComponent(name, options){
 
-    var data = {};
+    var data = {
+        attributes : {},
+    };
 
     var comp = {
 
@@ -32,7 +34,27 @@ var fwc = function futureWebComponent(name, options){
             return this;
         },
 
-        access(what, accessors){
+        access(name, accessors){
+            if(!accessors){
+                return data.attributes[name];
+            }
+
+            data.attributes[name] = {
+                get() {
+                    console.log('get ' + name);
+                    if(_.isFunction(accessors.get)){
+                        return accessors.get.call(this);
+                    }
+                    return this.getAttribute(name);
+                },
+                set (val) {
+                    console.log('set ' + name + ' to ' + val);
+                    if(_.isFunction(accessors.set)){
+                        val = accessors.set.call(this, val);
+                    }
+                    return this.setAttribute(name, val);
+                }
+            };
 
             return this;
         },
@@ -80,7 +102,6 @@ var fwc = function futureWebComponent(name, options){
         }
     };
 
-    //
     eventDelegator(comp);
 
     return comp;

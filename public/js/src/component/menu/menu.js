@@ -105,11 +105,9 @@ fwc('menu')
 
 //map accessors
     .access('selected', {
-        get(){
-            console.log('getter called from access');
-        },
         set(val){
             console.log('setter called from access', val);
+            return 'f-' + val;
         }
     })
 
