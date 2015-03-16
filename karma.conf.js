@@ -3,16 +3,19 @@ module.exports = function(config) {
 
         basePath: '',
 
-        frameworks: ['browserify', 'mocha'],
+        frameworks: ['browserify', 'mocha', 'fixture'],
 
         files: [
-            'test/*.js'
+            'test/*.js',
+            'test/*.html'
         ],
 
         exclude: [],
 
         preprocessors: {
-            'test/*.js': ['browserify']
+            'test/*.js':   ['browserify'],
+            'test/*.html': ['html2js'],
+            'test/*.json': ['html2js']
         },
 
         reporters: ['progress'],
@@ -22,7 +25,6 @@ module.exports = function(config) {
         colors: true,
 
         logLevel: config.LOG_INFO,
-
 
 
         browsers: ['PhantomJS'],
@@ -35,7 +37,9 @@ module.exports = function(config) {
         plugins: [
             'karma-phantomjs-launcher',
             'karma-mocha',
-            'karma-browserify'
+            'karma-browserify',
+            'karma-fixture',
+            'karma-html2js-preprocessor'
         ],
 
 
