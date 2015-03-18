@@ -28,12 +28,12 @@ module.exports = function(grunt) {
         },
 
         browserify: {
+            options: {
+                transform: ['babelify', ['hbsfy', { 'extensions' : ['tpl']}]],
+            },
             build: {
                 files: {
                     'public/js/main.js': ['public/js/src/**/*.js']
-                },
-                options: {
-                    transform: ['babelify']
                 }
             },
             dev : {
@@ -41,11 +41,10 @@ module.exports = function(grunt) {
                     'public/js/main.js': ['public/js/src/main.js']
                 },
                 options: {
-                    transform: ['babelify'],
                     watch : true,
                     keepAlive : true,
                     browserifyOptions: {
-                         debug: true
+                        debug: true
                     }
                 }
             }

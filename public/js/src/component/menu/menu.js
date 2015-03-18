@@ -100,6 +100,8 @@ var fwc = require('../fwc.js');
 
 fwc('menu')
 
+
+
 //define DOM attributes
     .attributes(['id', 'selected'])
 
@@ -111,10 +113,14 @@ fwc('menu')
         }
     })
 
+    .content('./menu.tpl')
+
 //lifecycle
 
     .on('flow',     (cycle) => console.log('lifecycle', cycle) )
-    .on('create',   ()=> console.log('create') )
+    .on('create',   function() {
+       console.log('create', this, arguments);
+    })
     .on('attach',   ()=> console.log('attach') )
     .on('detach',   ()=> console.log('detach') )
     .on('destroy',  ()=> console.log('destroy') )

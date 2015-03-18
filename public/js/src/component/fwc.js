@@ -59,6 +59,11 @@ var fwc = function futureWebComponent(name, options){
             return this;
         },
 
+        content(value){
+           console.log(require('./menu/menu.tpl')());
+           return this;
+        },
+
         register(){
 
             //re trigger generic events
