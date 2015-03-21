@@ -96,7 +96,7 @@ document.registerElement('f-menu', {
     prototype : proto
 });
 */
-var fwc = require('../fwc.js');
+var fwc = require('../../../../../src/fwc.js');
 
 fwc('menu')
 

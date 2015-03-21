@@ -60,7 +60,7 @@ var fwc = function futureWebComponent(name, options){
         },
 
         content(value){
-           console.log(require('./menu/menu.tpl')());
+           //console.log(require('./menu/menu.tpl')());
            return this;
         },
 

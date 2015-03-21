@@ -1,7 +1,7 @@
 /* global -expect */
 
 var expect = require('chai').expect;
-var fwc = require('../public/js/src/component/fwc.js');
+var fwc = require('../src/fwc.js');
 var fixture = window.fixture;
 
 describe('fwc', function() {
@@ -38,7 +38,7 @@ describe('fwc', function() {
 
     describe('html', function() {
         beforeEach(function() {
-            this.domData = fixture.load('/test/jwc.html');
+            this.domData = fixture.load('/test/fwc.html');
         });
 
         afterEach(function() {

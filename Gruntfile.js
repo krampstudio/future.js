@@ -66,4 +66,6 @@ module.exports = function(grunt) {
     });
 
     grunt.registerTask('preview', "Preview and development mode", ['connect:preview', 'open:preview', 'browserify:dev']);
+    grunt.registerTask('test', "run tests", ['karma:test']);
+    grunt.registerTask('devtest', "develop tests", ['karma:dev']);
 };
