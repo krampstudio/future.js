@@ -6,6 +6,7 @@ module.exports = function(config) {
         frameworks: ['browserify', 'mocha', 'fixture'],
 
         files: [
+            'node_modules/webcomponents.js/webcomponents.min.js',
             'test/*.js',
             'test/*.html'
         ],
@@ -27,7 +28,7 @@ module.exports = function(config) {
         logLevel: config.LOG_INFO,
 
 
-        browsers: ['PhantomJS'],
+        browsers: ['Firefox'],
 
         browserify: {
             debug: true,
@@ -36,6 +37,7 @@ module.exports = function(config) {
 
         plugins: [
             'karma-phantomjs-launcher',
+            'karma-firefox-launcher',
             'karma-mocha',
             'karma-browserify',
             'karma-fixture',
