@@ -134,10 +134,13 @@ var fwc = function futureWebComponentFactory(name, options){
 
             _.merge(eltProto, data.attrs);
 
-
-            document.registerElement('f-' + name, {
-                prototype : Object.create(HTMLElement.prototype, eltProto)
-            });
+            try {
+                document.registerElement('f-' + name, {
+                    prototype : Object.create(HTMLElement.prototype, eltProto)
+                });
+            } catch(e){
+                this.trigger('error', e);
+            }
         }
     };
 

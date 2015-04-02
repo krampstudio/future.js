@@ -3,21 +3,23 @@ module.exports = function(config) {
 
         basePath: '',
 
-        frameworks: ['browserify', 'mocha', 'fixture'],
+        frameworks: ['browserify', 'mocha'],
 
         files: [
-            'node_modules/webcomponents.js/webcomponents.min.js',
-            'test/*.js',
-            'test/*.html'
+
+            'test/api/test.html',
+            //'test/integration/*.js',
+            //'test/fixtures/*.html'
         ],
 
         exclude: [],
 
-        preprocessors: {
-            'test/*.js':   ['browserify'],
-            'test/*.html': ['html2js'],
-            'test/*.json': ['html2js']
-        },
+        //preprocessors: {
+            //'test/api/test.html': ['html2js'],
+            //'test/api/*.js' : ['browserify'],
+            //'test/integration/*.js' : ['browserify'],
+            //'test/fixtures/*.html': ['html2js']
+        //},
 
         reporters: ['progress'],
 
@@ -40,11 +42,8 @@ module.exports = function(config) {
             'karma-firefox-launcher',
             'karma-mocha',
             'karma-browserify',
-            'karma-fixture',
             'karma-html2js-preprocessor'
         ],
-
-
     });
 };
 

@@ -36,6 +36,11 @@ module.exports = function(grunt) {
                     'public/js/main.js': ['public/js/src/**/*.js']
                 }
             },
+            test: {
+                files: {
+                    'test/api/test.bundle.js': ['test/api/test.js']
+                }
+            },
             dev : {
                 files: {
                     'public/js/main.js': ['public/js/src/main.js']
@@ -54,14 +59,28 @@ module.exports = function(grunt) {
             options : {
                 configFile:"karma.conf.js",
             },
-            test : {
-                autoWatch: false,
-                singleRun: true
+            api : {
+                options : {
+                    autoWatch: false,
+                    singleRun: true,
+
+                },
+                    files : ['test/api/*.html']
             },
-            dev : {
-                autoWatch: true,
-                singleRun: false
+            register : {
+                autoWatch: false,
+                singleRun: true,
+                files : ['test/register.js']
+            },
+            attribute : {
+                autoWatch: false,
+                singleRun: true,
+                files : ['test/attribute.js']
             }
+        },
+
+        qunit : {
+            all : ['test/api/test.html']
         }
     });
 
