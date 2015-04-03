@@ -36,14 +36,26 @@ module.exports = function(grunt) {
                     'public/js/main.js': ['public/js/src/**/*.js']
                 }
             },
+            dev : {
+                files: {
+                    'public/js/main.js': ['public/js/src/main.js']
+                },
+                options: {
+                    watch : true,
+                    keepAlive : true,
+                    browserifyOptions: {
+                        debug: true
+                    }
+                }
+            },
             test: {
                 files: {
                     'test/api/test.bundle.js': ['test/api/test.js']
                 }
             },
-            dev : {
+            devtest: {
                 files: {
-                    'public/js/main.js': ['public/js/src/main.js']
+                    'test/api/test.bundle.js': ['test/api/test.js']
                 },
                 options: {
                     watch : true,
@@ -85,6 +97,6 @@ module.exports = function(grunt) {
     });
 
     grunt.registerTask('preview', "Preview and development mode", ['connect:preview', 'open:preview', 'browserify:dev']);
-    grunt.registerTask('test', "run tests", ['karma:test']);
-    grunt.registerTask('devtest', "develop tests", ['karma:dev']);
+    //grunt.registerTask('test', "run tests", ['karma:test']);
+    //grunt.registerTask('devtest', "develop tests", ['karma:dev']);
 };

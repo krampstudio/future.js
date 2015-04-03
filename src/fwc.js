@@ -40,7 +40,7 @@ var fwc = function futureWebComponentFactory(name, options){
                         return this.getAttribute(name);
                     },
                     set (val) {
-                        this.setAttribute(name, val);
+                        return this.setAttribute(name, val);
                     }
                 };
             });

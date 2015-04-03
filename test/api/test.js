@@ -39,12 +39,48 @@ QUnit.test('definition', 3, function(assert){
 
     assert.ok(typeof comp.attrs === 'function', "the component definition holds the method attrs");
     assert.equal(comp.attrs('id', 'selected'), comp, "The method chains with arguments");
-    assert.equal(comp.attrs(), ['id', 'selected'], "the method returns values without arguments");
+    assert.deepEqual(comp.attrs(), ['id', 'selected'], "the method returns values without arguments");
 });
 
-        //it('should provide accessors definition', function(){
-            //var comp = fwc();
-            //expect(comp.access).to.be.a('function');
-        //});
-    //});
+QUnit.test('accessors', 13, function(assert){
 
+    var comp = fwc();
+
+    var mock = {
+        getAttribute(name){
+            return this[name];
+        },
+        setAttribute(name, val){
+            this[name] = val;
+            return val;
+        }
+    };
+
+    var testAccessors = {
+        get(){
+            return "foo";
+        },
+        set(val){
+            return val + "bar";
+        }
+    };
+
+    assert.ok(typeof comp.access === 'function', "the component definition holds the method access");
+    assert.equal(comp.access('test', testAccessors), comp, "The method set and chains with arguments");
+
+    assert.ok(typeof comp.access('test') === 'object', "The method returns the accessors without arguments");
+    assert.ok(typeof comp.access('test').get === 'function', "The method returns the accessors without arguments");
+    assert.ok(typeof comp.access('test').set === 'function', "The method returns the accessors without arguments");
+
+    assert.equal(comp.access('test').get.call(mock), 'foo', "The getter returns the defined value");
+    assert.equal(comp.access('test').set.call(mock, 'foo'), 'foobar', "The setter returns the defined value");
+
+    comp.attrs('id');
+    assert.ok(typeof comp.access('id') === 'object', "Attributes have default accessors");
+    assert.ok(typeof comp.access('foo') === 'undefined', "Only attributes have default accessors");
+    assert.ok(typeof comp.access('id').get === 'function', "The method returns the accessors without arguments");
+    assert.ok(typeof comp.access('id').set === 'function', "The method returns the accessors without arguments");
+
+    assert.equal(comp.access('id').set.call(mock, 'bee'), 'bee', "The setter returns the defined value");
+    assert.equal(comp.access('id').get.call(mock), 'bee', "The getter returns the defined value");
+});
