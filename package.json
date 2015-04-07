@@ -2,12 +2,20 @@
   "name": "future.js",
   "version": "0.1.0",
   "description": "Future is a stack for developing client side app using node.js, es6, web components",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "author": {
+    "name": "Bertrand Chevrier",
+    "email": "chevrier.bertrand@gmail.com",
+    "url": "https://github.com/krampstudio/"
   },
-  "author": "Bertrand Chevrier",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/krampstudio/future.js.git"
+  },
   "license": "MIT",
+  "main" : "src/fwc.js",
+  "scripts": {
+    "test": "grunt test"
+  },
   "devDependencies": {
     "babelify": "^5.0.4",
     "chai": "^2.1.1",
@@ -33,5 +41,10 @@
     "handlebars": "^3.0.0",
     "lodash": "^3.5.0",
     "webcomponents.js": "^0.6.0"
-  }
+  },
+  "keywords" : [
+    "webcomponents",
+    "es6",
+    "future"
+  ]
 }
