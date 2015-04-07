@@ -1,8 +1,8 @@
 var _              = require('lodash');
 var eventDelegator = require('./events.js');
 
-
 var fwc = function futureWebComponentFactory(name, options){
+
 
     var data = {
         attrs : {},
@@ -88,9 +88,26 @@ var fwc = function futureWebComponentFactory(name, options){
             return this;
         },
 
+        /**
+         * Get/Set component content function
+         *
+         * @example fwc().content(function(data){
+                    return `<div>${data.foo}</div>`;
+            });
+         *
+         * @param {Function|String} [value] - called once created with the data.
+         * @returns {fwComp|Object}
+         */
         content(value){
-           //console.log(require('./menu/menu.tpl')());
-           return this;
+            if(!value){
+                return data.content;
+            }
+            if(typeof value === 'function'){
+                data.content = value;
+            } else {
+                data.content = () => value;
+            }
+            return this;
         },
 
         register(){
@@ -107,11 +124,15 @@ var fwc = function futureWebComponentFactory(name, options){
                 createdCallback : {
                     value(...params){
                         //console.log(this);
-                        //console.log("attr on create", this.attributes);
+                        console.log("attr on create", this.attributes);
+                        console.log("on create params", params);
+
+                        if(typeof data.content === 'function'){
+                            let inner = data.content(this.attributes);
+                            console.log("on create inner content", inner);
+                        }
 
                         comp.trigger.call(comp, 'flow', 'create', params);
-
-                        //this.setAttribute('selected', 'item-2');
                     }
                 },
                 attachedCallback : {

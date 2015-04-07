@@ -11988,7 +11988,7 @@ var fwc = function futureWebComponentFactory(name, options) {
                         return this.getAttribute(name);
                     },
                     set: function set(val) {
-                        this.setAttribute(name, val);
+                        return this.setAttribute(name, val);
                     }
                 };
             });
@@ -12036,8 +12036,27 @@ var fwc = function futureWebComponentFactory(name, options) {
             return this;
         },
 
+        /**
+         * Get/Set component content function
+         *
+         * @example fwc().content(function(data){
+                    return `<div>${data.foo}</div>`;
+            });
+         *
+         * @param {Function|String} [value] - called once created with the data.
+         * @returns {fwComp|Object}
+         */
         content: function content(value) {
-            //console.log(require('./menu/menu.tpl')());
+            if (!value) {
+                return data.content;
+            }
+            if (typeof value === "function") {
+                data.content = value;
+            } else {
+                data.content = function () {
+                    return value;
+                };
+            }
             return this;
         },
 
@@ -12071,11 +12090,15 @@ var fwc = function futureWebComponentFactory(name, options) {
                         }
 
                         //console.log(this);
-                        //console.log("attr on create", this.attributes);
+                        console.log("attr on create", this.attributes);
+                        console.log("on create params", params);
+
+                        if (typeof data.content === "function") {
+                            var inner = data.content(this.attributes);
+                            console.log("on create inner content", inner);
+                        }
 
                         comp.trigger.call(comp, "flow", "create", params);
-
-                        //this.setAttribute('selected', 'item-2');
                     }
                 },
                 attachedCallback: {
@@ -12127,44 +12150,19 @@ module.exports = fwc;
 
 var fwc = require("../../src/fwc.js");
 
-QUnit.module("Module");
+QUnit.module("Register");
 
-QUnit.test("factory", function (assert) {
-    assert.ok(typeof fwc === "function", "The module expose a function");
-    assert.ok(typeof fwc() === "object", "The module creates an object");
+QUnit.asyncTest("Basic component registration", 1, function (assert) {
+    var container = document.getElementById("permanent-fixture");
+    fwc("test").on("error", function (e) {
+        console.error(e);
+    }).on("create", function () {
+
+        var ft = container.querySelector("f-test");
+        assert.equal(ft.nodeName, "F-TEST", "The f-test component is found");
+
+        QUnit.start();
+    }).register();
 });
-
-/*
-        it('should be an event emitter', function(done) {
-            var comp = fwc();
-            expect(comp.on).to.be.a('function');
-            expect(comp.once).to.be.a('function');
-            expect(comp.trigger).to.be.a('function');
-            expect(comp.emit).to.be.a('function');
-            expect(comp.off).to.be.a('function');
-
-            comp.on('error', function(e) {
-                expect(e).to.be.instanceof(Error);
-                expect(e.message).to.equal('test error');
-                done();
-            });
-            comp.emit('error', new Error('test error'));
-        });
-
-        it('should provide attributes definition', function(){
-            var comp = fwc();
-            expect(comp.attrs).to.be.a('function');
-
-            expect(comp.attrs('id', 'selected')).to.equal(comp);
-            expect(comp.attrs()).to.deep.equal(['id', 'selected']);
-        });
-
-        it('should provide accessors definition', function(){
-            var comp = fwc();
-            expect(comp.access).to.be.a('function');
-        });
-    });
-});
-*/
 
 },{"../../src/fwc.js":4}]},{},[5]);

@@ -50,12 +50,14 @@ module.exports = function(grunt) {
             },
             test: {
                 files: {
-                    'test/api/test.bundle.js': ['test/api/test.js']
+                    'test/api/test.bundle.js': ['test/api/test.js'],
+                    'test/register/test.bundle.js': ['test/register/test.js']
                 }
             },
             devtest: {
                 files: {
-                    'test/api/test.bundle.js': ['test/api/test.js']
+                    'test/api/test.bundle.js': ['test/api/test.js'],
+                    'test/register/test.bundle.js': ['test/register/test.js']
                 },
                 options: {
                     watch : true,

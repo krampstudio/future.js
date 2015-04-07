@@ -84,3 +84,24 @@ QUnit.test('accessors', 13, function(assert){
     assert.equal(comp.access('id').set.call(mock, 'bee'), 'bee', "The setter returns the defined value");
     assert.equal(comp.access('id').get.call(mock), 'bee', "The getter returns the defined value");
 });
+
+
+QUnit.module('Content');
+
+QUnit.test('content', 6, function(assert){
+
+    var comp = fwc();
+
+    assert.ok(typeof comp.content === 'function', "the component definition holds the method content");
+
+    assert.equal(comp.content('test'), comp, "The method set and chains with arguments");
+    assert.ok(typeof comp.content() === 'function', "The method returns the function without arguments");
+    assert.equal(comp.content().call(), 'test', "The content function returns the string set");
+
+    comp.content(function template(data){
+        return `<p>${data.foo}</p>`;
+    });
+    var content = comp.content();
+    assert.ok(typeof content === 'function', "The method return the set function without arguments");
+    assert.equal(content({ foo: 'bar'}), '<p>bar</p>', "The function replace the content data");
+});

@@ -113,7 +113,7 @@ fwc('menu')
         }
     })
 
-    .content('./menu.tpl')
+    .content(require('./menu.tpl'))
 
 //lifecycle
 
