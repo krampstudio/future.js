@@ -4,14 +4,16 @@ QUnit.module('Register');
 
 QUnit.asyncTest('Basic component registration', 1, function(assert){
     var container = document.getElementById('permanent-fixture');
-    fwc('test')
+    fwc('base')
         .on('error', function(e){
             console.error(e);
         })
         .on('create', function(){
 
-            var ft = container.querySelector('f-test');
-            assert.equal(ft.nodeName, 'F-TEST', 'The f-test component is found');
+            var fBase = container.querySelector('f-base');
+            assert.equal(fBase.nodeName, 'F-BASE', 'The f-base component is found');
+
+            console.log(fBase, this);
 
             QUnit.start();
         })

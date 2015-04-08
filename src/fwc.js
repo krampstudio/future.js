@@ -117,14 +117,19 @@ var fwc = function futureWebComponentFactory(name, options){
             }
 
             //re trigger generic events
-            comp.on('flow',  (name, ...params) => comp.trigger.call(comp, name, params));
+            comp.on('flow',  (name, elt, ...params) => {
+
+                console.log(elt);
+                comp.trigger.call(_.extend(comp, {elt : elt}), name, params);
+            });
             comp.on('state', (name, ...params) => comp.trigger.call(comp, name, params));
+
 
             var eltProto = {
                 createdCallback : {
                     value(...params){
                         //console.log(this);
-                        console.log("attr on create", this.attributes);
+                        console.log("attr on create", this);
                         console.log("on create params", params);
 
                         if(typeof data.content === 'function'){
@@ -132,7 +137,7 @@ var fwc = function futureWebComponentFactory(name, options){
                             console.log("on create inner content", inner);
                         }
 
-                        comp.trigger.call(comp, 'flow', 'create', params);
+                        comp.trigger.call(comp, 'flow', 'create', this, params);
                     }
                 },
                 attachedCallback : {

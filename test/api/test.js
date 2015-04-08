@@ -88,7 +88,7 @@ QUnit.test('accessors', 13, function(assert){
 
 QUnit.module('Content');
 
-QUnit.test('content', 6, function(assert){
+QUnit.test('basic content', 6, function(assert){
 
     var comp = fwc();
 
@@ -104,4 +104,18 @@ QUnit.test('content', 6, function(assert){
     var content = comp.content();
     assert.ok(typeof content === 'function', "The method return the set function without arguments");
     assert.equal(content({ foo: 'bar'}), '<p>bar</p>', "The function replace the content data");
+});
+
+
+QUnit.test('handlebar template content', 2, function(assert){
+
+    var comp = fwc();
+
+    //template is handled externally, by browserify
+    comp.content(require('./test.tpl'));
+
+    var content = comp.content();
+
+    assert.ok(typeof content === 'function', "The method return the set function without arguments");
+    assert.equal(content({ foo: 'bar'}), '<span>bar</span>', "The function replace the content data");
 });
