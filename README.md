@@ -1,7 +1,7 @@
 # future.js
 
 
-![Future.js](public/img/logo.svg "Future.js")
+![Future.js](https://raw.githubusercontent.com/krampstudio/future.js/master/public/img/logo.svg "Future.js")
 
 Future is a stack for developing client side app.
 
