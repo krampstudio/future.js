@@ -19,6 +19,15 @@ It features :
 
 Experimental
 
+## Done
+
+ - Base set up: grunt, babel, browserify, handlebars
+ - QUnit test
+ - Web Component : register
+ - Web Component : attributs definition, getter and setter
+ - Web Component : event emitter : component extended lifecycle
+ - Web Component : content definition from callback or external template
+
 ## TODO
 
 ### Arch
@@ -34,6 +43,8 @@ Experimental
  - find a better way to attach the node instance to the events
  - implement states
  - extends/is
+ - Support HTML template in content
+ - styling
 
 ### Tests
 
