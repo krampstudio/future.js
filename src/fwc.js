@@ -126,8 +126,11 @@ var fwc = function futureWebComponentFactory(name, options){
                     value(){
 
                         if(typeof data.content === 'function'){
-                            let inner = data.content(this.attributes);
-                            console.log("on create inner content", inner);
+                            let attrs = {};
+                            for(let attr of comp.attrs()){
+                                attrs[attr] = this[attr];   //so the getter is called
+                            }
+                            this.innerHTML = data.content(attrs);
                         }
 
                         comp.trigger.call(comp, 'flow', 'create', this);
