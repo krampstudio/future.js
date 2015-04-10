@@ -1,5 +1,7 @@
 # future.js
 
+!['Future.js'](public/img/logo.png "Future.js")
+
 Future is a stack for developing client side app.
 
 It features :
