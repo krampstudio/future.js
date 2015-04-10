@@ -17,6 +17,36 @@ It features :
 
 Experimental
 
+## TODO
+
+### Arch
+
+ - clean up public and create a clean sample
+ - remove lo-dash ? It's heavy and some features overlap with ES6
+ - integrate aja.js
+
+### Web Component
+
+ - attributes type inference, ie. boolean for attr with no value
+ - re-render content on attribute change (if configured)
+ - find a better way to attach the node instance to the events
+ - implement states
+ - extends/is
+
+### Tests
+
+ - Handlebars templates
+ - Test with multiple components of the same type
+ - automatize qunit tests (needs to run test.html; so karma may be removed). Need to test polyfill with phantomJS >= 2.0.0
+ - integrate sauce labs to see the real browser support
+ - code coverage
+
+### Bundling
+
+ - separate libraries from source
+ - separate source map (or look for a format that firefox can read)
+ - uglify the final bundle
+
 ## License
 
 The MIT License (MIT)
