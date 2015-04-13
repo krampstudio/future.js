@@ -35,14 +35,16 @@ var fwc = function futureWebComponentFactory(name, options){
 
             //each attribute get his own getter setter
             attr.forEach( name => {
-                data.attrs[name] = {
-                    get() {
-                        return this.getAttribute(name);
-                    },
-                    set (val) {
-                        return this.setAttribute(name, val);
-                    }
-                };
+                if(_.isString(name)){
+                    data.attrs[name] = {
+                        get() {
+                            return this.getAttribute(name);
+                        },
+                        set (val) {
+                            return this.setAttribute(name, val);
+                        }
+                    };
+                }
             });
 
             return this;
@@ -73,13 +75,13 @@ var fwc = function futureWebComponentFactory(name, options){
             data.attrs[name] = {
                 get() {
                     if(_.isFunction(accessors.get)){
-                        return accessors.get.call(this);
+                        return accessors.get.call(this, this.getAttribute(name));
                     }
                     return this.getAttribute(name);
                 },
                 set (val) {
                     if(_.isFunction(accessors.set)){
-                        val = accessors.set.call(this, val);
+                        val = accessors.set.call(this, this.getAttribute(name), val);
                     }
                     return this.setAttribute(name, val);
                 }
