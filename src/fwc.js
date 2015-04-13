@@ -20,13 +20,13 @@ var fwc = function futureWebComponentFactory(name, options){
          * @example fwc().attr('id', 'selected');
          * @example var attrs = fwc().attr();
          *
-         * @param {Array} [attr] - the list of attributes in setter mode
+         * @param {Array} [attributes] - the list of attributes in setter mode
          * @returns {fwComp|Array}
          */
-        attrs(...attr){
+        attrs(...attributes){
 
             //getter
-            if(!attr || attr.length === 0){
+            if(!attributes || attributes.length === 0){
                 return Object.keys(data.attrs);
             }
 
@@ -34,14 +34,33 @@ var fwc = function futureWebComponentFactory(name, options){
             data.attrs = {};
 
             //each attribute get his own getter setter
-            attr.forEach( name => {
-                if(_.isString(name)){
-                    data.attrs[name] = {
+            attributes.forEach( (attr) => {
+                //TODO string only as an alias
+                if(_.isString(attr)){
+                    data.attrs[attr] = {
                         get() {
-                            return this.getAttribute(name);
+                            return this.getAttribute(attr);
                         },
                         set (val) {
-                            return this.setAttribute(name, val);
+                            return this.setAttribute(attr, val);
+                        }
+                    };
+                } else if (_.isPlainObject(attr) && _.isString(attr.name)){
+                    data.attrs[attr.name] = {
+                        get() {
+                            if(attr.type){
+                                //TODO parse value
+                            }
+                            return this.getAttribute(attr.name);
+                        },
+                        set (val) {
+                            if(attr.update === true){
+                                //TODO trigger re render
+                            }
+                            if(attr.type){
+                                //TODO parse value
+                            }
+                            return this.setAttribute(attr.name, val);
                         }
                     };
                 }
