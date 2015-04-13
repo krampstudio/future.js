@@ -1,4 +1,4 @@
-var fwc = require('../../src/fwc.js');
+var fwc = require('../../../src/fwc.js');
 
 QUnit.module('Module');
 
@@ -117,5 +117,5 @@ QUnit.test('handlebar template content', 2, function(assert){
     var content = comp.content();
 
     assert.ok(typeof content === 'function', "The method return the set function without arguments");
-    assert.equal(content({ foo: 'bar'}), '<span>bar</span>', "The function replace the content data");
+    assert.equal(content({ foo: 'bar'}).trim(), '<span>bar</span>', "The function replace the content data");
 });

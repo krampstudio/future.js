@@ -1,8 +1,8 @@
-var fwc = require('../../src/fwc.js');
+var fwc = require('../../../src/fwc.js');
 
 QUnit.module('Register');
 
-QUnit.asyncTest('Basic component registration', 4, function(assert){
+QUnit.asyncTest('register and access a component', 4, function(assert){
     var container = document.getElementById('permanent-fixture');
     assert.ok(container instanceof HTMLElement, 'The container exists');
 
@@ -21,7 +21,9 @@ QUnit.asyncTest('Basic component registration', 4, function(assert){
         .register();
 });
 
-QUnit.asyncTest('Component with attributes', 8, function(assert){
+QUnit.module('Attributes');
+
+QUnit.asyncTest('define basic attributes', 8, function(assert){
     var container = document.getElementById('permanent-fixture');
     assert.ok(container instanceof HTMLElement, 'The container exists');
 
@@ -48,8 +50,43 @@ QUnit.asyncTest('Component with attributes', 8, function(assert){
         .register();
 });
 
+QUnit.asyncTest('define attributes with accessors', 8, function(assert){
+    var container = document.getElementById('permanent-fixture');
+    assert.ok(container instanceof HTMLElement, 'The container exists');
 
-QUnit.asyncTest('Component with content', 11, function(assert){
+    fwc('access')
+        .on('error', function(e){
+            console.error(e);
+        })
+        .on('create', function(elt){
+
+            var fAccess = container.querySelector('f-access');
+            assert.deepEqual(fAccess, elt, 'The callback elt is the given node');
+            assert.equal(fAccess.getAttribute('num'), '1', 'The num attribute has the value');
+            assert.ok(fAccess.hasAttribute('bool'), 'The bool attribute exists');
+            assert.equal(fAccess.getAttribute('inc'), '0', 'The inc attribute has the value');
+
+
+
+            QUnit.start();
+        })
+        .attrs('num', 'bool', 'inc')
+        .access('num', {
+            get(val){
+               return parseInt(val);
+            }
+        })
+        .access('bool', {
+            get(val){
+               return parseInt(val);
+            }
+        })
+        .register();
+});
+
+QUnit.module('Content');
+
+QUnit.asyncTest('Component with content from a callback', 11, function(assert){
     var container = document.getElementById('permanent-fixture');
     assert.ok(container instanceof HTMLElement, 'The container exists');
 

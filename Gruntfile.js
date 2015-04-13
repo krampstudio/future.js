@@ -55,14 +55,14 @@ module.exports = function(grunt) {
             },
             test: {
                 files: {
-                    'test/api/test.bundle.js': ['test/api/test.js'],
-                    'test/register/test.bundle.js': ['test/register/test.js']
+                    'test/fwc/api/test.bundle.js': ['test/fwc/api/test.js'],
+                    'test/fwc/integration/test.bundle.js': ['test/fwc/integration/test.js']
                 }
             },
             devtest: {
                 files: {
-                    'test/api/test.bundle.js': ['test/api/test.js'],
-                    'test/register/test.bundle.js': ['test/register/test.js'],
+                    'test/fwc/api/test.bundle.js': ['test/fwc/api/test.js'],
+                    'test/fwc/integration/test.bundle.js': ['test/fwc/integration/test.js']
                 },
                 options: {
                     watch : true,

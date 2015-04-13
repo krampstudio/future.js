@@ -42,6 +42,7 @@ Experimental
  - re-render content on attribute change (if configured)
  - find a better way to attach the node instance to the events
  - implement states
+ - methods
  - extends/is
  - Support HTML template in content
  - styling

@@ -2,11 +2,11 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>Future.js Test Register a component</title>
+        <title>Future.js Test - Web Components Integration</title>
 
-        <link rel="stylesheet" type="text/css" href="../../node_modules/qunitjs/qunit/qunit.css">
-        <script type="text/javascript" src="../../node_modules/qunitjs/qunit/qunit.js"></script>
-        <script type="text/javascript" src="../../node_modules/webcomponents.js/webcomponents-lite.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="../../../node_modules/qunitjs/qunit/qunit.css">
+        <script type="text/javascript" src="../../../node_modules/qunitjs/qunit/qunit.js"></script>
+        <script type="text/javascript" src="../../../node_modules/webcomponents.js/webcomponents-lite.min.js"></script>
     </head>
     <body>
         <div id="qunit"></div>
@@ -17,6 +17,7 @@
         <div id="permanent-fixture">
             <f-base></f-base>
             <f-attr foo bar="pur"></f-attr>
+            <f-access num="1" bool inc="0"></f-access>
             <f-content foo="moo" repeat="2"></f-content>
         </div>
         <script type="text/javascript" src="./test.bundle.js"></script>
