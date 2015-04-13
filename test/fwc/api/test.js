@@ -60,7 +60,7 @@ QUnit.test('accessors', 13, function(assert){
         get(){
             return "foo";
         },
-        set(val){
+        set(old, val){
             return val + "bar";
         }
     };
