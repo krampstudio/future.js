@@ -13,6 +13,73 @@ var fwc = function futureWebComponentFactory(name, options){
      */
     var comp = {
 
+        /**
+         * @param {String} [name]
+         * @param {Object} [def]
+         * @param {Function} [def.get]
+         * @param {Function} [def.set]
+         * @param {String} [def.type]
+         * @param {Boolean} [def.update]
+         */
+        attr(name, def){
+
+            if(_.isPlainObject(name) && _.isString(name.name)){
+                def = _.clone(name);
+                name = def.name;
+            }
+
+            //getter
+            if(!def){
+                return data.attrs[name];
+            }
+
+            data.attrs[name] = {
+                update : def.update,
+                get() {
+                    var value = this.getAttribute(name);
+                    if(def.type){
+                        if(def.type.toLowerCase() === 'boolean'){
+                            value = this.hasAttribute(name);
+                        }
+                        else if(def.type.toLowerCase() === 'integer'){
+                            value = parseInt(value, 10);
+                        }
+                        else if(def.type.toLowerCase() === 'float'){
+                            value = parseFloat(value);
+                        }
+                    }
+
+                    if(_.isFunction(def.get)){
+                        return def.get.call(this, value);
+                    }
+                    return value;
+                },
+                set (val) {
+                    if(def.type){
+                        if(def.type.toLowerCase() === 'boolean'){
+                            val = !!val;
+                        }
+                        else if(def.type.toLowerCase() === 'integer'){
+                            val = parseInt(val, 10);
+                        }
+                        else if(def.type.toLowerCase() === 'float'){
+                            val = parseFloat(val);
+                        }
+                    }
+                    if(_.isFunction(def.set)){
+                        val = def.set.call(this, this.getAttribute(name), val);
+                    }
+                    if (def.type && def.type.toLowerCase() === 'boolean'){
+                        if(val){
+                            return this.setAttribute(name, '');
+                        } else {
+                            return this.removeAttribute(name);
+                        }
+                    }
+                    return this.setAttribute(name, val);
+                }
+            };
+        },
 
         /**
          * Define the attributes of the component.
@@ -24,6 +91,7 @@ var fwc = function futureWebComponentFactory(name, options){
          * @returns {fwComp|Array}
          */
         attrs(...attributes){
+            var self = this;
 
             //getter
             if(!attributes || attributes.length === 0){
@@ -35,34 +103,11 @@ var fwc = function futureWebComponentFactory(name, options){
 
             //each attribute get his own getter setter
             attributes.forEach( (attr) => {
-                //TODO string only as an alias
                 if(_.isString(attr)){
-                    data.attrs[attr] = {
-                        get() {
-                            return this.getAttribute(attr);
-                        },
-                        set (val) {
-                            return this.setAttribute(attr, val);
-                        }
-                    };
-                } else if (_.isPlainObject(attr) && _.isString(attr.name)){
-                    data.attrs[attr.name] = {
-                        get() {
-                            if(attr.type){
-                                //TODO parse value
-                            }
-                            return this.getAttribute(attr.name);
-                        },
-                        set (val) {
-                            if(attr.update === true){
-                                //TODO trigger re render
-                            }
-                            if(attr.type){
-                                //TODO parse value
-                            }
-                            return this.setAttribute(attr.name, val);
-                        }
-                    };
+                    attr = { name : attr };
+                }
+                if (_.isPlainObject(attr) && _.isString(attr.name)){
+                    this.attr(attr.name, attr);
                 }
             });
 
@@ -91,20 +136,10 @@ var fwc = function futureWebComponentFactory(name, options){
             }
 
             //setter, attribute's accessor is overriden
-            data.attrs[name] = {
-                get() {
-                    if(_.isFunction(accessors.get)){
-                        return accessors.get.call(this, this.getAttribute(name));
-                    }
-                    return this.getAttribute(name);
-                },
-                set (val) {
-                    if(_.isFunction(accessors.set)){
-                        val = accessors.set.call(this, this.getAttribute(name), val);
-                    }
-                    return this.setAttribute(name, val);
-                }
-            };
+            this.attr(name, {
+                get : accessors.get,
+                set : accessors.set
+            });
 
             return this;
         },
@@ -141,18 +176,21 @@ var fwc = function futureWebComponentFactory(name, options){
             comp.on('flow',  (name, elt) => comp.trigger.call(comp, name, elt));
             comp.on('state', (name, ...params) => comp.trigger.call(comp, name, params));
 
+            var renderContent = function renderContent(elt){
+                if(typeof data.content === 'function'){
+                    let attrs = {};
+                    for(let attr of comp.attrs()){
+                        attrs[attr] = elt[attr];   //so the getter is called
+                    }
+                    elt.innerHTML = data.content(attrs);
+                }
+            };
 
             var eltProto = {
                 createdCallback : {
                     value(){
 
-                        if(typeof data.content === 'function'){
-                            let attrs = {};
-                            for(let attr of comp.attrs()){
-                                attrs[attr] = this[attr];   //so the getter is called
-                            }
-                            this.innerHTML = data.content(attrs);
-                        }
+                        renderContent(this);
 
                         comp.trigger.call(comp, 'flow', 'create', this);
                     }
@@ -168,9 +206,10 @@ var fwc = function futureWebComponentFactory(name, options){
                     }
                 },
                 attributeChangedCallback : {
-                    value(){
-                        console.log('attr changes', arguments);
-                        console.log("attrs on change", this.attributes);
+                    value(name, old, val){
+                        if(data.attrs[name] && data.attrs[name].update === true){
+                            renderContent(this);
+                        }
                     }
                 },
             };
