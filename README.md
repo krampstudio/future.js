@@ -20,6 +20,8 @@ It features :
  - browsers API are not reliable
  - library over framework
  - developer friendly
+ - open to changes
+ - stability
 
 ## Help wanted
 
