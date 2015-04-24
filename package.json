@@ -40,7 +40,7 @@
   "dependencies": {
     "handlebars": "^3.0.0",
     "lodash": "^3.5.0",
-    "webcomponents.js": "^0.6.0"
+    "webcomponents.js": "^0.6.1"
   },
   "keywords" : [
     "webcomponents",
