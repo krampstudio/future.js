@@ -15,9 +15,25 @@ It features :
 - Grunt to automatize tasks
 - QUnit for the tests
 
+## Philosophy statements
+
+ - browsers API are not reliable
+ - library over framework
+ - developer friendly
+ - open to changes
+ - stability
+
+## Help wanted
+
+We will invade the earth, come onboard and you'll become famous and rich. We need help regarding:
+ - Development for everything, future.js lacks a lots of features
+ - A killer web site with features, doc and getting started
+ - Testing 
+ - Spreading the world
+
 ## Status
 
-Experimental
+Experimental and in development
 
 ## Done
 
