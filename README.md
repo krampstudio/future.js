@@ -28,7 +28,7 @@ It features :
 We will invade the earth, come onboard and you'll become famous and rich. We need help regarding:
  - Development for everything, future.js lacks a lots of features
  - A killer web site with features, doc and getting started
- - Testing 
+ - Testing
  - Spreading the world
 
 ## Status
@@ -62,6 +62,17 @@ Experimental and in development
  - extends/is
  - Support HTML template in content
  - styling
+
+### Router
+
+ - core Router
+ - API
+ - register components dynamically
+ - DI integration
+
+### Services
+
+ - Service structure and registration (or DI)
 
 ### Tests
 
