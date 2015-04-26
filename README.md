@@ -43,6 +43,7 @@ Experimental and in development
  - Web Component : attributs definition, getter and setter, and type casting
  - Web Component : event emitter : component extended lifecycle
  - Web Component : content definition from callback or external template
+ - Web Component : content re-render on attribute change (if udpate is set to true)
 
 ## TODO
 
@@ -55,7 +56,7 @@ Experimental and in development
 ### Web Component
 
  - attributes multivalue type
- - re-render content on attribute change (if configured)
+ - render event (linked to DOM `change` event)
  - find a better way to attach the node instance to the events
  - implement states
  - methods
@@ -77,7 +78,6 @@ Experimental and in development
 
 ### Tests
 
- - Handlebars templates
  - Test with multiple components of the same type
  - automatize qunit tests (needs to run test.html; so karma may be removed). Need to test polyfill with phantomJS >= 2.0.0
  - integrate sauce labs to see the real browser support
