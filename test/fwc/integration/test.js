@@ -51,6 +51,48 @@ QUnit.asyncTest('define basic attributes', 8, function(assert){
         .register();
 });
 
+QUnit.asyncTest('define attributes with type casting', 16, function(assert){
+    var container = document.getElementById('permanent-fixture');
+    assert.ok(container instanceof HTMLElement, 'The container exists');
+
+    fwc('cast')
+        .on('error', function(e){
+            console.error(e);
+        })
+        .on('create', function(elt){
+
+            var fCast = container.querySelector('f-cast');
+            assert.deepEqual(fCast, elt, 'The callback elt is the given node');
+
+            assert.equal(fCast.getAttribute('int'), '134.12', "The attribute exists");
+            assert.equal(fCast.int, 134, "The getter gives you the parsed value");
+            fCast.int = "5.77";
+            assert.equal(fCast.getAttribute('int'), '5', "The value is updated once parsed");
+            assert.equal(fCast.int, 5, "The getter gives you the parsed value");
+
+            assert.equal(fCast.getAttribute('float'), 1.23, "The attribute exists");
+            assert.equal(fCast.float, 1.23, "The getter gives you the parsed value");
+            fCast.float = "00.77";
+            assert.equal(fCast.getAttribute('float'), '0.77', "The value is updated once parsed");
+            assert.equal(fCast.float, 0.77, "The getter gives you the parsed value");
+
+            assert.ok(fCast.hasAttribute('bool'), "The attribute exists");
+            assert.equal(fCast.bool, true, "The attribute has the parsed value");
+            fCast.bool = false;
+            assert.ok(!fCast.hasAttribute('bool'), "The attribute doesn't exists anymore");
+            assert.equal(fCast.bool, false, "The attribute has the false value");
+            fCast.bool = true;
+            assert.ok(fCast.hasAttribute('bool'), "The attribute is again there");
+            assert.equal(fCast.bool, true, "The attribute has the true value");
+
+            QUnit.start();
+        })
+        .attr('int',   { type : 'integer' })
+        .attr('float', { type : 'float' })
+        .attr('bool',  { type : 'boolean' })
+        .register();
+});
+
 QUnit.asyncTest('define attributes with accessors', 11, function(assert){
     var container = document.getElementById('permanent-fixture');
     assert.ok(container instanceof HTMLElement, 'The container exists');

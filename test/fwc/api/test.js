@@ -33,7 +33,61 @@ QUnit.asyncTest("emitter", 8, function(assert){
 
 QUnit.module('Attributes');
 
-QUnit.test('definition', 3, function(assert){
+
+QUnit.test('definition', 5, function(assert){
+
+    var comp = fwc();
+
+    assert.ok(typeof comp.attr === 'function', "the component definition holds the method attr");
+    assert.equal(comp.attr('id', {}), comp, "The method chains with arguments");
+    assert.ok(typeof comp.attr('id') === 'object', "the method returns the attribute definition");
+    assert.ok(typeof comp.attr('id').set === 'function', "the attribute definition has a setter");
+    assert.ok(typeof comp.attr('id').get === 'function', "the attribute definition has a getter");
+});
+
+
+QUnit.test('definition polymorphism', 3, function(assert){
+
+    var comp = fwc();
+
+    comp.attr({name : 'id'});
+    assert.ok(typeof comp.attr('id') === 'object', "the method returns the attribute definition");
+    assert.ok(typeof comp.attr('id').set === 'function', "the attribute definition has a setter");
+    assert.ok(typeof comp.attr('id').get === 'function', "the attribute definition has a getter");
+});
+
+QUnit.test('definition type casting', 6, function(assert){
+
+    var comp = fwc();
+
+    var mock = {
+        getAttribute(name){
+            return this[name];
+        },
+        setAttribute(name, val){
+            this[name] = val;
+            return val;
+        },
+        hasAttribute(name){
+            return this.hasOwnProperty(name);
+        }
+    };
+
+    comp.attr('int', {type : 'integer'});
+    comp.attr('float', {type : 'float'});
+    comp.attr('bool', {type : 'boolean'});
+
+    assert.equal(comp.attr('int').set.call(mock, "12.5"), 12,"the attribute setter set the parsed value");
+    assert.equal(comp.attr('int').get.call(mock), 12, "the int getter returns the parsed value");
+
+    assert.equal(comp.attr('float').set.call(mock, "12.5"), 12.5,"the attribute setter set the parsed value");
+    assert.equal(comp.attr('float').get.call(mock), 12.5, "the int getter returns the parsed value");
+
+    assert.equal(comp.attr('bool').set.call(mock, "a"), true,"the attribute setter set the parsed value");
+    assert.equal(comp.attr('bool').get.call(mock), true, "the int getter returns the parsed value");
+});
+
+QUnit.test('multiple declarations', 3, function(assert){
 
     var comp = fwc();
 

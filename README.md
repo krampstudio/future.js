@@ -40,7 +40,7 @@ Experimental and in development
  - Base set up: grunt, babel, browserify, handlebars
  - QUnit test
  - Web Component : register
- - Web Component : attributs definition, getter and setter
+ - Web Component : attributs definition, getter and setter, and type casting
  - Web Component : event emitter : component extended lifecycle
  - Web Component : content definition from callback or external template
 
@@ -54,7 +54,7 @@ Experimental and in development
 
 ### Web Component
 
- - attributes type inference, ie. boolean for attr with no value
+ - attributes multivalue type
  - re-render content on attribute change (if configured)
  - find a better way to attach the node instance to the events
  - implement states
@@ -62,6 +62,7 @@ Experimental and in development
  - extends/is
  - Support HTML template in content
  - styling
+ - jsdoc fwc
 
 ### Router
 

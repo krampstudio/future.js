@@ -5,7 +5,8 @@ var fwc = function futureWebComponentFactory(name, options){
 
 
     var data = {
-        attrs : {},
+        attrs  : {},
+        update : []
     };
 
     /**
@@ -34,51 +35,60 @@ var fwc = function futureWebComponentFactory(name, options){
             }
 
             data.attrs[name] = {
-                update : def.update,
                 get() {
                     var value = this.getAttribute(name);
                     if(def.type){
-                        if(def.type.toLowerCase() === 'boolean'){
+                        let type = def.type.toLowerCase();
+                        if(type === 'boolean'){
                             value = this.hasAttribute(name);
                         }
-                        else if(def.type.toLowerCase() === 'integer'){
+                        else if(type === 'integer'){
                             value = parseInt(value, 10);
                         }
-                        else if(def.type.toLowerCase() === 'float'){
+                        else if(type === 'float'){
                             value = parseFloat(value);
                         }
                     }
 
+                    //call user defined getter
                     if(_.isFunction(def.get)){
                         return def.get.call(this, value);
                     }
+
                     return value;
                 },
-                set (val) {
+                set (value) {
+                    var type;
                     if(def.type){
-                        if(def.type.toLowerCase() === 'boolean'){
-                            val = !!val;
+                        type = def.type.toLowerCase();
+                        if(type === 'boolean'){
+                            value = !!value;
+                        } else if(type === 'integer'){
+                            value = parseInt(value, 10);
                         }
-                        else if(def.type.toLowerCase() === 'integer'){
-                            val = parseInt(val, 10);
-                        }
-                        else if(def.type.toLowerCase() === 'float'){
-                            val = parseFloat(val);
+                        else if(type === 'float'){
+                            value = parseFloat(value);
                         }
                     }
+
+                    //call setter
                     if(_.isFunction(def.set)){
-                        val = def.set.call(this, this.getAttribute(name), val);
+                        value = def.set.call(this, this.getAttribute(name), value);
                     }
-                    if (def.type && def.type.toLowerCase() === 'boolean'){
-                        if(val){
-                            return this.setAttribute(name, '');
+
+                    if (type === 'boolean'){
+                        if(value){
+                            this.setAttribute(name, '');
                         } else {
-                            return this.removeAttribute(name);
+                            this.removeAttribute(name);
                         }
+                        return value;
                     }
-                    return this.setAttribute(name, val);
+
+                    return this.setAttribute(name, value);
                 }
             };
+            return this;
         },
 
         /**
@@ -207,7 +217,7 @@ var fwc = function futureWebComponentFactory(name, options){
                 },
                 attributeChangedCallback : {
                     value(name, old, val){
-                        if(data.attrs[name] && data.attrs[name].update === true){
+                        if(_.contains(data.update, name)){
                             renderContent(this);
                         }
                     }
