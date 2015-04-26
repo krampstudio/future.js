@@ -193,3 +193,36 @@ QUnit.asyncTest('Component with content from a callback', 11, function(assert){
         .content(componentContent)
         .register();
 });
+
+QUnit.asyncTest('Component withi dynamic content from a template', 8, function(assert){
+    var container = document.getElementById('permanent-fixture');
+    assert.ok(container instanceof HTMLElement, 'The container exists');
+
+    var helloTpl = require('./hello.tpl');
+    assert.ok(typeof helloTpl === 'function', 'The template function exists');
+
+    assert.equal(container.querySelectorAll('f-dyncontent h1').length, 0, 'The component does not contain an h1');
+
+    fwc('dyncontent')
+        .on('error', function(e){
+            console.error(e);
+        })
+        .on('create', function(elt){
+
+            var fDynContent = container.querySelector('f-dyncontent');
+            assert.deepEqual(fDynContent, elt, 'The callback elt is the given node');
+
+            assert.equal(fDynContent.who, 'world', 'The attribute who has the world value');
+            assert.equal(container.querySelectorAll('f-dyncontent h1').length, 1, 'The component contains an h1');
+
+            assert.equal(fDynContent.textContent.trim(), 'Hello world', 'The element has the content from the who attribute');
+
+            fDynContent.who = "Bertrand";
+            assert.equal(fDynContent.textContent.trim(), 'Hello Bertrand', 'The element has the updated content');
+
+            QUnit.start();
+        })
+        .attr('who', { update: true })
+        .content(helloTpl)
+        .register();
+});

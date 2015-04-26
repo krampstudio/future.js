@@ -34,6 +34,10 @@ var fwc = function futureWebComponentFactory(name, options){
                 return data.attrs[name];
             }
 
+            if(def.update === true){
+                data.update.push(name);
+            }
+
             data.attrs[name] = {
                 get() {
                     var value = this.getAttribute(name);
