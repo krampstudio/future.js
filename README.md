@@ -64,6 +64,7 @@ Experimental and in development
  - Support HTML template in content
  - styling
  - jsdoc fwc
+ - change the component space ('f-')
 
 ### Router
 
