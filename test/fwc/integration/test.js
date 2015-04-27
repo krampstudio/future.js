@@ -22,6 +22,31 @@ QUnit.asyncTest('register and access a component', 4, function(assert){
         .register();
 });
 
+QUnit.asyncTest('register and multiple component', 7, function(assert){
+    var container = document.getElementById('permanent-fixture');
+    assert.ok(container instanceof HTMLElement, 'The container exists');
+
+    var sum = 0;
+
+    fwc('multi')
+        .on('error', function(e){
+            console.error(e);
+        })
+        .on('create', function(elt){
+
+            assert.equal(elt.nodeName, 'F-MULTI', 'The element is a multi');
+            var value = parseInt(elt.getAttribute('value'), 10);
+            assert.ok(value > 0, 'The  value has an int');
+            sum += value;
+
+            if(sum === 7){
+
+                QUnit.start();
+            }
+        })
+        .register();
+});
+
 QUnit.module('Attributes');
 
 QUnit.asyncTest('define basic attributes', 8, function(assert){
