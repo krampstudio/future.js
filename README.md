@@ -40,6 +40,7 @@ Experimental and in development
  - Base set up: grunt, babel, browserify, handlebars
  - QUnit test
  - Web Component : register
+ - Web Component : custom namespace
  - Web Component : attributs definition, getter and setter, and type casting
  - Web Component : event emitter : component extended lifecycle
  - Web Component : content definition from callback or external template
@@ -64,7 +65,7 @@ Experimental and in development
  - Support HTML template in content
  - styling
  - jsdoc fwc
- - change the component space ('f-')
+ - alias namespace option in the name : `fwc('foo-bar') == fwc('bar', {namespace : 'foo'})`;
 
 ### Router
 

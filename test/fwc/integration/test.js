@@ -22,6 +22,27 @@ QUnit.asyncTest('register and access a component', 4, function(assert){
         .register();
 });
 
+
+QUnit.asyncTest('register with another namespace', 4, function(assert){
+    var container = document.getElementById('permanent-fixture');
+    assert.ok(container instanceof HTMLElement, 'The container exists');
+
+    fwc('bar', {namespace : 'foo'})
+        .on('error', function(e){
+            console.error(e);
+        })
+        .on('create', function(elt){
+
+            var fooBar = container.querySelector('foo-bar');
+            assert.equal(fooBar.nodeName, 'FOO-BAR', 'The foo-bar component is found');
+            assert.equal(fooBar.nodeName, elt.nodeName, 'The foo-bar component is given in parameter');
+            assert.deepEqual(fooBar, elt, 'The callback elt is the given node');
+
+            QUnit.start();
+        })
+        .register();
+});
+
 QUnit.asyncTest('register and multiple component', 7, function(assert){
     var container = document.getElementById('permanent-fixture');
     assert.ok(container instanceof HTMLElement, 'The container exists');

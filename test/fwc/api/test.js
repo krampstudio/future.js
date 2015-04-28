@@ -8,6 +8,25 @@ QUnit.test('factory', 3, function(assert) {
     assert.notEqual(fwc(), fwc(), "The factory creates a new object at each call");
 });
 
+QUnit.module('Options');
+
+QUnit.test('namespace', 4, function(assert) {
+
+    assert.throws(function(){
+        fwc('foo', { namespace : '12' });
+    }, TypeError, 'The namespace is not valid');
+
+    assert.throws(function(){
+        fwc('foo', { namespace : 't-' });
+    }, TypeError, 'The namespace is not valid');
+
+    assert.throws(function(){
+        fwc('foo', { namespace : 't.' });
+    }, TypeError, 'The namespace is not valid');
+
+    fwc('foo', { namespace : 'bar' });
+});
+
 QUnit.module('Events');
 
 QUnit.asyncTest("emitter", 8, function(assert){

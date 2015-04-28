@@ -2,7 +2,12 @@ var _              = require('lodash');
 var eventDelegator = require('./events.js');
 
 var fwc = function futureWebComponentFactory(name, options){
+    options = options || {};
 
+    /**
+     * The component namespace (what's before the dash in the tag)
+     */
+    var namespace = options.namespace || 'f';
 
     var data = {
         attrs  : {},
@@ -231,7 +236,7 @@ var fwc = function futureWebComponentFactory(name, options){
             _.merge(eltProto, data.attrs);
 
             try {
-                document.registerElement('f-' + name, {
+                document.registerElement(`${namespace}-${name}`, {
                     prototype : Object.create(HTMLElement.prototype, eltProto)
                 });
             } catch(e){
@@ -239,6 +244,11 @@ var fwc = function futureWebComponentFactory(name, options){
             }
         }
     };
+
+    //validate namesapce
+    if(!/^[a-zA-Z]+$/.test(namespace)){
+        throw new TypeError(`The namespace ${namespace} can contain only letters`);
+    }
 
     eventDelegator(comp);
 
