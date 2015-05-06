@@ -10,7 +10,7 @@ QUnit.test('factory', 3, function(assert) {
 
 QUnit.module('Options');
 
-QUnit.test('namespace', 4, function(assert) {
+QUnit.test('namespace', 3, function(assert) {
 
     assert.throws(function(){
         fwc('foo', { namespace : '12' });
