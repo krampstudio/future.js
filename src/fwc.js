@@ -1,23 +1,39 @@
 var _              = require('lodash');
 var eventDelegator = require('./events.js');
 
-var fwc = function futureWebComponentFactory(name, options){
-    options = options || {};
+var fwc = function futureWebComponentFactory(name = '', options = {}){
 
-    /**
-     * The component namespace (what's before the dash in the tag)
-     */
-    var namespace = options.namespace || 'f';
+    var namespace;
 
     var data = {
         attrs  : {},
         update : []
     };
 
+    //validate component name
+    if(!/^([a-z]+-)?[a-z]+[a-z0-9]*$/i.test(name)){
+        throw new TypeError(`The component name '${name}' does not match the HTMLElement naming rules`);
+    }
+
+    /**
+     * The component namespace (what's before the dash in the tag)
+     */
+    let matchNs = name.match(/^[a-z]+(?=-)/i);
+    if(matchNs && matchNs.length){
+        namespace = matchNs[0];
+    } else {
+        namespace = options.namespace || 'f';
+    }
+
+    //validate namesapce
+    if(!/^[a-zA-Z]+$/.test(namespace)){
+        throw new TypeError(`The namespace ${namespace} can contain only letters`);
+    }
+
     /**
      * @typedef fwComp
      */
-    var comp = {
+    let comp = {
 
         /**
          * @param {String} [name]
@@ -245,10 +261,7 @@ var fwc = function futureWebComponentFactory(name, options){
         }
     };
 
-    //validate namesapce
-    if(!/^[a-zA-Z]+$/.test(namespace)){
-        throw new TypeError(`The namespace ${namespace} can contain only letters`);
-    }
+
 
     eventDelegator(comp);
 

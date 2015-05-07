@@ -65,7 +65,6 @@ Experimental and in development
  - Support HTML template in content
  - styling
  - jsdoc fwc
- - alias namespace option in the name : `fwc('foo-bar') == fwc('bar', {namespace : 'foo'})`;
 
 ### Router
 

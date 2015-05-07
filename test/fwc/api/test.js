@@ -4,13 +4,13 @@ QUnit.module('Module');
 
 QUnit.test('factory', 3, function(assert) {
     assert.ok(typeof fwc === 'function', "The module expose a function");
-    assert.ok(typeof fwc() === 'object', "The module creates an object");
-    assert.notEqual(fwc(), fwc(), "The factory creates a new object at each call");
+    assert.ok(typeof fwc('foo') === 'object', "The module creates an object");
+    assert.notEqual(fwc('foo'), fwc('foo'), "The factory creates a new object at each call");
 });
 
 QUnit.module('Options');
 
-QUnit.test('namespace', 4, function(assert) {
+QUnit.test('namespace', 3, function(assert) {
 
     assert.throws(function(){
         fwc('foo', { namespace : '12' });
@@ -31,7 +31,7 @@ QUnit.module('Events');
 
 QUnit.asyncTest("emitter", 8, function(assert){
 
-    var comp = fwc();
+    var comp = fwc('foo');
 
     assert.ok(typeof comp === 'object', "the component definition is an object");
     assert.ok(typeof comp.on === 'function', "the component defintion holds the method on");
@@ -55,7 +55,7 @@ QUnit.module('Attributes');
 
 QUnit.test('definition', 5, function(assert){
 
-    var comp = fwc();
+    var comp = fwc('foo');
 
     assert.ok(typeof comp.attr === 'function', "the component definition holds the method attr");
     assert.equal(comp.attr('id', {}), comp, "The method chains with arguments");
@@ -67,7 +67,7 @@ QUnit.test('definition', 5, function(assert){
 
 QUnit.test('definition polymorphism', 3, function(assert){
 
-    var comp = fwc();
+    var comp = fwc('foo');
 
     comp.attr({name : 'id'});
     assert.ok(typeof comp.attr('id') === 'object', "the method returns the attribute definition");
@@ -77,7 +77,7 @@ QUnit.test('definition polymorphism', 3, function(assert){
 
 QUnit.test('definition type casting', 6, function(assert){
 
-    var comp = fwc();
+    var comp = fwc('foo');
 
     var mock = {
         getAttribute(name){
@@ -108,7 +108,7 @@ QUnit.test('definition type casting', 6, function(assert){
 
 QUnit.test('multiple declarations', 3, function(assert){
 
-    var comp = fwc();
+    var comp = fwc('foo');
 
     assert.ok(typeof comp.attrs === 'function', "the component definition holds the method attrs");
     assert.equal(comp.attrs('id', 'selected'), comp, "The method chains with arguments");
@@ -117,7 +117,7 @@ QUnit.test('multiple declarations', 3, function(assert){
 
 QUnit.test('accessors', 13, function(assert){
 
-    var comp = fwc();
+    var comp = fwc('foo');
 
     var mock = {
         getAttribute(name){
@@ -163,7 +163,7 @@ QUnit.module('Content');
 
 QUnit.test('basic content', 6, function(assert){
 
-    var comp = fwc();
+    var comp = fwc('foo');
 
     assert.ok(typeof comp.content === 'function', "the component definition holds the method content");
 
@@ -182,7 +182,7 @@ QUnit.test('basic content', 6, function(assert){
 
 QUnit.test('handlebar template content', 2, function(assert){
 
-    var comp = fwc();
+    var comp = fwc('foo');
 
     //template is handled externally, by browserify
     comp.content(require('./test.tpl'));
