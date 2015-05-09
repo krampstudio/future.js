@@ -201,6 +201,10 @@ var fwc = function futureWebComponentFactory(name = '', options = {}){
             return this;
         },
 
+        extend(element){
+
+        },
+
         register(){
 
             if(!_.isFunction(document.registerElement)){
