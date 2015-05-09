@@ -1,5 +1,17 @@
 var fwc = require('../../../src/fwc.js');
 
+document.registerElement('f-link', {
+    prototype: Object.create(HTMLAnchorElement.prototype, {
+        createdCallback : {
+            value(){
+                console.log('created', this);
+            }
+        }
+    }),
+    extends: 'a',
+
+});
+
 QUnit.module('Register');
 
 QUnit.asyncTest('register and access a component', 4, function(assert){
