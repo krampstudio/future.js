@@ -14,95 +14,55 @@ module.exports = function(grunt) {
         connect: {
             preview: {
                 options: {
-                    port: 4123,
+                    hostname: "<%pkg.config.host%>",
+                    port: "<%=pkg.config.port%>",
                     base: '.'
                 }
             }
         },
 
         open: {
-            preview: {
-                path: 'http://localhost:4123/public/index.html',
-                app: 'fxdev -no-remote'
-            },
-
             test: {
-                path: 'http://localhost:4123/test/',
-                app: 'fxdev -no-remote'
+                path: 'http://<%=pkg.config.host%>:<%=pkg.config.port%>/test/',
+                app: "<%=pkg.config.browser%>"
             }
         },
 
         browserify: {
             options: {
-                transform: ['babelify', ['hbsfy', { 'extensions' : ['tpl']}]],
-            },
-            build: {
-                files: {
-                    'public/js/main.js': ['public/js/src/**/*.js']
-                }
-            },
-            dev : {
-                files: {
-                    'public/js/main.js': ['public/js/src/main.js']
-                },
-                options: {
-                    watch : true,
-                    keepAlive : true,
-                    browserifyOptions: {
-                        debug: true
-                    }
+                transform: ['babelify', ['hbsfy', {
+                    'extensions': ['tpl']
+                }]],
+                browserifyOptions: {
+                    debug: true
                 }
             },
             test: {
                 files: {
                     'test/fwc/api/test.bundle.js': ['test/fwc/api/test.js'],
                     'test/fwc/integration/test.bundle.js': ['test/fwc/integration/test.js']
-                }
-            },
-            devtest: {
+                },
+            }
+        },
+
+       'extract_sourcemap': {
+            test: {
                 files: {
-                    'test/fwc/api/test.bundle.js': ['test/fwc/api/test.js'],
-                    'test/fwc/integration/test.bundle.js': ['test/fwc/integration/test.js']
-                },
-                options: {
-                    watch : true,
-                    keepAlive : true,
-                    browserifyOptions: {
-                        debug: true
-                    }
+                    'test/fwc/api': ['test/fwc/api/test.bundle.js'],
+                    'test/fwc/integration': ['test/fwc/integration/test.bundle.js']
                 }
             }
         },
 
-        karma : {
-            options : {
-                configFile:"karma.conf.js",
-            },
-            api : {
-                options : {
-                    autoWatch: false,
-                    singleRun: true,
-
-                },
-                    files : ['test/api/*.html']
-            },
-            register : {
-                autoWatch: false,
-                singleRun: true,
-                files : ['test/register.js']
-            },
-            attribute : {
-                autoWatch: false,
-                singleRun: true,
-                files : ['test/attribute.js']
+        watch : {
+            test : {
+                files : ['test/**/test.js'],
+                tasks : ['browserify:test', 'extract_sourcemap:test']
             }
-        },
-
-        qunit : {
-            all : ['test/api/test.html']
         }
+
     });
 
-    grunt.registerTask('preview', "Preview and development mode", ['connect:preview', 'open:preview', 'browserify:dev']);
-    grunt.registerTask('devtest', "develop tests", ['connect', 'open:test', 'browserify:devtest']);
+    grunt.registerTask('test', "compile tests", ['browserify:test', 'extract_souremap:test']);
+    grunt.registerTask('devtest', "develop tests", ['connect', 'open:test', 'watch:test']);
 };
