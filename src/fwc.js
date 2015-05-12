@@ -6,8 +6,9 @@ var fwc = function futureWebComponentFactory(name = '', options = {}){
     var namespace;
 
     var data = {
-        attrs  : {},
-        update : []
+        baseProto: HTMLElement.prototype,
+        attrs:     {},
+        update:    []
     };
 
     //validate component name
@@ -202,7 +203,27 @@ var fwc = function futureWebComponentFactory(name = '', options = {}){
         },
 
         extend(element){
+            var protoName;
 
+            if(typeof element === 'undefined'){
+                return data.baseProto;
+            }
+
+            //look at the list of supported elements for the prototype name
+            let htmlElements = require('./elements.json');
+            for(protoName of Object.keys(htmlElements)){
+                if(htmlElements[protoName].nodes.indexOf(element) > -1){
+                    break;
+                }
+            }
+
+            //set the HTMLElement prototype as a base and the tag name
+            if(typeof window[protoName] !== 'undefined'){
+                data.baseProto = window[protoName].prototype;
+                data.extendTag = element;
+            }
+
+            return this;
         },
 
         register(){
@@ -257,7 +278,8 @@ var fwc = function futureWebComponentFactory(name = '', options = {}){
 
             try {
                 document.registerElement(`${namespace}-${name}`, {
-                    prototype : Object.create(HTMLElement.prototype, eltProto)
+                    prototype : Object.create(data.baseProto, eltProto),
+                    extend    : data.extendTag
                 });
             } catch(e){
                 this.trigger('error', e);
