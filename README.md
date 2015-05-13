@@ -80,14 +80,13 @@ Experimental and in development
 ### Tests
 
  - Test with multiple components of the same type
- - automatize qunit tests (needs to run test.html; so karma may be removed). Need to test polyfill with phantomJS >= 2.0.0
+ - automatize qunit tests (needs to run test.html). Need to test polyfill with phantomJS >= 2.0.0
  - integrate sauce labs to see the real browser support
  - code coverage
 
 ### Bundling
 
  - separate libraries from source
- - separate source map (or look for a format that firefox can read)
  - uglify the final bundle
 
 ## License
