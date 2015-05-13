@@ -21,6 +21,7 @@
     "chai": "^2.1.1",
     "grunt": "^0.4.5",
     "grunt-browserify": "^3.8.0",
+    "grunt-concurrent": "^1.0.0",
     "grunt-contrib-connect": "^0.9.0",
     "grunt-contrib-watch": "^0.6.1",
     "grunt-extract-sourcemap": "^0.1.14",
@@ -35,10 +36,10 @@
     "lodash": "^3.5.0",
     "webcomponents.js": "^0.6.1"
   },
-  "config" : {
-    "host" : "localhost",
-    "port" : 4123,
-    "browser" : "fxdev -no-remote"
+  "config": {
+    "host": "localhost",
+    "port": 4123,
+    "browser": "fxdev -no-remote"
   },
   "keywords": [
     "webcomponents",

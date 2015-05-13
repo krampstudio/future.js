@@ -30,11 +30,17 @@ module.exports = function(grunt) {
 
         browserify: {
             options: {
-                transform: ['babelify', ['hbsfy', {
-                    'extensions': ['tpl']
-                }]],
+                transform: [
+                    'babelify',
+                    [ 'hbsfy', { 'extensions': ['tpl'] } ]
+                ],
                 browserifyOptions: {
                     debug: true
+                },
+            },
+            core: {
+                files : {
+                    'dist/future.js' : ['src/fwc.js']
                 }
             },
             test: {
@@ -46,6 +52,11 @@ module.exports = function(grunt) {
         },
 
        'extract_sourcemap': {
+            core: {
+               files : {
+                  'dist' : ['dist/*.js']
+               }
+            },
             test: {
                 files: {
                     'test/fwc/api': ['test/fwc/api/test.bundle.js'],
@@ -55,14 +66,28 @@ module.exports = function(grunt) {
         },
 
         watch : {
+            core : {
+                files : ['src/*.js'],
+                tasks : ['compile']
+            },
             test : {
                 files : ['test/**/test.js'],
-                tasks : ['browserify:test', 'extract_sourcemap:test']
+                tasks : ['test']
             }
+        },
+
+        concurrent : {
+            options: {
+                logConcurrentOutput: true
+            },
+            devtest : ['watch:core', 'watch:test']
         }
 
     });
 
-    grunt.registerTask('test', "compile tests", ['browserify:test', 'extract_souremap:test']);
+    grunt.registerTask('compile', 'compile', ['browserify:core', 'extract_sourcemap:core']);
+
+    grunt.registerTask('test', "compile tests", ['browserify:test', 'extract_sourcemap:test']);
+
     grunt.registerTask('devtest', "develop tests", ['connect', 'open:test', 'watch:test']);
 };
