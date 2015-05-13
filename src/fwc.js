@@ -279,7 +279,7 @@ var fwc = function futureWebComponentFactory(name = '', options = {}){
             try {
                 document.registerElement(`${namespace}-${name}`, {
                     prototype : Object.create(data.baseProto, eltProto),
-                    extend    : data.extendTag
+                    extends    : data.extendTag
                 });
             } catch(e){
                 this.trigger('error', e);

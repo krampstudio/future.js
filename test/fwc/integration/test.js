@@ -1,16 +1,16 @@
 var fwc = require('../../../src/fwc.js');
 
-document.registerElement('f-link', {
-    prototype: Object.create(HTMLAnchorElement.prototype, {
-        createdCallback : {
-            value(){
-                console.log('created', this);
-            }
-        }
-    }),
-    extends: 'a',
+//document.registerElement('f-link', {
+    //prototype: Object.create(HTMLAnchorElement.prototype, {
+        //createdCallback : {
+            //value(){
+                //console.log('created', this);
+            //}
+        //}
+    //}),
+    //extends: 'a',
 
-});
+//});
 
 QUnit.module('Register');
 
@@ -252,7 +252,7 @@ QUnit.asyncTest('Component with content from a callback', 11, function(assert){
         .register();
 });
 
-QUnit.asyncTest('Component withi dynamic content from a template', 8, function(assert){
+QUnit.asyncTest('Component with dynamic content from a template', 8, function(assert){
     var container = document.getElementById('permanent-fixture');
     assert.ok(container instanceof HTMLElement, 'The container exists');
 
@@ -282,5 +282,33 @@ QUnit.asyncTest('Component withi dynamic content from a template', 8, function(a
         })
         .attr('who', { update: true })
         .content(helloTpl)
+        .register();
+});
+
+QUnit.module('extend');
+
+QUnit.asyncTest('Extend an anchor', 5, function(assert){
+    var container = document.getElementById('permanent-fixture');
+    assert.ok(container instanceof HTMLElement, 'The container exists');
+
+    var link = document.querySelector('a.link');
+
+    fwc('link')
+        .on('error', function(e){
+            console.error(e);
+        })
+        .on('create', function(elt){
+
+            var flink = document.querySelector('.flink');
+
+            assert.ok(flink instanceof HTMLElement, 'The component is an HTMLElement');
+            assert.ok(flink instanceof HTMLAnchorElement, 'The component is an HTMLAnchorElement');
+
+            assert.ok(link.href !== '#', "Anchor's href use getter/setter to change the value");
+            assert.equal(flink.href, link.href, "The extended component uses base component getter/setter");
+
+            QUnit.start();
+        })
+        .extend('a')
         .register();
 });
