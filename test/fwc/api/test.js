@@ -192,3 +192,53 @@ QUnit.test('handlebar template content', 2, function(assert){
     assert.ok(typeof content === 'function', "The method return the set function without arguments");
     assert.equal(content({ foo: 'bar'}).trim(), '<span>bar</span>', "The function replace the content data");
 });
+
+QUnit.module('Extend');
+
+
+QUnit.test('element name', 4, function(assert) {
+
+    assert.throws(function(){
+        fwc('foo').extend(12);
+    }, TypeError, 'The element name is not valid');
+
+    assert.throws(function(){
+        fwc('foo').extend('t-');
+    }, TypeError, 'The element name is not valid');
+
+    assert.throws(function(){
+        fwc('foo').extend('t.');
+    }, TypeError, 'The element name is not valid');
+
+    assert.throws(function(){
+        fwc('foo').extend('_12');
+    }, TypeError, 'The element name is not valid');
+
+    fwc('foo').extend('bar');
+});
+
+QUnit.test('api', 5, function(assert){
+
+    var comp = fwc('foo');
+
+    assert.ok(typeof comp.extend === 'function', "the component definition holds the method extend");
+
+    assert.equal(comp.extend('a'), comp, "The method set and chains with arguments");
+
+    var baseProto = comp.extend();
+    assert.ok(typeof baseProto === 'object', "The method returns an object without arguments");
+    assert.ok(Object.prototype.isPrototypeOf(baseProto), "The method returns an prototype");
+    assert.ok(HTMLElement.prototype.isPrototypeOf(baseProto), "The method returns an HTMLElement prototype");
+});
+
+
+QUnit.test('extend an html element', 2, function(assert){
+
+    var comp = fwc('foo');
+
+    comp.extend('a');
+
+    var baseProto = comp.extend();
+    assert.ok(HTMLElement.prototype.isPrototypeOf(baseProto), "Extending the a tag set the base prototype to HTMLElement");
+    assert.ok(Object.is(baseProto, HTMLAnchorElement.prototype), "Extending the a tag set the base prototype to HTMLAnchorElement");
+});

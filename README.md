@@ -62,6 +62,7 @@ Experimental and in development
  - implement states
  - methods
  - extends/is
+ - prevent to use some attr like is
  - Support HTML template in content
  - styling
  - jsdoc fwc

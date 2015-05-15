@@ -1,0 +1,180 @@
+{
+  "HTMLAnchorElement": {
+    "nodes": ["a"]
+  },
+  "HTMLAreaElement": {
+    "nodes": ["area"]
+  },
+  "HTMLAudioElement": {
+    "nodes": ["audio"]
+  },
+  "HTMLBRElement": {
+    "nodes": ["br"]
+  },
+  "HTMLBaseElement": {
+    "nodes": ["base"]
+  },
+  "HTMLBodyElement": {
+    "nodes": ["body"]
+  },
+  "HTMLButtonElement": {
+    "nodes": ["button"]
+  },
+  "HTMLCanvasElement": {
+    "nodes": ["canvas"]
+  },
+  "HTMLDListElement": {
+    "nodes": ["dl"]
+  },
+  "HTMLDataElement": {
+    "nodes": ["data"]
+  },
+  "HTMLDataListElement": {
+    "nodes": ["datalist"]
+  },
+  "HTMLDivElement": {
+    "nodes": ["div"]
+  },
+  "HTMLElement": {
+    "nodes": ["article", "aside", "bdi", "dfn", "figcaption", "footer", "header", "main", "mark", "nav", "noscript", "rp", "rt", "ruby", "section", "summary", "wbr"]
+  },
+  "HTMLEmbedElement": {
+    "nodes": ["embed"]
+  },
+  "HTMLFieldSetElement": {
+    "nodes": ["fieldset"]
+  },
+  "HTMLFontElement": {
+    "nodes": ["font"]
+  },
+  "HTMLFormElement": {
+    "nodes": ["form"]
+  },
+  "HTMLHRElement": {
+    "nodes": ["hr"]
+  },
+  "HTMLHeadElement": {
+    "nodes": ["head"]
+  },
+  "HTMLHeadingElement": {
+    "nodes": ["h1", "h2", "h3", "h4", "h5", "h6"]
+  },
+  "HTMLHtmlElement": {
+    "nodes": ["html"]
+  },
+  "HTMLIFrameElement": {
+    "nodes": ["iframe"]
+  },
+  "HTMLImageElement": {
+    "nodes": ["img"]
+  },
+  "HTMLInputElement": {
+    "nodes": ["input"]
+  },
+  "HTMLLIElement": {
+    "nodes": ["li"]
+  },
+  "HTMLLabelElement": {
+    "nodes": ["label"]
+  },
+  "HTMLLegendElement": {
+    "nodes": ["legend"]
+  },
+  "HTMLLinkElement": {
+    "nodes": ["link"]
+  },
+  "HTMLMapElement": {
+    "nodes": ["map"]
+  },
+  "HTMLMetaElement": {
+    "nodes": ["meta"]
+  },
+  "HTMLMeterElement": {
+    "nodes": ["meter"]
+  },
+  "HTMLModElement": {
+    "nodes": ["ins", "del"]
+  },
+  "HTMLOListElement": {
+    "nodes": ["ol"]
+  },
+  "HTMLObjectElement": {
+    "nodes": ["object"]
+  },
+  "HTMLOptGroupElement": {
+    "nodes": ["optgroup"]
+  },
+  "HTMLOptionElement": {
+    "nodes": ["option"]
+  },
+  "HTMLOutputElement": {
+    "nodes": ["output"]
+  },
+  "HTMLParagraphElement": {
+    "nodes": ["p"]
+  },
+  "HTMLParamElement": {
+    "nodes": ["param"]
+  },
+  "HTMLPreElement": {
+    "nodes": ["pre"]
+  },
+  "HTMLProgressElement": {
+    "nodes": ["progress"]
+  },
+  "HTMLQuoteElement": {
+    "nodes": ["blockquote", "q"]
+  },
+  "HTMLSelectElement": {
+    "nodes": ["select"]
+  },
+  "HTMLSourceElement": {
+    "nodes": ["source"]
+  },
+  "HTMLSpanElement": {
+    "nodes": ["abbr", "address", "b", "bdo", "cite", "code", "dd", "dt", "em", "i", "kbd", "s", "samp", "span", "small", "strong", "sub", "sup", "u", "var"]
+  },
+  "HTMLStyleElement": {
+    "nodes": ["style"]
+  },
+  "HTMLTableCaptionElement": {
+    "nodes": ["caption"]
+  },
+  "HTMLTableColElement": {
+    "nodes": ["col", "colgroup"]
+  },
+  "HTMLTableDataCellElement": {
+    "nodes": ["td"]
+  },
+  "HTMLTableElement": {
+    "nodes": ["table"]
+  },
+  "HTMLTableHeaderCellElement": {
+    "nodes": ["th"]
+  },
+  "HTMLTableRowElement": {
+    "nodes": ["tr"]
+  },
+  "HTMLTableSectionElement": {
+    "nodes": ["thead", "tbody", "tfoot"]
+  },
+  "HTMLTextAreaElement": {
+    "nodes": ["textarea"]
+  },
+  "HTMLTimeElement": {
+    "nodes": ["time"]
+  },
+  "HTMLTitleElement": {
+    "nodes": ["title"]
+  },
+  "HTMLTrackElement": {
+    "nodes": ["track"]
+  },
+  "HTMLUListElement": {
+    "nodes": ["ul"]
+  },
+  "HTMLVideoElement": {
+    "nodes": ["video"]
+  }
+}
+
