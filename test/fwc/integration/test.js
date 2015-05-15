@@ -1,17 +1,5 @@
 var fwc = require('../../../src/fwc.js');
 
-//document.registerElement('f-link', {
-    //prototype: Object.create(HTMLAnchorElement.prototype, {
-        //createdCallback : {
-            //value(){
-                //console.log('created', this);
-            //}
-        //}
-    //}),
-    //extends: 'a',
-
-//});
-
 QUnit.module('Register');
 
 QUnit.asyncTest('register and access a component', 4, function(assert){
@@ -276,9 +264,10 @@ QUnit.asyncTest('Component with dynamic content from a template', 8, function(as
             assert.equal(fDynContent.textContent.trim(), 'Hello world', 'The element has the content from the who attribute');
 
             fDynContent.who = "Bertrand";
-            assert.equal(fDynContent.textContent.trim(), 'Hello Bertrand', 'The element has the updated content');
-
-            QUnit.start();
+            setTimeout( () => {
+                assert.equal(fDynContent.textContent.trim(), 'Hello Bertrand', 'The element has the updated content');
+                QUnit.start();
+            }, 0);
         })
         .attr('who', { update: true })
         .content(helloTpl)
@@ -310,5 +299,39 @@ QUnit.asyncTest('Extend an anchor', 5, function(assert){
             QUnit.start();
         })
         .extend('a')
+        .register();
+});
+
+
+QUnit.asyncTest('Extend another component', 3, function(assert){
+    var container = document.getElementById('permanent-fixture');
+    assert.ok(container instanceof HTMLElement, 'The container exists');
+
+    fwc('upper')
+        .on('error', function(e){
+            console.error(e);
+        })
+        .on('create', function(elt){
+            assert.ok(false, 'the parent element should not be created');
+        })
+        .access('bar', {
+            get(val){
+                val = val || '';
+               return val.toUpperCase();
+            }
+        })
+        .register();
+
+    fwc('superup')
+        .on('create', function(elt){
+
+            var fsuperup = document.querySelector('.superup');
+
+            assert.deepEqual(fsuperup, elt, 'The callback elt is the given node');
+            assert.equal(elt.bar, 'BAR', 'Super element prototype has been extended');
+
+            QUnit.start();
+        })
+        .extend('upper')
         .register();
 });

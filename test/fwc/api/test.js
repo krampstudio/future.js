@@ -195,7 +195,29 @@ QUnit.test('handlebar template content', 2, function(assert){
 
 QUnit.module('Extend');
 
-QUnit.test('extend api', 5, function(assert){
+
+QUnit.test('element name', 4, function(assert) {
+
+    assert.throws(function(){
+        fwc('foo').extend(12);
+    }, TypeError, 'The element name is not valid');
+
+    assert.throws(function(){
+        fwc('foo').extend('t-');
+    }, TypeError, 'The element name is not valid');
+
+    assert.throws(function(){
+        fwc('foo').extend('t.');
+    }, TypeError, 'The element name is not valid');
+
+    assert.throws(function(){
+        fwc('foo').extend('_12');
+    }, TypeError, 'The element name is not valid');
+
+    fwc('foo').extend('bar');
+});
+
+QUnit.test('api', 5, function(assert){
 
     var comp = fwc('foo');
 
@@ -210,7 +232,7 @@ QUnit.test('extend api', 5, function(assert){
 });
 
 
-QUnit.test('extend an element', 2, function(assert){
+QUnit.test('extend an html element', 2, function(assert){
 
     var comp = fwc('foo');
 

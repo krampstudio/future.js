@@ -1,6 +1,9 @@
 var _              = require('lodash');
 var eventDelegator = require('./events.js');
 
+var registry = new Map();
+
+
 var fwc = function futureWebComponentFactory(name = '', options = {}){
 
     var namespace;
@@ -11,8 +14,7 @@ var fwc = function futureWebComponentFactory(name = '', options = {}){
         update:    []
     };
 
-    //validate component name
-    if(!/^([a-z]+-)?[a-z]+[a-z0-9]*$/i.test(name)){
+    if(!validateEltName(name)){
         throw new TypeError(`The component name '${name}' does not match the HTMLElement naming rules`);
     }
 
@@ -202,25 +204,61 @@ var fwc = function futureWebComponentFactory(name = '', options = {}){
             return this;
         },
 
+        /**
+         * Extend an HTML Element or another component.
+         *
+         * Status : Experimental.
+         *
+         * You can extend most of the HTMLElements and benefit it's prototype.
+         * Then your component's tag should use the `is` syntax.
+         * The list of tags/prototype is maintained in {@link ./elements.json}.
+         * @example fwc('load').extend('a').register();
+         *          <a is="f-load" href="#">link</a>
+         *
+         * You can also extend another component that has been already registered.
+         * You'll also benefit it's prototype, but the syntax remains the common one.
+         * @example fwc('load').extend('f-foo').register();
+         *          <f-load href="#">link</f-load>
+         *
+         * @param {String} element - the element name / tag name
+         * @returns {fwComp|HTMLElementPrototype} chains or get the base prototype
+         */
         extend(element){
-            var protoName;
+            var elementName,
+                protoName;
 
             if(typeof element === 'undefined'){
                 return data.baseProto;
             }
 
-            //look at the list of supported elements for the prototype name
-            let htmlElements = require('./elements.json');
-            for(protoName of Object.keys(htmlElements)){
-                if(htmlElements[protoName].nodes.indexOf(element) > -1){
-                    break;
-                }
+            if(!validateEltName(element)){
+                throw new TypeError(`${element} is not a valid HTMLElement name`);
             }
 
-            //set the HTMLElement prototype as a base and the tag name
-            if(typeof window[protoName] !== 'undefined'){
-                data.baseProto = window[protoName].prototype;
-                data.extendTag = element;
+            //1st check in our custom elements
+            if(registry.has(element)){
+                elementName = element;
+            } else if(registry.has(`${namespace}-${element}`)){
+                elementName = `${namespace}-${element}`;
+            }
+            if(elementName){
+                data.baseProto = registry.get(elementName);
+            } else {
+
+                //look at the list of supported elements for the prototype name
+                let htmlElements = require('./elements.json');
+                for(let eltName of Object.keys(htmlElements)){
+                    if(htmlElements[eltName].nodes.indexOf(element) > -1){
+                        protoName = eltName;
+                        break;
+                    }
+                }
+
+                //set the HTMLElement prototype as a base and the tag name
+                if(protoName && typeof window[protoName] !== 'undefined'){
+                    data.baseProto = window[protoName].prototype;
+                    data.extendTag = element;
+                }
             }
 
             return this;
@@ -277,10 +315,14 @@ var fwc = function futureWebComponentFactory(name = '', options = {}){
             _.merge(eltProto, data.attrs);
 
             try {
-                document.registerElement(`${namespace}-${name}`, {
-                    prototype : Object.create(data.baseProto, eltProto),
-                    extends    : data.extendTag
+                let elementName = `${namespace}-${name}`;
+                let newProto = Object.create(data.baseProto, eltProto);
+                document.registerElement(elementName, {
+                    prototype:  newProto,
+                    extends:    data.extendTag
                 });
+
+                registry.set(elementName, newProto);
             } catch(e){
                 this.trigger('error', e);
             }
@@ -293,5 +335,9 @@ var fwc = function futureWebComponentFactory(name = '', options = {}){
 
     return comp;
 };
+
+function validateEltName(name){
+    return /^([a-z]+-)?[a-z]+[a-z0-9]*$/i.test(name);
+}
 
 module.exports = fwc;
