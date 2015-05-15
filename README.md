@@ -26,7 +26,7 @@ It features :
 ## Help wanted
 
 We will invade the earth, come onboard and you'll become famous and rich. We need help regarding:
- - Development for everything, future.js lacks a lots of features
+ - Development for everything, future.js lacks a lots of features (see issues, take one and come into the future)
  - A killer web site with features, doc and getting started
  - Testing
  - Spreading the world
@@ -47,50 +47,6 @@ Experimental and in development
  - Web Component : content re-render on attribute change (if udpate is set to true)
  - Web Component : extend from HTML element or another web component
 
-## TODO
-
-### Arch
-
- - clean up public and create a clean sample
- - remove lo-dash ? It's heavy and some features overlap with ES6
- - integrate aja.js
-
-### Web Component
-
- - attributes multivalue type
- - render event (linked to DOM `change` event)
- - find a better way to attach the node instance to the events
- - implement states
- - methods
- - extends/is
- - prevent to use some attr like is
- - Support HTML template in content
- - styling
- - jsdoc fwc
-
-### Router
-
- - core Router
- - API
- - register components dynamically
- - DI integration
-
-### Services
-
- - Service structure and registration (or DI)
-
-### Tests
-
- - Test with multiple components of the same type
- - automatize qunit tests (needs to run test.html; so karma may be removed). Need to test polyfill with phantomJS >= 2.0.0
- - integrate sauce labs to see the real browser support
- - code coverage
-
-### Bundling
-
- - separate libraries from source
- - separate source map (or look for a format that firefox can read)
- - uglify the final bundle
 
 ## License
 
