@@ -265,14 +265,14 @@ var fwc = function futureWebComponentFactory(name = '', options = {}){
         },
 
         register(){
-
+            var self = this;
             if(!_.isFunction(document.registerElement)){
-                return this.trigger('error', 'The webcomponent polyfill is required on this environment');
+                throw new Error('The webcomponent polyfill is required on this environment');
             }
 
             //re trigger generic events
-            comp.on('flow',  (name, elt) => comp.trigger.call(comp, name, elt));
-            comp.on('state', (name, ...params) => comp.trigger.call(comp, name, params));
+            this.on('flow',  (name, elt) => this.trigger(name, elt));
+            this.on('state', (name, ...params) => this.trigger.call(this, name, ...params));
 
             var renderContent = function renderContent(elt){
                 if(typeof data.content === 'function'){
@@ -280,7 +280,12 @@ var fwc = function futureWebComponentFactory(name = '', options = {}){
                     for(let attr of comp.attrs()){
                         attrs[attr] = elt[attr];   //so the getter is called
                     }
+
+                    self.trigger('rendering', elt);
+
                     elt.innerHTML = data.content(attrs);
+
+                    self.trigger('rendered', elt);
                 }
             };
 
@@ -290,17 +295,17 @@ var fwc = function futureWebComponentFactory(name = '', options = {}){
 
                         renderContent(this);
 
-                        comp.trigger.call(comp, 'flow', 'create', this);
+                        self.trigger('flow', 'create', this);
                     }
                 },
                 attachedCallback : {
                     value(...params){
-                        comp.trigger.call(comp, 'flow', 'attach', params);
+                        self.trigger('flow', 'attach', this, ...params);
                     }
                 },
                 detachedCallback : {
                     value(...params){
-                        comp.trigger.call(comp, 'flow', 'detach', params);
+                        self.trigger(comp, 'flow', 'detach', this, ...params);
                     }
                 },
                 attributeChangedCallback : {
@@ -331,7 +336,7 @@ var fwc = function futureWebComponentFactory(name = '', options = {}){
 
 
 
-    eventDelegator(comp);
+    eventDelegator(comp, true);
 
     return comp;
 };
