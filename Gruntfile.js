@@ -62,7 +62,8 @@ module.exports = function(grunt) {
             devtest: {
                 files: {
                     'test/fwc/api/test.bundle.js': ['test/fwc/api/test.js'],
-                    'test/fwc/integration/test.bundle.js': ['test/fwc/integration/test.js']
+                    'test/fwc/integration/test.bundle.js': ['test/fwc/integration/test.js'],
+                    'test/events/test.bundle.js': ['test/events/test.js']
                 },
                 options: {
                     watch : true,
