@@ -1,5 +1,5 @@
-var _              = require('lodash');
-var eventDelegator = require('./events.js');
+var _        = require('lodash');
+var eventify = require('./events.js').eventify;
 
 var registry = new Map();
 
@@ -334,11 +334,7 @@ var fwc = function futureWebComponentFactory(name = '', options = {}){
         }
     };
 
-
-
-    eventDelegator(comp, true);
-
-    return comp;
+    return eventify(comp);
 };
 
 function validateEltName(name){

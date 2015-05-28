@@ -1,76 +1,100 @@
 /**
  * Helps you to make an object an event emitter
+ * The API itself is just a placeholder, all methods will be delegated to a target.
  */
-var EventEmitter = require('events').EventEmitter;
+var api = {
 
-//alias event emitter functions
-var aliases = {
-    trigger: 'emit',
-    off: 'removeListener'
-};
-
-var natives = {
-    addListener(eventName, elt, handler){
-        return elt.addEventListener(eventName, handler, false);
-    },
-    emit(eventName, elt){
-        if (typeof window.Event === 'function') {
-            return elt.dispatchEvent(new Event(eventName, {
-                cancelable : true,
-                bubbles : true
-            }));
-        } else {
-            let event = document.createEvent("HTMLEvents");
-            event.initEvent(eventName, true, true);
-            return elt.dispatchEvent(event);
-        }
-    },
-    removeListener(eventName, elt){
-        this.listeners().forEach( listener => {
-            elt.removeEventListener(eventName, listener);
-        });
-    }
-};
-
-//list of methods to add to the target
-var api = Object.keys(EventEmitter.prototype)
-    .filter( name => typeof EventEmitter.prototype[name] === 'function')
-    .reduce((acc, name) => {
-        acc[name] = name;
-        return acc;
-    }, aliases);
-
-
-var events = {
     /**
-     * Makes the target an event emitter by delegating the api to an event emitter
-     * @param {Object} target - the target object
-     * @returns {Object} the target augmented of the event api
+     * Attach an handler to an event.
+     * Calling `on` with the same eventName multiple times add callbacks: they
+     * will all be executed.
+     *
+     * @example target.on('foo', bar => console.log('Cool ' + bar) );
+     *
+     * @this the target
+     * @param {String} name - the name of the event to listen
+     * @param {Function} handler - the callback to run once the event is triggered
+     * @returns {Object} the target object
      */
-    eventify(target = {}, delegateNative = false){
-        var emitter = new EventEmitter();
-        Object.keys(api).forEach( alias => {
-            let method = api[alias];
-            if(!target[alias]){
-                target[alias] = function delegate(...args){
-                    if(delegateNative && args.length > 1 && args[1] instanceof HTMLElement){
-                        let [eventName, elt, ...rest] = args;
-                        //console.log('Delegate to native ');
-                        //console.log('method',  method);
-                        //console.log('alias', alias);
-                        //console.log('event', eventName);
-                        //console.log('element', elt);
-                        //console.log('rest', rest);
+    on(name, handler){
+        if(typeof handler === 'function'){
+            this._events[name] = this._events[name] || [];
+            this._events[name].push(handler);
+        }
+        return this;
+    },
 
-                        if(typeof natives[method] === 'function'){
-                            natives[method].call(target, eventName, elt, ...rest);
-                        }
-                    }
-                    return emitter[method].apply(target, args);
-                };
-            }
-        });
-        return target;
+    /**
+     * Remove ALL handlers for an event.
+     *
+     * @example target.off('foo');
+     *
+     * @this the target
+     * @param {String} name - the name of the event
+     * @returns {Object} the target object
+     */
+    off(name){
+        this._events[name] = [];
+        return this;
+    },
+
+    /**
+     * Trigger an event.
+     *
+     * @example target.trigger('foo', 'Awesome');
+     *
+     * @this the target
+     * @param {String} name - the name of the event to trigger
+     * @param {*} data - arguments given to the handlers
+     * @returns {Object} the target object
+     */
+    trigger : function(name, ...data){
+        var self = this;
+        if(this._events[name] && Array.isArray(this._events[name])){
+          this._events[name].forEach(event =>  event.call(this, ...data));
+        }
+        return this;
+    },
+
+    /**
+     * Get the registered handlers.
+     *
+     * @example target.events('foo').length;
+     *
+     * @this the target
+     * @param {String} [name] - the name of the event
+     * @returns {Array} the handlers
+     */
+    events (name){
+        if(typeof name !== 'undefined'){
+            return this._events[name];
+        }
+        return this._events;
     }
 };
-module.exports = events;
+
+/**
+ * Makes the target an event emitter by delegating calls to the event API.
+ * @param {Object} target - the target object
+ * @returns {Object} the target
+ */
+function eventify(target = {}){
+
+    target._events = {};
+
+    Object
+        .keys(api)
+        .filter( prop => typeof api[prop] === 'function')
+        .forEach( method => {
+
+            target[method] = function delegate(...args){
+                return api[method].apply(target, args);
+            };
+
+    });
+    return target;
+}
+
+module.exports = {
+    eventify
+};
