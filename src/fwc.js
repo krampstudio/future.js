@@ -1,5 +1,5 @@
-var _              = require('lodash');
-var eventDelegator = require('./events.js');
+var _        = require('lodash');
+var eventify = require('./events.js').eventify;
 
 var registry = new Map();
 
@@ -280,14 +280,14 @@ var fwc = function futureWebComponentFactory(name = '', options = {}){
         },
 
         register(){
-
+            var self = this;
             if(!_.isFunction(document.registerElement)){
-                return this.trigger('error', 'The webcomponent polyfill is required on this environment');
+                throw new Error('The webcomponent polyfill is required on this environment');
             }
 
             //re trigger generic events
-            comp.on('flow',  (name, elt) => comp.trigger.call(comp, name, elt));
-            comp.on('state', (name, ...params) => comp.trigger.call(comp, name, params));
+            this.on('flow',  (name, elt) => this.trigger(name, elt));
+            this.on('state', (name, ...params) => this.trigger.call(this, name, ...params));
 
             var renderContent = function renderContent(elt){
                 if(typeof data.content === 'function'){
@@ -295,7 +295,24 @@ var fwc = function futureWebComponentFactory(name = '', options = {}){
                     for(let attr of comp.attrs()){
                         attrs[attr] = elt[attr];   //so the getter is called
                     }
+
+                    self.trigger('rendering', elt);
+
                     elt.innerHTML = data.content(attrs);
+
+                    self.trigger('rendered', elt);
+                }
+            };
+
+            var delegateNativeEvents = function delegateNativeEvents(elt){
+                for(let eventType of Object.keys(self.events())){
+                    if(typeof elt['on' + eventType] !== 'undefined'){
+                        for(let event of self.events(eventType)){
+                            elt.addEventListener(eventType, (...params) => {
+                                self.trigger(eventType, elt, ...params);
+                            });
+                        }
+                    }
                 }
             };
 
@@ -305,17 +322,19 @@ var fwc = function futureWebComponentFactory(name = '', options = {}){
 
                         renderContent(this);
 
-                        comp.trigger.call(comp, 'flow', 'create', this);
+                        delegateNativeEvents(this);
+
+                        self.trigger('flow', 'create', this);
                     }
                 },
                 attachedCallback : {
                     value(...params){
-                        comp.trigger.call(comp, 'flow', 'attach', params);
+                        self.trigger('flow', 'attach', this, ...params);
                     }
                 },
                 detachedCallback : {
                     value(...params){
-                        comp.trigger.call(comp, 'flow', 'detach', params);
+                        self.trigger(comp, 'flow', 'detach', this, ...params);
                     }
                 },
                 attributeChangedCallback : {
@@ -338,17 +357,16 @@ var fwc = function futureWebComponentFactory(name = '', options = {}){
                 });
 
                 registry.set(elementName, newProto);
+
             } catch(e){
                 this.trigger('error', e);
             }
+
+            return this;
         }
     };
 
-
-
-    eventDelegator(comp);
-
-    return comp;
+    return eventify(comp);
 };
 
 function validateEltName(name){
