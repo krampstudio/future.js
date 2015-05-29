@@ -15,6 +15,20 @@ It features :
 - Grunt to automatize tasks
 - QUnit for the tests
 
+
+
+## Philosophy statements
+
+ - browsers API are not reliable
+ - library over framework
+ - developer friendly
+ - open to changes
+ - stability
+
+## Samples
+
+### Web Component
+
 ```javascript
 var fwc = require('fwc');
 
@@ -25,7 +39,7 @@ fwc('load')                         //component name, default ns is f-
     .on('click', elt => {           //native event delegation
         fetch(elt.src)
             .then( res => elt.target.innerHTML = res; )
-            .catch( e => this.trigger('error', e);
+            .catch( e => this.trigger('error', e); )
     })
     .access('target', {             //define getter/setters
         get(val){
@@ -37,16 +51,8 @@ fwc('load')                         //component name, default ns is f-
 
 ```html
     <!-- instantiate in html -->
-    <f-load src="foo.html" target=".foo"></f-load>
+    <f-load src="foo.html" target=".foo">Load content</f-load>
 ```
-
-## Philosophy statements
-
- - browsers API are not reliable
- - library over framework
- - developer friendly
- - open to changes
- - stability
 
 ## Help wanted
 
@@ -67,10 +73,12 @@ Experimental and in development
  - Web Component : register
  - Web Component : custom namespace
  - Web Component : attributs definition, getter and setter, and type casting
- - Web Component : event emitter : component extended lifecycle
+ - Web Component : mehtod
+ - Web Component : event emitter : component extended lifecycle and native event delegation
  - Web Component : content definition from callback or external template
  - Web Component : content re-render on attribute change (if udpate is set to true)
  - Web Component : extend from HTML element or another web component
+ - Core : event emitter
 
 ## License
 
