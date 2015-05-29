@@ -335,3 +335,31 @@ QUnit.asyncTest('Extend another component', 3, function(assert){
         .extend('upper')
         .register();
 });
+
+QUnit.module('Native events');
+
+QUnit.test('on click', 3, function(assert){
+    var done = assert.async();
+    var container = document.getElementById('permanent-fixture');
+    assert.ok(container instanceof HTMLElement, 'The container exists');
+
+    fwc('native')
+        .on('error', function(e){
+            console.error(e);
+        })
+        .on('create', function(elt){
+
+            var fNative = document.querySelector('f-native');
+            assert.deepEqual(fNative, elt, 'The callback elt is the given node');
+
+            fNative.click();
+        })
+        .on('click', function(elt){
+
+            var fNative = document.querySelector('f-native');
+            assert.deepEqual(fNative, elt, 'The callback elt is the given node');
+
+            done();
+        })
+        .register();
+});

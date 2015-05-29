@@ -35,10 +35,9 @@ QUnit.asyncTest("emitter", 8, function(assert){
 
     assert.ok(typeof comp === 'object', "the component definition is an object");
     assert.ok(typeof comp.on === 'function', "the component defintion holds the method on");
-    assert.ok(typeof comp.once === 'function', "the component defintion holds the method once");
     assert.ok(typeof comp.trigger === 'function', "the component defintion holds the method trigger");
-    assert.ok(typeof comp.emit === 'function', "the component defintion holds the method emit");
     assert.ok(typeof comp.off === 'function', "the component defintion holds the method off");
+    assert.ok(typeof comp.events === 'function', "the component defintion holds the method events");
 
     comp.on('error', function(e) {
         assert.ok(e instanceof Error, 'An error is emitted');
@@ -46,7 +45,8 @@ QUnit.asyncTest("emitter", 8, function(assert){
 
         QUnit.start();
     });
-    comp.emit('error', new Error('test error'));
+    assert.equal(comp.events('error').length, 1, "The component has on listener registered");
+    comp.trigger('error', new Error('test error'));
 });
 
 
