@@ -158,10 +158,28 @@ QUnit.test('accessors', 13, function(assert){
     assert.equal(comp.access('id').get.call(mock), 'bee', "The getter returns the defined value");
 });
 
+QUnit.module('Methods');
+
+
+QUnit.test('declaration', 5, function(assert){
+
+    var comp = fwc('foo');
+
+    var foo = function foo(...params){
+        return params;
+    };
+
+    assert.ok(typeof comp.method === 'function', "the component definition holds the method method");
+
+    assert.equal(comp.method('foo', foo), comp, "The method set and chains with arguments");
+    assert.ok(typeof comp.method('foo') === 'object', "The method returns an object with the name arguments");
+    assert.ok(typeof comp.method('foo').value === 'function', "The method returns the function without arguments");
+    assert.deepEqual(comp.method('foo').value.call(null, 'bar', 'baz'), ['bar', 'baz'], "The content function returns the arguments");
+});
 
 QUnit.module('Content');
 
-QUnit.test('basic content', 6, function(assert){
+QUnit.test('callback', 6, function(assert){
 
     var comp = fwc('foo');
 
@@ -180,7 +198,7 @@ QUnit.test('basic content', 6, function(assert){
 });
 
 
-QUnit.test('handlebar template content', 2, function(assert){
+QUnit.test('handlebar template', 2, function(assert){
 
     var comp = fwc('foo');
 

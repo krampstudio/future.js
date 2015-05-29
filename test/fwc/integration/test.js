@@ -197,6 +197,45 @@ QUnit.asyncTest('define attributes with accessors', 11, function(assert){
         .register();
 });
 
+QUnit.module('Methods');
+
+QUnit.asyncTest('Component with a method', 7, function(assert){
+    var container = document.getElementById('permanent-fixture');
+    assert.ok(container instanceof HTMLElement, 'The container exists');
+
+    var mTarget = container.querySelector('.mtarget');
+    assert.ok(mTarget.style.display !== 'none', "The mtarget content is displayed");
+
+    fwc('method')
+        .on('error', function(e){
+            console.error(e);
+        })
+        .on('create', function(elt){
+
+            var fMethod = container.querySelector('f-method');
+            assert.deepEqual(fMethod, elt, 'The callback elt is the given node');
+
+            assert.ok(typeof fMethod.hide === 'function', 'The element has the defined method');
+
+            fMethod.hide();
+
+            assert.equal(mTarget.style.display, 'none', "The mtarget content isn't displayed anymore");
+
+            QUnit.start();
+        })
+        .method('hide', function(){
+
+            var fMethod = container.querySelector('f-method');
+            assert.deepEqual(fMethod, this, 'This is the given node');
+
+            assert.equal(this.target, '.mtarget', 'The attribute value is correct');
+
+            document.querySelector(this.target).style.display = 'none';
+        })
+        .attrs('target')
+        .register();
+});
+
 QUnit.module('Content');
 
 QUnit.asyncTest('Component with content from a callback', 11, function(assert){

@@ -11,6 +11,7 @@ var fwc = function futureWebComponentFactory(name = '', options = {}){
     var data = {
         baseProto: HTMLElement.prototype,
         attrs:     {},
+        methods:   {},
         update:    []
     };
 
@@ -182,6 +183,20 @@ var fwc = function futureWebComponentFactory(name = '', options = {}){
             return this;
         },
 
+        method(name, value){
+            if(name && !value){
+                return data.methods[name];
+            }
+
+            data.methods[name] = {
+                value(...params){
+                    return value.call(this, ...params);
+                }
+            };
+
+            return this;
+        },
+
         /**
          * Get/Set component content function
          *
@@ -331,7 +346,7 @@ var fwc = function futureWebComponentFactory(name = '', options = {}){
                 },
             };
 
-            _.merge(eltProto, data.attrs);
+            _.merge(eltProto, data.attrs, data.methods);
 
             try {
                 let elementName = `${namespace}-${name}`;
