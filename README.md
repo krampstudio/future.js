@@ -15,6 +15,31 @@ It features :
 - Grunt to automatize tasks
 - QUnit for the tests
 
+```javascript
+var fwc = require('fwc');
+
+fwc('load')                         //component name, default ns is f-
+    .on('error', e => {             //listen on errors
+        console.error('Ooops', e);
+    })
+    .on('click', elt => {           //native event delegation
+        fetch(elt.src)
+            .then( res => elt.target.innerHTML = res; )
+            .catch( e => this.trigger('error', e);
+    })
+    .access('target', {             //define getter/setters
+        get(val){
+            return document.querySelector(val);
+        }
+    })
+    .register();                    //regsiter the component
+```
+
+```html
+    <!-- instantiate in html -->
+    <f-load src="foo.html" target=".foo"></f-load>
+```
+
 ## Philosophy statements
 
  - browsers API are not reliable
@@ -46,7 +71,6 @@ Experimental and in development
  - Web Component : content definition from callback or external template
  - Web Component : content re-render on attribute change (if udpate is set to true)
  - Web Component : extend from HTML element or another web component
-
 
 ## License
 
