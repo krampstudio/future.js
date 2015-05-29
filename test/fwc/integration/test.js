@@ -338,7 +338,8 @@ QUnit.asyncTest('Extend another component', 3, function(assert){
 
 QUnit.module('Native events');
 
-QUnit.asyncTest('on click', 3, function(assert){
+QUnit.test('on click', 3, function(assert){
+    var done = assert.async();
     var container = document.getElementById('permanent-fixture');
     assert.ok(container instanceof HTMLElement, 'The container exists');
 
@@ -358,7 +359,7 @@ QUnit.asyncTest('on click', 3, function(assert){
             var fNative = document.querySelector('f-native');
             assert.deepEqual(fNative, elt, 'The callback elt is the given node');
 
-            QUnit.start();
+            done();
         })
         .register();
 });

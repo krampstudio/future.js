@@ -289,11 +289,25 @@ var fwc = function futureWebComponentFactory(name = '', options = {}){
                 }
             };
 
+            var delegateNativeEvents = function delegateNativeEvents(elt){
+                for(let eventType of Object.keys(self.events())){
+                    if(typeof elt['on' + eventType] !== 'undefined'){
+                        for(let event of self.events(eventType)){
+                            elt.addEventListener(eventType, (...params) => {
+                                self.trigger(eventType, elt, ...params);
+                            });
+                        }
+                    }
+                }
+            };
+
             var eltProto = {
                 createdCallback : {
                     value(){
 
                         renderContent(this);
+
+                        delegateNativeEvents(this);
 
                         self.trigger('flow', 'create', this);
                     }
@@ -328,9 +342,12 @@ var fwc = function futureWebComponentFactory(name = '', options = {}){
                 });
 
                 registry.set(elementName, newProto);
+
             } catch(e){
                 this.trigger('error', e);
             }
+
+            return this;
         }
     };
 
