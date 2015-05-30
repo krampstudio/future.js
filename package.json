@@ -12,7 +12,7 @@
     "url": "https://github.com/krampstudio/future.js.git"
   },
   "license": "MIT",
-  "main" : "src/fwc.js",
+  "main": "src/fwc.js",
   "scripts": {
     "test": "grunt test"
   },
@@ -20,20 +20,14 @@
     "babelify": "^5.0.4",
     "chai": "^2.1.1",
     "grunt": "^0.4.5",
-    "grunt-browserify": "^3.6.0",
+    "grunt-browserify": "^3.8.0",
+    "grunt-concurrent": "^1.0.0",
     "grunt-contrib-connect": "^0.9.0",
-    "grunt-contrib-qunit": "^0.5.2",
-    "grunt-karma": "^0.10.1",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-extract-sourcemap": "^0.1.14",
     "grunt-open": "^0.2.3",
     "hbsfy": "^2.2.1",
-    "karma": "^0.12.31",
-    "karma-browserify": "^4.0.0",
-    "karma-firefox-launcher": "^0.1.4",
-    "karma-html2js-preprocessor": "^0.1.0",
-    "karma-mocha": "^0.1.10",
-    "karma-phantomjs-launcher": "^0.1.4",
     "load-grunt-tasks": "^3.1.0",
-    "mocha": "^2.2.1",
     "qunitjs": "^1.17.1",
     "time-grunt": "^1.1.0"
   },
@@ -42,7 +36,12 @@
     "lodash": "^3.5.0",
     "webcomponents.js": "^0.6.1"
   },
-  "keywords" : [
+  "config": {
+    "host": "localhost",
+    "port": 4123,
+    "browser": "fxdev -no-remote"
+  },
+  "keywords": [
     "webcomponents",
     "es6",
     "future"

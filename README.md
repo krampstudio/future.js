@@ -15,8 +15,6 @@ It features :
 - Grunt to automatize tasks
 - QUnit for the tests
 
-
-
 ## Philosophy statements
 
  - browsers API are not reliable
