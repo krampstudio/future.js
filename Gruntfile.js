@@ -14,8 +14,8 @@ module.exports = function(grunt) {
         connect: {
             preview: {
                 options: {
-                    hostname: "<%pkg.config.host%>",
-                    port: "<%=pkg.config.port%>",
+                    hostname: '<%=pkg.config.host%>',
+                    port: '<%=pkg.config.port%>',
                     base: '.'
                 }
             }
@@ -24,7 +24,7 @@ module.exports = function(grunt) {
         open: {
             test: {
                 path: 'http://<%=pkg.config.host%>:<%=pkg.config.port%>/test/',
-                app: "<%=pkg.config.browser%>"
+                app: '<%=pkg.config.browser%>'
             }
         },
 
@@ -36,11 +36,11 @@ module.exports = function(grunt) {
                 ],
                 browserifyOptions: {
                     debug: true
-                },
+                }
             },
             core: {
                 files : {
-                    'dist/future.js' : ['src/fwc.js']
+                    'dist/fwc.js' : ['src/fwc.js']
                 }
             },
             test: {
@@ -52,16 +52,20 @@ module.exports = function(grunt) {
             }
         },
 
-       'extract_sourcemap': {
+       exorcise: {
+            options : {
+                base : '.'
+            },
             core: {
-               files : {
-                  'dist' : ['dist/*.js']
-               }
+                files : {
+                    'dist/fwc.js.map' : ['dist/fwc.js']
+                }
             },
             test: {
                 files: {
-                    'test/fwc/api': ['test/fwc/api/test.bundle.js'],
-                    'test/fwc/integration': ['test/fwc/integration/test.bundle.js']
+                    'test/fwc/api/test.bundle.js.map': ['test/fwc/api/test.bundle.js'],
+                    'test/fwc/integration/test.bundle.js.map': ['test/fwc/integration/test.bundle.js'],
+                    'test/events/test.bundle.js.map': ['test/events/test.bundle.js']
                 }
             }
         },
@@ -75,20 +79,10 @@ module.exports = function(grunt) {
                 files : ['test/**/test.js'],
                 tasks : ['test']
             }
-        },
-
-        concurrent : {
-            options: {
-                logConcurrentOutput: true
-            },
-            devtest : ['watch:core', 'watch:test']
         }
-
     });
 
-    grunt.registerTask('compile', 'compile', ['browserify:core', 'extract_sourcemap:core']);
-
-    grunt.registerTask('test', "compile tests", ['browserify:test', 'extract_sourcemap:test']);
-
-    grunt.registerTask('devtest', "develop tests", ['connect', 'open:test', 'watch:test']);
+    grunt.registerTask('compile', 'compile', ['browserify:core', 'exorcise:core']);
+    grunt.registerTask('test', 'compile tests', ['browserify:test', 'exorcise:test']);
+    grunt.registerTask('devtest', 'develop tests', ['connect', 'test', 'open:test', 'watch:test']);
 };
