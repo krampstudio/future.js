@@ -26,9 +26,18 @@
             <f-cast int="134.12" float="1.23" bool></f-cast>
             <f-access num="1" bool inc="0" double="0"></f-access>
 
+            <f-method target=".mtarget"></f-method>
+            <div class="mtarget">some content</div>
+
             <f-content foo="moo" repeat="2"></f-content>
             <f-dyncontent who="world"></f-dyncontent>
 
+            <a class="link" href="#">link</a>
+            <a class="flink" is='f-link' href="#">link</a>
+
+            <f-superup class="superup" bar="bar"></a>
+
+            <f-native>foo</f-native>
         </div>
         <script type="text/javascript" src="../../../dist/future.js"></script>
         <script type="text/javascript" src="./test.bundle.js"></script>

@@ -23,10 +23,39 @@ It features :
  - open to changes
  - stability
 
+## Samples
+
+### Web Component
+
+```javascript
+var fwc = require('fwc');
+
+fwc('load')                         //component name, default ns is f-
+    .on('error', e => {             //listen on errors
+        console.error('Ooops', e);
+    })
+    .on('click', elt => {           //native event delegation
+        fetch(elt.src)
+            .then( res => elt.target.innerHTML = res; )
+            .catch( e => this.trigger('error', e); )
+    })
+    .access('target', {             //define getter/setters
+        get(val){
+            return document.querySelector(val);
+        }
+    })
+    .register();                    //regsiter the component
+```
+
+```html
+    <!-- instantiate in html -->
+    <f-load src="foo.html" target=".foo">Load content</f-load>
+```
+
 ## Help wanted
 
 We will invade the earth, come onboard and you'll become famous and rich. We need help regarding:
- - Development for everything, future.js lacks a lots of features
+ - Development for everything, future.js lacks a lots of features (see issues, take one and come into the future)
  - A killer web site with features, doc and getting started
  - Testing
  - Spreading the world
@@ -42,52 +71,12 @@ Experimental and in development
  - Web Component : register
  - Web Component : custom namespace
  - Web Component : attributs definition, getter and setter, and type casting
- - Web Component : event emitter : component extended lifecycle
+ - Web Component : mehtod
+ - Web Component : event emitter : component extended lifecycle and native event delegation
  - Web Component : content definition from callback or external template
  - Web Component : content re-render on attribute change (if udpate is set to true)
-
-## TODO
-
-### Arch
-
- - clean up public and create a clean sample
- - remove lo-dash ? It's heavy and some features overlap with ES6
- - integrate aja.js
-
-### Web Component
-
- - attributes multivalue type
- - render event (linked to DOM `change` event)
- - find a better way to attach the node instance to the events
- - implement states
- - methods
- - extends/is
- - Support HTML template in content
- - styling
- - jsdoc fwc
-
-### Router
-
- - core Router
- - API
- - register components dynamically
- - DI integration
-
-### Services
-
- - Service structure and registration (or DI)
-
-### Tests
-
- - Test with multiple components of the same type
- - automatize qunit tests (needs to run test.html). Need to test polyfill with phantomJS >= 2.0.0
- - integrate sauce labs to see the real browser support
- - code coverage
-
-### Bundling
-
- - separate libraries from source
- - uglify the final bundle
+ - Web Component : extend from HTML element or another web component
+ - Core : event emitter
 
 ## License
 

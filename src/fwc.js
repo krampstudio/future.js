@@ -1,17 +1,21 @@
-var _              = require('lodash');
-var eventDelegator = require('./events.js');
+var _        = require('lodash');
+var eventify = require('./events.js').eventify;
+
+var registry = new Map();
+
 
 var fwc = function futureWebComponentFactory(name = '', options = {}){
 
     var namespace;
 
     var data = {
-        attrs  : {},
-        update : []
+        baseProto: HTMLElement.prototype,
+        attrs:     {},
+        methods:   {},
+        update:    []
     };
 
-    //validate component name
-    if(!/^([a-z]+-)?[a-z]+[a-z0-9]*$/i.test(name)){
+    if(!validateEltName(name)){
         throw new TypeError(`The component name '${name}' does not match the HTMLElement naming rules`);
     }
 
@@ -179,6 +183,20 @@ var fwc = function futureWebComponentFactory(name = '', options = {}){
             return this;
         },
 
+        method(name, value){
+            if(name && !value){
+                return data.methods[name];
+            }
+
+            data.methods[name] = {
+                value(...params){
+                    return value.call(this, ...params);
+                }
+            };
+
+            return this;
+        },
+
         /**
          * Get/Set component content function
          *
@@ -201,15 +219,75 @@ var fwc = function futureWebComponentFactory(name = '', options = {}){
             return this;
         },
 
-        register(){
+        /**
+         * Extend an HTML Element or another component.
+         *
+         * Status : Experimental.
+         *
+         * You can extend most of the HTMLElements and benefit it's prototype.
+         * Then your component's tag should use the `is` syntax.
+         * The list of tags/prototype is maintained in {@link ./elements.json}.
+         * @example fwc('load').extend('a').register();
+         *          <a is="f-load" href="#">link</a>
+         *
+         * You can also extend another component that has been already registered.
+         * You'll also benefit it's prototype, but the syntax remains the common one.
+         * @example fwc('load').extend('f-foo').register();
+         *          <f-load href="#">link</f-load>
+         *
+         * @param {String} element - the element name / tag name
+         * @returns {fwComp|HTMLElementPrototype} chains or get the base prototype
+         */
+        extend(element){
+            var elementName,
+                protoName;
 
+            if(typeof element === 'undefined'){
+                return data.baseProto;
+            }
+
+            if(!validateEltName(element)){
+                throw new TypeError(`${element} is not a valid HTMLElement name`);
+            }
+
+            //1st check in our custom elements
+            if(registry.has(element)){
+                elementName = element;
+            } else if(registry.has(`${namespace}-${element}`)){
+                elementName = `${namespace}-${element}`;
+            }
+            if(elementName){
+                data.baseProto = registry.get(elementName);
+            } else {
+
+                //look at the list of supported elements for the prototype name
+                let htmlElements = require('./elements.json');
+                for(let eltName of Object.keys(htmlElements)){
+                    if(htmlElements[eltName].nodes.indexOf(element) > -1){
+                        protoName = eltName;
+                        break;
+                    }
+                }
+
+                //set the HTMLElement prototype as a base and the tag name
+                if(protoName && typeof window[protoName] !== 'undefined'){
+                    data.baseProto = window[protoName].prototype;
+                    data.extendTag = element;
+                }
+            }
+
+            return this;
+        },
+
+        register(){
+            var self = this;
             if(!_.isFunction(document.registerElement)){
-                return this.trigger('error', 'The webcomponent polyfill is required on this environment');
+                throw new Error('The webcomponent polyfill is required on this environment');
             }
 
             //re trigger generic events
-            comp.on('flow',  (name, elt) => comp.trigger.call(comp, name, elt));
-            comp.on('state', (name, ...params) => comp.trigger.call(comp, name, params));
+            this.on('flow',  (name, elt) => this.trigger(name, elt));
+            this.on('state', (name, ...params) => this.trigger.call(this, name, ...params));
 
             var renderContent = function renderContent(elt){
                 if(typeof data.content === 'function'){
@@ -217,7 +295,24 @@ var fwc = function futureWebComponentFactory(name = '', options = {}){
                     for(let attr of comp.attrs()){
                         attrs[attr] = elt[attr];   //so the getter is called
                     }
+
+                    self.trigger('rendering', elt);
+
                     elt.innerHTML = data.content(attrs);
+
+                    self.trigger('rendered', elt);
+                }
+            };
+
+            var delegateNativeEvents = function delegateNativeEvents(elt){
+                for(let eventType of Object.keys(self.events())){
+                    if(typeof elt['on' + eventType] !== 'undefined'){
+                        for(let event of self.events(eventType)){
+                            elt.addEventListener(eventType, (...params) => {
+                                self.trigger(eventType, elt, ...params);
+                            });
+                        }
+                    }
                 }
             };
 
@@ -227,17 +322,19 @@ var fwc = function futureWebComponentFactory(name = '', options = {}){
 
                         renderContent(this);
 
-                        comp.trigger.call(comp, 'flow', 'create', this);
+                        delegateNativeEvents(this);
+
+                        self.trigger('flow', 'create', this);
                     }
                 },
                 attachedCallback : {
                     value(...params){
-                        comp.trigger.call(comp, 'flow', 'attach', params);
+                        self.trigger('flow', 'attach', this, ...params);
                     }
                 },
                 detachedCallback : {
                     value(...params){
-                        comp.trigger.call(comp, 'flow', 'detach', params);
+                        self.trigger(comp, 'flow', 'detach', this, ...params);
                     }
                 },
                 attributeChangedCallback : {
@@ -249,23 +346,31 @@ var fwc = function futureWebComponentFactory(name = '', options = {}){
                 },
             };
 
-            _.merge(eltProto, data.attrs);
+            _.merge(eltProto, data.attrs, data.methods);
 
             try {
-                document.registerElement(`${namespace}-${name}`, {
-                    prototype : Object.create(HTMLElement.prototype, eltProto)
+                let elementName = `${namespace}-${name}`;
+                let newProto = Object.create(data.baseProto, eltProto);
+                document.registerElement(elementName, {
+                    prototype:  newProto,
+                    extends:    data.extendTag
                 });
+
+                registry.set(elementName, newProto);
+
             } catch(e){
                 this.trigger('error', e);
             }
+
+            return this;
         }
     };
 
-
-
-    eventDelegator(comp);
-
-    return comp;
+    return eventify(comp);
 };
+
+function validateEltName(name){
+    return /^([a-z]+-)?[a-z]+[a-z0-9]*$/i.test(name);
+}
 
 module.exports = fwc;

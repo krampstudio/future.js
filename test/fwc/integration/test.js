@@ -197,6 +197,45 @@ QUnit.asyncTest('define attributes with accessors', 11, function(assert){
         .register();
 });
 
+QUnit.module('Methods');
+
+QUnit.asyncTest('Component with a method', 7, function(assert){
+    var container = document.getElementById('permanent-fixture');
+    assert.ok(container instanceof HTMLElement, 'The container exists');
+
+    var mTarget = container.querySelector('.mtarget');
+    assert.ok(mTarget.style.display !== 'none', "The mtarget content is displayed");
+
+    fwc('method')
+        .on('error', function(e){
+            console.error(e);
+        })
+        .on('create', function(elt){
+
+            var fMethod = container.querySelector('f-method');
+            assert.deepEqual(fMethod, elt, 'The callback elt is the given node');
+
+            assert.ok(typeof fMethod.hide === 'function', 'The element has the defined method');
+
+            fMethod.hide();
+
+            assert.equal(mTarget.style.display, 'none', "The mtarget content isn't displayed anymore");
+
+            QUnit.start();
+        })
+        .method('hide', function(){
+
+            var fMethod = container.querySelector('f-method');
+            assert.deepEqual(fMethod, this, 'This is the given node');
+
+            assert.equal(this.target, '.mtarget', 'The attribute value is correct');
+
+            document.querySelector(this.target).style.display = 'none';
+        })
+        .attrs('target')
+        .register();
+});
+
 QUnit.module('Content');
 
 QUnit.asyncTest('Component with content from a callback', 11, function(assert){
@@ -240,7 +279,7 @@ QUnit.asyncTest('Component with content from a callback', 11, function(assert){
         .register();
 });
 
-QUnit.asyncTest('Component withi dynamic content from a template', 8, function(assert){
+QUnit.asyncTest('Component with dynamic content from a template', 8, function(assert){
     var container = document.getElementById('permanent-fixture');
     assert.ok(container instanceof HTMLElement, 'The container exists');
 
@@ -264,11 +303,102 @@ QUnit.asyncTest('Component withi dynamic content from a template', 8, function(a
             assert.equal(fDynContent.textContent.trim(), 'Hello world', 'The element has the content from the who attribute');
 
             fDynContent.who = "Bertrand";
-            assert.equal(fDynContent.textContent.trim(), 'Hello Bertrand', 'The element has the updated content');
-
-            QUnit.start();
+            setTimeout( () => {
+                assert.equal(fDynContent.textContent.trim(), 'Hello Bertrand', 'The element has the updated content');
+                QUnit.start();
+            }, 0);
         })
         .attr('who', { update: true })
         .content(helloTpl)
+        .register();
+});
+
+QUnit.module('extend');
+
+QUnit.asyncTest('Extend an anchor', 5, function(assert){
+    var container = document.getElementById('permanent-fixture');
+    assert.ok(container instanceof HTMLElement, 'The container exists');
+
+    var link = document.querySelector('a.link');
+
+    fwc('link')
+        .on('error', function(e){
+            console.error(e);
+        })
+        .on('create', function(elt){
+
+            var flink = document.querySelector('.flink');
+
+            assert.ok(flink instanceof HTMLElement, 'The component is an HTMLElement');
+            assert.ok(flink instanceof HTMLAnchorElement, 'The component is an HTMLAnchorElement');
+
+            assert.ok(link.href !== '#', "Anchor's href use getter/setter to change the value");
+            assert.equal(flink.href, link.href, "The extended component uses base component getter/setter");
+
+            QUnit.start();
+        })
+        .extend('a')
+        .register();
+});
+
+
+QUnit.asyncTest('Extend another component', 3, function(assert){
+    var container = document.getElementById('permanent-fixture');
+    assert.ok(container instanceof HTMLElement, 'The container exists');
+
+    fwc('upper')
+        .on('error', function(e){
+            console.error(e);
+        })
+        .on('create', function(elt){
+            assert.ok(false, 'the parent element should not be created');
+        })
+        .access('bar', {
+            get(val){
+                val = val || '';
+               return val.toUpperCase();
+            }
+        })
+        .register();
+
+    fwc('superup')
+        .on('create', function(elt){
+
+            var fsuperup = document.querySelector('.superup');
+
+            assert.deepEqual(fsuperup, elt, 'The callback elt is the given node');
+            assert.equal(elt.bar, 'BAR', 'Super element prototype has been extended');
+
+            QUnit.start();
+        })
+        .extend('upper')
+        .register();
+});
+
+QUnit.module('Native events');
+
+QUnit.test('on click', 3, function(assert){
+    var done = assert.async();
+    var container = document.getElementById('permanent-fixture');
+    assert.ok(container instanceof HTMLElement, 'The container exists');
+
+    fwc('native')
+        .on('error', function(e){
+            console.error(e);
+        })
+        .on('create', function(elt){
+
+            var fNative = document.querySelector('f-native');
+            assert.deepEqual(fNative, elt, 'The callback elt is the given node');
+
+            fNative.click();
+        })
+        .on('click', function(elt){
+
+            var fNative = document.querySelector('f-native');
+            assert.deepEqual(fNative, elt, 'The callback elt is the given node');
+
+            done();
+        })
         .register();
 });
