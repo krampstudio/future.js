@@ -41,12 +41,12 @@ module.exports = function(grunt) {
             },
             core: {
                 files: {
-                    'dist/fwc.js': ['src/index.js']
+                    'dist/future.js': ['src/index.js']
                 },
                 options : {
                     alias : {
                         'fwc' : './src/fwc.js',
-                        'events' : './src/events.js'
+                        'eventify' : './src/events.js'
                     }
                 }
             },
@@ -56,6 +56,9 @@ module.exports = function(grunt) {
                     'test/fwc/integration/test.bundle.js': ['test/fwc/integration/test.js'],
                     'test/events/test.bundle.js': ['test/events/test.js']
                 },
+                options : {
+                    external : ['fwc', 'eventify'],
+                }
             }
         },
 
@@ -65,7 +68,7 @@ module.exports = function(grunt) {
             },
             core: {
                 files: {
-                    'dist/fwc.js.map': ['dist/fwc.js']
+                    'dist/future.js.map': ['dist/future.js']
                 }
             },
             test: {
@@ -82,10 +85,10 @@ module.exports = function(grunt) {
                 options: {
                     sourceMap: true,
                     sourceMapIncludeSources: true,
-                    sourceMapIn: 'dist/fwc.js.map'
+                    sourceMapIn: 'dist/future.js.map'
                 },
                 files: {
-                    'dist/fwc.min.js': ['dist/fwc.js'],
+                    'dist/future.min.js': ['dist/future.js'],
                 },
             },
         },
@@ -93,17 +96,26 @@ module.exports = function(grunt) {
         watch: {
             core: {
                 files: ['src/*.js'],
-                tasks: ['compile']
+                tasks: ['browserify:core', 'exorcise:core']
             },
             test: {
                 files: ['test/**/test.js'],
-                tasks: ['test']
+                tasks: ['browserify:test', 'exorcise:test']
+            }
+        },
+
+
+        concurrent: {
+            devtest: {
+                tasks: ['watch:core', 'watch:test'],
+                options: {
+                    logConcurrentOutput: true
+                }
             }
         }
     });
 
-    grunt.registerTask('compile', 'compile', ['browserify:core', 'exorcise:core', 'uglify:core']);
-    grunt.registerTask('test', 'compile tests', ['browserify:test', 'exorcise:test']);
-    grunt.registerTask('devtest', 'develop tests', ['connect', 'test', 'open:test', 'watch:test']);
+    grunt.registerTask('build', 'Build project', ['browserify:core', 'exorcise:core', 'uglify:core']);
+    grunt.registerTask('devtest', 'Develop tests', ['connect', 'open:test', 'concurrent:devtest']);
 };
 

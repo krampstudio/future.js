@@ -1,4 +1,4 @@
-var events = require('../../src/events.js');
+var events = require('eventify');
 
 QUnit.module('events');
 

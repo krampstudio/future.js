@@ -1,4 +1,4 @@
-var fwc = require('../../../src/fwc.js');
+var fwc = require('fwc');
 
 QUnit.module('Module');
 
