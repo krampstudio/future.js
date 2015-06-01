@@ -31,16 +31,23 @@ module.exports = function(grunt) {
         browserify: {
             options: {
                 transform: [
-                    'babelify',
-                    [ 'hbsfy', { 'extensions': ['tpl'] } ]
+                    'babelify', ['hbsfy', {
+                        'extensions': ['tpl']
+                    }]
                 ],
                 browserifyOptions: {
                     debug: true
                 }
             },
             core: {
-                files : {
-                    'dist/fwc.js' : ['src/fwc.js']
+                files: {
+                    'dist/fwc.js': ['src/index.js']
+                },
+                options : {
+                    alias : {
+                        'fwc' : './src/fwc.js',
+                        'events' : './src/events.js'
+                    }
                 }
             },
             test: {
@@ -52,13 +59,13 @@ module.exports = function(grunt) {
             }
         },
 
-       exorcise: {
-            options : {
-                base : '.'
+        exorcise: {
+            options: {
+                base: '.'
             },
             core: {
-                files : {
-                    'dist/fwc.js.map' : ['dist/fwc.js']
+                files: {
+                    'dist/fwc.js.map': ['dist/fwc.js']
                 }
             },
             test: {
@@ -70,19 +77,33 @@ module.exports = function(grunt) {
             }
         },
 
-        watch : {
-            core : {
-                files : ['src/*.js'],
-                tasks : ['compile']
+        uglify: {
+            core: {
+                options: {
+                    sourceMap: true,
+                    sourceMapIncludeSources: true,
+                    sourceMapIn: 'dist/fwc.js.map'
+                },
+                files: {
+                    'dist/fwc.min.js': ['dist/fwc.js'],
+                },
             },
-            test : {
-                files : ['test/**/test.js'],
-                tasks : ['test']
+        },
+
+        watch: {
+            core: {
+                files: ['src/*.js'],
+                tasks: ['compile']
+            },
+            test: {
+                files: ['test/**/test.js'],
+                tasks: ['test']
             }
         }
     });
 
-    grunt.registerTask('compile', 'compile', ['browserify:core', 'exorcise:core']);
+    grunt.registerTask('compile', 'compile', ['browserify:core', 'exorcise:core', 'uglify:core']);
     grunt.registerTask('test', 'compile tests', ['browserify:test', 'exorcise:test']);
     grunt.registerTask('devtest', 'develop tests', ['connect', 'test', 'open:test', 'watch:test']);
 };
+

@@ -4,7 +4,7 @@
     <meta charset = "utf-8">
 
     <title></title>
-    <script src="../node_modules/webcomponents.js/webcomponents.min.js"></script>
+    <script type="text/javascript" src="../node_modules/webcomponents.js/webcomponents-lite.min.js"></script>
 
 
 </head>
@@ -21,8 +21,15 @@
         </f-menu>
     </nav>
 
-
-    <script src="js/main.js"></script>
+    <script src="../dist/fwc.min.js"></script>
+    <script>
+        var fwc = require('fwc');
+        fwc('menu')
+            .on('create', function(){
+                console.log('Created');
+            })
+            .register();
+    </script>
 
 </body>
 </html>
