@@ -12421,16 +12421,16 @@ module.exports={
 
 
 },{}],3:[function(require,module,exports){
-"use strict";
+'use strict';
 
-var fwc = require("./fwc.js");
+var fwc = require('./fwc.js');
 
 },{"./fwc.js":"fwc"}],"eventify":[function(require,module,exports){
 /**
  * Helps you to make an object an event emitter
  * The API itself is just a placeholder, all methods will be delegated to a target.
  */
-"use strict";
+'use strict';
 
 var api = {
 
@@ -12447,7 +12447,7 @@ var api = {
      * @returns {Object} the target object
      */
     on: function on(name, handler) {
-        if (typeof handler === "function") {
+        if (typeof handler === 'function') {
             this._events[name] = this._events[name] || [];
             this._events[name].push(handler);
         }
@@ -12504,7 +12504,7 @@ var api = {
      * @returns {Array} the handlers
      */
     events: function events(name) {
-        if (typeof name !== "undefined") {
+        if (typeof name !== 'undefined') {
             return this._events[name];
         }
         return this._events;
@@ -12522,12 +12522,12 @@ function eventify() {
     target._events = {};
 
     Object.keys(api).filter(function (prop) {
-        return typeof api[prop] === "function";
+        return typeof api[prop] === 'function';
     }).forEach(function (method) {
 
         target[method] = function delegate() {
-            for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-                args[_key] = arguments[_key];
+            for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+                args[_key2] = arguments[_key2];
             }
 
             return api[method].apply(target, args);
@@ -12541,15 +12541,15 @@ module.exports = {
 };
 
 },{}],"fwc":[function(require,module,exports){
-"use strict";
+'use strict';
 
-var _ = require("lodash");
-var eventify = require("./events.js").eventify;
+var _ = require('lodash');
+var eventify = require('./events.js').eventify;
 
 var registry = new Map();
 
 var fwc = function futureWebComponentFactory() {
-    var name = arguments[0] === undefined ? "" : arguments[0];
+    var name = arguments[0] === undefined ? '' : arguments[0];
     var options = arguments[1] === undefined ? {} : arguments[1];
 
     var namespace;
@@ -12562,7 +12562,7 @@ var fwc = function futureWebComponentFactory() {
     };
 
     if (!validateEltName(name)) {
-        throw new TypeError("The component name '" + name + "' does not match the HTMLElement naming rules");
+        throw new TypeError('The component name \'' + name + '\' does not match the HTMLElement naming rules');
     }
 
     /**
@@ -12572,12 +12572,12 @@ var fwc = function futureWebComponentFactory() {
     if (matchNs && matchNs.length) {
         namespace = matchNs[0];
     } else {
-        namespace = options.namespace || "f";
+        namespace = options.namespace || 'f';
     }
 
     //validate namesapce
     if (!/^[a-zA-Z]+$/.test(namespace)) {
-        throw new TypeError("The namespace " + namespace + " can contain only letters");
+        throw new TypeError('The namespace ' + namespace + ' can contain only letters');
     }
 
     /**
@@ -12614,11 +12614,11 @@ var fwc = function futureWebComponentFactory() {
                     var value = this.getAttribute(name);
                     if (def.type) {
                         var type = def.type.toLowerCase();
-                        if (type === "boolean") {
+                        if (type === 'boolean') {
                             value = this.hasAttribute(name);
-                        } else if (type === "integer") {
+                        } else if (type === 'integer') {
                             value = parseInt(value, 10);
-                        } else if (type === "float") {
+                        } else if (type === 'float') {
                             value = parseFloat(value);
                         }
                     }
@@ -12634,11 +12634,11 @@ var fwc = function futureWebComponentFactory() {
                     var type;
                     if (def.type) {
                         type = def.type.toLowerCase();
-                        if (type === "boolean") {
+                        if (type === 'boolean') {
                             value = !!value;
-                        } else if (type === "integer") {
+                        } else if (type === 'integer') {
                             value = parseInt(value, 10);
-                        } else if (type === "float") {
+                        } else if (type === 'float') {
                             value = parseFloat(value);
                         }
                     }
@@ -12648,9 +12648,9 @@ var fwc = function futureWebComponentFactory() {
                         value = def.set.call(this, this.getAttribute(name), value);
                     }
 
-                    if (type === "boolean") {
+                    if (type === 'boolean') {
                         if (value) {
-                            this.setAttribute(name, "");
+                            this.setAttribute(name, '');
                         } else {
                             this.removeAttribute(name);
                         }
@@ -12732,29 +12732,19 @@ var fwc = function futureWebComponentFactory() {
             return this;
         },
 
-        method: function method(name, value) {
-            if (name && !value) {
+        method: function method(name, _value) {
+            if (name && !_value) {
                 return data.methods[name];
             }
 
             data.methods[name] = {
-                value: (function (_value) {
-                    var _valueWrapper = function value(_x) {
-                        return _value.apply(this, arguments);
-                    };
-
-                    _valueWrapper.toString = function () {
-                        return _value.toString();
-                    };
-
-                    return _valueWrapper;
-                })(function () {
-                    for (var _len = arguments.length, params = Array(_len), _key = 0; _key < _len; _key++) {
-                        params[_key] = arguments[_key];
+                value: function value() {
+                    for (var _len2 = arguments.length, params = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+                        params[_key2] = arguments[_key2];
                     }
 
-                    return value.call.apply(value, [this].concat(params));
-                })
+                    return _value.call.apply(_value, [this].concat(params));
+                }
             };
 
             return this;
@@ -12774,7 +12764,7 @@ var fwc = function futureWebComponentFactory() {
             if (!value) {
                 return data.content;
             }
-            if (typeof value === "function") {
+            if (typeof value === 'function') {
                 data.content = value;
             } else {
                 data.content = function () {
@@ -12806,26 +12796,26 @@ var fwc = function futureWebComponentFactory() {
         extend: function extend(element) {
             var elementName, protoName;
 
-            if (typeof element === "undefined") {
+            if (typeof element === 'undefined') {
                 return data.baseProto;
             }
 
             if (!validateEltName(element)) {
-                throw new TypeError("" + element + " is not a valid HTMLElement name");
+                throw new TypeError('' + element + ' is not a valid HTMLElement name');
             }
 
             //1st check in our custom elements
             if (registry.has(element)) {
                 elementName = element;
-            } else if (registry.has("" + namespace + "-" + element)) {
-                elementName = "" + namespace + "-" + element;
+            } else if (registry.has('' + namespace + '-' + element)) {
+                elementName = '' + namespace + '-' + element;
             }
             if (elementName) {
                 data.baseProto = registry.get(elementName);
             } else {
 
                 //look at the list of supported elements for the prototype name
-                var htmlElements = require("./elements.json");
+                var htmlElements = require('./elements.json');
                 var _iteratorNormalCompletion = true;
                 var _didIteratorError = false;
                 var _iteratorError = undefined;
@@ -12844,8 +12834,8 @@ var fwc = function futureWebComponentFactory() {
                     _iteratorError = err;
                 } finally {
                     try {
-                        if (!_iteratorNormalCompletion && _iterator["return"]) {
-                            _iterator["return"]();
+                        if (!_iteratorNormalCompletion && _iterator['return']) {
+                            _iterator['return']();
                         }
                     } finally {
                         if (_didIteratorError) {
@@ -12855,7 +12845,7 @@ var fwc = function futureWebComponentFactory() {
                 }
 
                 //set the HTMLElement prototype as a base and the tag name
-                if (protoName && typeof window[protoName] !== "undefined") {
+                if (protoName && typeof window[protoName] !== 'undefined') {
                     data.baseProto = window[protoName].prototype;
                     data.extendTag = element;
                 }
@@ -12865,126 +12855,128 @@ var fwc = function futureWebComponentFactory() {
         },
 
         register: function register() {
-            var _this = this;
+            var _this2 = this;
 
             var self = this;
             if (!_.isFunction(document.registerElement)) {
-                throw new Error("The webcomponent polyfill is required on this environment");
+                throw new Error('The webcomponent polyfill is required on this environment');
             }
 
             //re trigger generic events
-            this.on("flow", function (name, elt) {
-                return _this.trigger(name, elt);
+            this.on('flow', function (name, elt) {
+                return _this2.trigger(name, elt);
             });
-            this.on("state", function (name) {
+            this.on('state', function (name) {
                 var _trigger;
 
-                for (var _len = arguments.length, params = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-                    params[_key - 1] = arguments[_key];
+                for (var _len3 = arguments.length, params = Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
+                    params[_key3 - 1] = arguments[_key3];
                 }
 
-                return (_trigger = _this.trigger).call.apply(_trigger, [_this, name].concat(params));
+                return (_trigger = _this2.trigger).call.apply(_trigger, [_this2, name].concat(params));
             });
 
             var renderContent = function renderContent(elt) {
-                if (typeof data.content === "function") {
+                if (typeof data.content === 'function') {
                     var attrs = {};
-                    var _iteratorNormalCompletion = true;
-                    var _didIteratorError = false;
-                    var _iteratorError = undefined;
+                    var _iteratorNormalCompletion2 = true;
+                    var _didIteratorError2 = false;
+                    var _iteratorError2 = undefined;
 
                     try {
-                        for (var _iterator = comp.attrs()[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                            var attr = _step.value;
+                        for (var _iterator2 = comp.attrs()[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                            var attr = _step2.value;
 
                             attrs[attr] = elt[attr]; //so the getter is called
                         }
                     } catch (err) {
-                        _didIteratorError = true;
-                        _iteratorError = err;
+                        _didIteratorError2 = true;
+                        _iteratorError2 = err;
                     } finally {
                         try {
-                            if (!_iteratorNormalCompletion && _iterator["return"]) {
-                                _iterator["return"]();
+                            if (!_iteratorNormalCompletion2 && _iterator2['return']) {
+                                _iterator2['return']();
                             }
                         } finally {
-                            if (_didIteratorError) {
-                                throw _iteratorError;
+                            if (_didIteratorError2) {
+                                throw _iteratorError2;
                             }
                         }
                     }
 
-                    self.trigger("rendering", elt);
+                    self.trigger('rendering', elt);
 
                     elt.innerHTML = data.content(attrs);
 
-                    self.trigger("rendered", elt);
+                    self.trigger('rendered', elt);
                 }
             };
 
             var delegateNativeEvents = function delegateNativeEvents(elt) {
-                var _iteratorNormalCompletion = true;
-                var _didIteratorError = false;
-                var _iteratorError = undefined;
+                var _iteratorNormalCompletion3 = true;
+                var _didIteratorError3 = false;
+                var _iteratorError3 = undefined;
 
                 try {
-                    for (var _iterator = Object.keys(self.events())[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                        var _iteratorNormalCompletion2;
+                    var _loop = function () {
+                        var eventType = _step3.value;
 
-                        var _didIteratorError2;
+                        if (typeof elt['on' + eventType] !== 'undefined') {
+                            _iteratorNormalCompletion4 = true;
+                            _didIteratorError4 = false;
+                            _iteratorError4 = undefined;
 
-                        var _iteratorError2;
+                            try {
+                                for (_iterator4 = self.events(eventType)[Symbol.iterator](); !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+                                    var _event = _step4.value;
 
-                        var _iterator2, _step2;
+                                    elt.addEventListener(eventType, function () {
+                                        for (var _len4 = arguments.length, params = Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+                                            params[_key4] = arguments[_key4];
+                                        }
 
-                        (function () {
-                            var eventType = _step.value;
-
-                            if (typeof elt["on" + eventType] !== "undefined") {
-                                _iteratorNormalCompletion2 = true;
-                                _didIteratorError2 = false;
-                                _iteratorError2 = undefined;
-
+                                        self.trigger.apply(self, [eventType, elt].concat(params));
+                                    });
+                                }
+                            } catch (err) {
+                                _didIteratorError4 = true;
+                                _iteratorError4 = err;
+                            } finally {
                                 try {
-                                    for (_iterator2 = self.events(eventType)[Symbol.iterator](); !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                                        var _event = _step2.value;
-
-                                        elt.addEventListener(eventType, function () {
-                                            for (var _len = arguments.length, params = Array(_len), _key = 0; _key < _len; _key++) {
-                                                params[_key] = arguments[_key];
-                                            }
-
-                                            self.trigger.apply(self, [eventType, elt].concat(params));
-                                        });
+                                    if (!_iteratorNormalCompletion4 && _iterator4['return']) {
+                                        _iterator4['return']();
                                     }
-                                } catch (err) {
-                                    _didIteratorError2 = true;
-                                    _iteratorError2 = err;
                                 } finally {
-                                    try {
-                                        if (!_iteratorNormalCompletion2 && _iterator2["return"]) {
-                                            _iterator2["return"]();
-                                        }
-                                    } finally {
-                                        if (_didIteratorError2) {
-                                            throw _iteratorError2;
-                                        }
+                                    if (_didIteratorError4) {
+                                        throw _iteratorError4;
                                     }
                                 }
                             }
-                        })();
+                        }
+                    };
+
+                    for (var _iterator3 = Object.keys(self.events())[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                        var _iteratorNormalCompletion4;
+
+                        var _didIteratorError4;
+
+                        var _iteratorError4;
+
+                        var _iterator4, _step4;
+
+                        _loop();
                     }
                 } catch (err) {
-                    _didIteratorError = true;
-                    _iteratorError = err;
+                    _didIteratorError3 = true;
+                    _iteratorError3 = err;
                 } finally {
                     try {
-                        if (!_iteratorNormalCompletion && _iterator["return"]) {
-                            _iterator["return"]();
+                        if (!_iteratorNormalCompletion3 && _iterator3['return']) {
+                            _iterator3['return']();
                         }
                     } finally {
-                        if (_didIteratorError) {
-                            throw _iteratorError;
+                        if (_didIteratorError3) {
+                            throw _iteratorError3;
                         }
                     }
                 }
@@ -12998,25 +12990,25 @@ var fwc = function futureWebComponentFactory() {
 
                         delegateNativeEvents(this);
 
-                        self.trigger("flow", "create", this);
+                        self.trigger('flow', 'create', this);
                     }
                 },
                 attachedCallback: {
                     value: function value() {
-                        for (var _len = arguments.length, params = Array(_len), _key = 0; _key < _len; _key++) {
-                            params[_key] = arguments[_key];
+                        for (var _len5 = arguments.length, params = Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
+                            params[_key5] = arguments[_key5];
                         }
 
-                        self.trigger.apply(self, ["flow", "attach", this].concat(params));
+                        self.trigger.apply(self, ['flow', 'attach', this].concat(params));
                     }
                 },
                 detachedCallback: {
                     value: function value() {
-                        for (var _len = arguments.length, params = Array(_len), _key = 0; _key < _len; _key++) {
-                            params[_key] = arguments[_key];
+                        for (var _len6 = arguments.length, params = Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
+                            params[_key6] = arguments[_key6];
                         }
 
-                        self.trigger.apply(self, [comp, "flow", "detach", this].concat(params));
+                        self.trigger.apply(self, [comp, 'flow', 'detach', this].concat(params));
                     }
                 },
                 attributeChangedCallback: {
@@ -13030,16 +13022,16 @@ var fwc = function futureWebComponentFactory() {
             _.merge(eltProto, data.attrs, data.methods);
 
             try {
-                var elementName = "" + namespace + "-" + name;
+                var elementName = '' + namespace + '-' + name;
                 var newProto = Object.create(data.baseProto, eltProto);
                 document.registerElement(elementName, {
                     prototype: newProto,
-                    "extends": data.extendTag
+                    'extends': data.extendTag
                 });
 
                 registry.set(elementName, newProto);
             } catch (e) {
-                this.trigger("error", e);
+                this.trigger('error', e);
             }
 
             return this;
