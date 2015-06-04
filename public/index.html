@@ -3,32 +3,31 @@
     <head>
     <meta charset = "utf-8">
 
-    <title></title>
+    <title>Future.js sample app</title>
     <script type="text/javascript" src="../node_modules/webcomponents.js/webcomponents-lite.min.js"></script>
-
-
 </head>
 <body>
 
-    <h1>Future.js</h1>
+    <header>
+        <h1>Future.js</h1>
+        <nav>
+        </nav>
+    </header>
+    <main>
+        <section>
 
-    <nav>
-        <f-menu selected="item-1" icon="bar" label="menu">
-            <f-mitem id="item-1" label="item 1" icon="" href="item-1"></f-menuitem>
-            <f-mitem id="item-1" label="item 1" icon="" href="item-1"></f-menuitem>
-            <f-mitem id="item-1" label="item 1" icon="" href="item-1"></f-menuitem>
-            <f-mitem id="item-1" label="item 1" icon="" href="item-1"></f-menuitem>
-        </f-menu>
-    </nav>
+        </section>
+        <section>
 
-    <script src="../dist/fwc.min.js"></script>
+        </section>
+    </main>
+    <footer>
+
+    </footer>
+
+    <script src="../dist/future.js"></script>
     <script>
         var fwc = require('fwc');
-        fwc('menu')
-            .on('create', function(){
-                console.log('Created');
-            })
-            .register();
     </script>
 
 </body>
