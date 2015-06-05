@@ -1,5 +1,19 @@
 module.exports = function(grunt) {
 
+    var browsers = [{
+        browserName: "firefox",
+        platform: 'Windows 8.1',
+        version: "37"
+    }, {
+        browserName: "chrome",
+        platform: 'Windows 8.1',
+        version: "43"
+    }, {
+        browserName: "internet explorer",
+        platform: 'Windows 8.1',
+        version: "11"
+    }];
+
     //display times
     require('time-grunt')(grunt);
 
@@ -17,6 +31,14 @@ module.exports = function(grunt) {
                     hostname: '<%=pkg.config.host%>',
                     port: '<%=pkg.config.port%>',
                     base: '.'
+                }
+            },
+            live : {
+                options: {
+                    hostname: '<%=pkg.config.host%>',
+                    port: '<%=pkg.config.port%>',
+                    base: '.',
+                    keepalive : true
                 }
             }
         },
@@ -112,10 +134,28 @@ module.exports = function(grunt) {
                     logConcurrentOutput: true
                 }
             }
-        }
+        },
+
+        'saucelabs-qunit': {
+            test: {
+                options: {
+                    urls: [
+                        'http://<%=pkg.config.host%>:<%=pkg.config.port%>/test/events/test.html',
+                        'http://<%=pkg.config.host%>:<%=pkg.config.port%>/test/fwc/api/test.html',
+                        'http://<%=pkg.config.host%>:<%=pkg.config.port%>/test/fwc/integration/test.html'
+                    ],
+                    tunnelTimeout: 5,
+                    build: "<%=pkg.version%>-" + Date.now(),
+                    concurrency: 3,
+                    browsers: browsers,
+                    'max-duration' : 30
+                }
+            }
+        },
     });
 
     grunt.registerTask('build', 'Build project', ['browserify:core', 'exorcise:core', 'uglify:core']);
-    grunt.registerTask('devtest', 'Develop tests', ['connect', 'open:test', 'concurrent:devtest']);
+    grunt.registerTask('devtest', 'Develop tests', ['connect:preview', 'open:test', 'concurrent:devtest']);
+    grunt.registerTask('test', 'Run tests', ['browserify:core', 'browserify:test', 'connect:preview', 'saucelabs-qunit:test']);
 };
 
