@@ -26,6 +26,7 @@
     "grunt-contrib-watch": "^0.6.1",
     "grunt-exorcise": "git+https://github.com/krampstudio/grunt-exorcise.git",
     "grunt-open": "^0.2.3",
+    "grunt-saucelabs": "^8.6.1",
     "hbsfy": "^2.2.1",
     "load-grunt-tasks": "^3.1.0",
     "qunitjs": "^1.17.1",
@@ -37,7 +38,7 @@
     "webcomponents.js": "^0.7.3"
   },
   "config": {
-    "host": "localhost",
+    "host": "127.0.0.1",
     "port": 4123,
     "browser": "fxdev -no-remote"
   },
