@@ -204,15 +204,36 @@ var fwc = function futureWebComponentFactory(name = '', options = {}){
                     return `<div>${data.foo}</div>`;
             });
          *
-         * @param {Function|String} [value] - called once created with the data.
+         * @param {Function|HTMLElemen|String} [value] - called once created with the data.
          * @returns {fwComp|Object}
          */
         content(value){
             if(!value){
                 return data.content;
             }
-            if(typeof value === 'function'){
+
+            //from a node (like a <template> tag)
+            if(value instanceof HTMLElement){
+                data.content = attr => {
+                    if(value.content){
+                        //quick data binding key is node class
+                        let clone = document.importNode(value.content, true);
+                        for(let key in attr){
+                            let node = clone.querySelector('.' + key);
+                            if(node){
+                                node.textContent = attr[key];
+                            }
+                        }
+                        return clone;
+                    }
+                    return value.innerHtml;
+                };
+
+            //a function, can be any template engine
+            } else if(typeof value === 'function'){
                 data.content = value;
+
+            //just the content
             } else {
                 data.content = () => value;
             }
@@ -298,7 +319,13 @@ var fwc = function futureWebComponentFactory(name = '', options = {}){
 
                     self.trigger('rendering', elt);
 
-                    elt.innerHTML = data.content(attrs);
+                    let rendered = data.content(attrs);
+                    if(rendered instanceof DocumentFragment || rendered instanceof HTMLElement){
+                        elt.innerHTML = '';
+                        elt.appendChild(rendered);
+                    } else {
+                        elt.innerHTML = rendered;
+                    }
 
                     self.trigger('rendered', elt);
                 }

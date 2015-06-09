@@ -313,6 +313,29 @@ QUnit.asyncTest('Component with dynamic content from a template', 8, function(as
         .register();
 });
 
+
+QUnit.asyncTest('Component with dynamic content from an HTML template', 4, function(assert){
+    var container = document.getElementById('permanent-fixture');
+    assert.ok(container instanceof HTMLElement, 'The container exists');
+
+    var htpl = document.getElementById('htpl');
+
+    fwc('hcontent')
+        .on('create', function(elt){
+
+            var fHontent = container.querySelector('f-hcontent');
+            assert.deepEqual(fHontent, elt, 'The callback elt is the given node');
+
+            assert.equal(elt.querySelectorAll('p').length, 1, 'The component contains now a paragraph');
+            assert.equal(elt.innerHTML, htpl.innerHTML, 'The component content is the same as the template');
+
+            QUnit.start();
+        })
+        .content(htpl)
+        .register();
+});
+
+
 QUnit.module('extend');
 
 QUnit.asyncTest('Extend an anchor', 5, function(assert){
