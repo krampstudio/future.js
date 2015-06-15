@@ -1,5 +1,15 @@
 /**
- * Helps you to make an object an event emitter
+ * Future.js - 2015
+ * @author Bertrand Chevrier <chevrier.bertrand@gmail.com>
+ * @license MIT
+ */
+
+/**
+ * Eventify an object.
+ * @module eventify
+ */
+
+/**
  * The API itself is just a placeholder, all methods will be delegated to a target.
  */
 var api = {
@@ -76,7 +86,7 @@ var api = {
 /**
  * Makes the target an event emitter by delegating calls to the event API.
  * @param {Object} target - the target object
- * @returns {Object} the target
+ * @returns {Object} the target for conveniance
  */
 function eventify(target = {}){
 
@@ -95,6 +105,4 @@ function eventify(target = {}){
     return target;
 }
 
-module.exports = {
-    eventify
-};
+module.exports = eventify;
