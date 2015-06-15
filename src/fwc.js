@@ -1,9 +1,29 @@
-var _        = require('lodash');
-var eventify = require('./events.js').eventify;
+/**
+ * Future.js - 2015
+ * @author Bertrand Chevrier <chevrier.bertrand@gmail.com>
+ * @license MIT
+ */
 
+/**
+ * FWC stands for Future.js Web Component.
+ * It's a wrapper to help you create web components the Future.js way.
+ * @module fwc
+ */
+
+var eventify = require('./eventify.js');
+
+//The registry keeps a ref to previously registered
+//components in order to extend them.
 var registry = new Map();
 
-
+/**
+ * Where everything starts, this function will gives you a reference to an component model.
+ * @param {String} name - the component name with or without the namespace that matches the HTMLElement naming rules.
+ * @param {Object} [options]
+ * @param {String} [options.namespace = 'f'] - set the component namespace manually
+ * @returns  {fwComponent} the component model
+ *
+ */
 var fwc = function futureWebComponentFactory(name = '', options = {}){
 
     var namespace;
@@ -35,34 +55,45 @@ var fwc = function futureWebComponentFactory(name = '', options = {}){
     }
 
     /**
-     * @typedef fwComp
+     * Helps you to create a component definition.
+     * @typedef fwComponent
      */
     let comp = {
 
         /**
-         * @param {String} [name]
-         * @param {Object} [def]
-         * @param {Function} [def.get]
-         * @param {Function} [def.set]
-         * @param {String} [def.type]
-         * @param {Boolean} [def.update]
+         * Define the bahavior for a component attribute.
+         * Can be also called as a getter without the definition.
+         *
+         * @example fwc().attr('id', { });
+         * @example var attrs = fwc().attr('id');
+         *
+         * @param {String} name - the attribute name
+         * @param {Object} [def] - the attribute behavior definition
+         * @param {attrGetter} [def.get] - add a getter to the attribute
+         * @param {attrSetter} [def.set] - add a setter to the attribute
+         * @param {String} [def.type] - cast the attribute value when accesse, in 'integer', 'float' and 'boolean'
+         * @param {Boolean} [def.update] - if true changing this attribute trigger an rerendering of the content
+         * @returns {Object|fwComponent} chains in setter mode, returns the attr definition in getter mode.
          */
         attr(name, def){
 
-            if(_.isPlainObject(name) && _.isString(name.name)){
-                def = _.clone(name);
-                name = def.name;
+            if(typeof name === 'object' && typeof name.name === 'string'){
+                let temp = name;
+                def = name;
+                name = temp.name;
             }
 
-            //getter
+            //returns the definitino
             if(!def){
                 return data.attrs[name];
             }
 
+            //maintain a list of attributes that trigger rerender on change
             if(def.update === true){
                 data.update.push(name);
             }
 
+            //create the attr definition, formated for Object.defineProperty
             data.attrs[name] = {
                 get() {
                     var value = this.getAttribute(name);
@@ -80,7 +111,13 @@ var fwc = function futureWebComponentFactory(name = '', options = {}){
                     }
 
                     //call user defined getter
-                    if(_.isFunction(def.get)){
+                    if(typeof def.get === 'function'){
+
+                        /**
+                         * @callback attrGetter
+                         * @param {String} nodeValue - the value in the DOM
+                         * @returns {*} the upgraded value
+                         */
                         return def.get.call(this, value);
                     }
 
@@ -101,7 +138,14 @@ var fwc = function futureWebComponentFactory(name = '', options = {}){
                     }
 
                     //call setter
-                    if(_.isFunction(def.set)){
+                    if(typeof def.set === 'function'){
+
+                        /**
+                         * @callback attrSetter
+                         * @param {String} nodeValue - the value in the DOM
+                         * @param {*} value - the value to set
+                         * @returns {*} the upgraded value
+                         */
                         value = def.set.call(this, this.getAttribute(name), value);
                     }
 
@@ -142,10 +186,10 @@ var fwc = function futureWebComponentFactory(name = '', options = {}){
 
             //each attribute get his own getter setter
             attributes.forEach( (attr) => {
-                if(_.isString(attr)){
+                if(typeof attr === 'string'){
                     attr = { name : attr };
                 }
-                if (_.isPlainObject(attr) && _.isString(attr.name)){
+                if (typeof attr === 'object' && typeof attr.name === 'string'){
                     this.attr(attr.name, attr);
                 }
             });
@@ -183,6 +227,15 @@ var fwc = function futureWebComponentFactory(name = '', options = {}){
             return this;
         },
 
+        /**
+         * Get/Set a method to your component.
+         *
+         * @example fwc().method('foo', () => 'bar');
+         *
+         * @param {String} name - the method name
+         * @param {Function} [value] - the function to be executed
+         * @returns {fwComp|Function}
+         */
         method(name, value){
             if(name && !value){
                 return data.methods[name];
@@ -300,9 +353,14 @@ var fwc = function futureWebComponentFactory(name = '', options = {}){
             return this;
         },
 
+        /**
+         * Register the component into the current document
+         * @returns {fwComp}
+         * @throws Error if the current runtime doesn't support custom elements
+         */
         register(){
             var self = this;
-            if(!_.isFunction(document.registerElement)){
+            if(!document.registerElement || typeof document.registerElement !== 'function'){
                 throw new Error('The webcomponent polyfill is required on this environment');
             }
 
@@ -310,6 +368,12 @@ var fwc = function futureWebComponentFactory(name = '', options = {}){
             this.on('flow',  (name, elt) => this.trigger(name, elt));
             this.on('state', (name, ...params) => this.trigger.call(this, name, ...params));
 
+            /**
+             * Render the content of the element
+             * @param {HTMLElement} elt - the component instance
+             * @fires fwc#rendering when content is being rendered
+             * @fires fwc#rendered once content is rendered
+             */
             var renderContent = function renderContent(elt){
                 if(typeof data.content === 'function'){
                     let attrs = {};
@@ -331,6 +395,13 @@ var fwc = function futureWebComponentFactory(name = '', options = {}){
                 }
             };
 
+
+            /**
+             * If some events are recognized as native,
+             * then a listener will delegates those events to the definition.
+             *
+             * @param {HTMLElement} elt - the component instance
+             */
             var delegateNativeEvents = function delegateNativeEvents(elt){
                 for(let eventType of Object.keys(self.events())){
                     if(typeof elt['on' + eventType] !== 'undefined'){
@@ -343,46 +414,65 @@ var fwc = function futureWebComponentFactory(name = '', options = {}){
                 }
             };
 
+            //The prototype that is going to be regsitered
+            //first we attach lifecycle callback with a predefined behavior
             var eltProto = {
+
                 createdCallback : {
                     value(){
 
+                        //render the content
                         renderContent(this);
 
+                        //add HTML events listeners
                         delegateNativeEvents(this);
 
                         self.trigger('flow', 'create', this);
                     }
                 },
+
                 attachedCallback : {
                     value(...params){
                         self.trigger('flow', 'attach', this, ...params);
                     }
                 },
+
                 detachedCallback : {
                     value(...params){
                         self.trigger(comp, 'flow', 'detach', this, ...params);
                     }
                 },
+
                 attributeChangedCallback : {
                     value(name, old, val){
-                        if(_.contains(data.update, name)){
+
+                        //some attributes changes triggers a re render
+                        if(data.update.indexOf(name) > -1){
                             renderContent(this);
                         }
                     }
                 },
             };
 
-            _.merge(eltProto, data.attrs, data.methods);
+            //attach the attributes and methods definitions
+            Object.assign(eltProto, data.attrs, data.methods);
+
 
             try {
+
+                //the full element name
                 let elementName = `${namespace}-${name}`;
+
+                //extends a base proto
                 let newProto = Object.create(data.baseProto, eltProto);
+
+                //register the element
                 document.registerElement(elementName, {
                     prototype:  newProto,
                     extends:    data.extendTag
                 });
 
+                //keep a copy of the new proto for future extends
                 registry.set(elementName, newProto);
 
             } catch(e){
@@ -393,9 +483,16 @@ var fwc = function futureWebComponentFactory(name = '', options = {}){
         }
     };
 
+    //make fwc a event emiter before returning it.
     return eventify(comp);
 };
 
+/**
+ * Validate if a name can be given to an custom element.
+ * The rule is a tag name with a dash.
+ * @param {String} name - the name to validate
+ * @returns {Boolean} true if valid
+ */
 function validateEltName(name){
     return /^([a-z]+-)?[a-z]+[a-z0-9]*$/i.test(name);
 }

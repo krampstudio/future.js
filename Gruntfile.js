@@ -67,8 +67,8 @@ module.exports = function(grunt) {
                 },
                 options : {
                     alias : {
-                        'fwc' : './src/fwc.js',
-                        'eventify' : './src/events.js'
+                        'fwc':      './src/fwc.js',
+                        'eventify': './src/eventify.js'
                     }
                 }
             },
@@ -76,7 +76,7 @@ module.exports = function(grunt) {
                 files: {
                     'test/fwc/api/test.bundle.js': ['test/fwc/api/test.js'],
                     'test/fwc/integration/test.bundle.js': ['test/fwc/integration/test.js'],
-                    'test/events/test.bundle.js': ['test/events/test.js']
+                    'test/eventify/test.bundle.js': ['test/eventify/test.js']
                 },
                 options : {
                     external : ['fwc', 'eventify'],
@@ -97,7 +97,7 @@ module.exports = function(grunt) {
                 files: {
                     'test/fwc/api/test.bundle.js.map': ['test/fwc/api/test.bundle.js'],
                     'test/fwc/integration/test.bundle.js.map': ['test/fwc/integration/test.bundle.js'],
-                    'test/events/test.bundle.js.map': ['test/events/test.bundle.js']
+                    'test/eventify/test.bundle.js.map': ['test/eventify/test.bundle.js']
                 }
             }
         },
@@ -118,11 +118,11 @@ module.exports = function(grunt) {
         watch: {
             core: {
                 files: ['src/*.js'],
-                tasks: ['browserify:core', 'exorcise:core']
+                tasks: ['compile-core']
             },
             test: {
                 files: ['test/**/test.js'],
-                tasks: ['browserify:test', 'exorcise:test']
+                tasks: ['compile-test']
             }
         },
 
@@ -140,7 +140,7 @@ module.exports = function(grunt) {
             test: {
                 options: {
                     urls: [
-                        'http://<%=pkg.config.host%>:<%=pkg.config.port%>/test/events/test.html',
+                        'http://<%=pkg.config.host%>:<%=pkg.config.port%>/test/eventify/test.html',
                         'http://<%=pkg.config.host%>:<%=pkg.config.port%>/test/fwc/api/test.html',
                         'http://<%=pkg.config.host%>:<%=pkg.config.port%>/test/fwc/integration/test.html'
                     ],
@@ -154,8 +154,12 @@ module.exports = function(grunt) {
         },
     });
 
-    grunt.registerTask('build', 'Build project', ['browserify:core', 'exorcise:core', 'uglify:core']);
-    grunt.registerTask('devtest', 'Develop tests', ['connect:preview', 'open:test', 'concurrent:devtest']);
-    grunt.registerTask('test', 'Run tests', ['browserify:core', 'browserify:test', 'connect:preview', 'saucelabs-qunit:test']);
+    grunt.registerTask('compile-core', 'Compile sources', ['browserify:core', 'exorcise:core']);
+    grunt.registerTask('compile-test', 'Compile tests', ['browserify:test', 'exorcise:test']);
+
+    grunt.registerTask('build', 'Build the project', ['browserify:core', 'exorcise:core', 'uglify:core']);
+
+    grunt.registerTask('devtest', 'Develop and preview tests', ['compile-core', 'compile-test', 'connect:preview', 'open:test', 'concurrent:devtest']);
+    grunt.registerTask('saucetest', 'Run tests using sauce labs', ['compile-core', 'compile-test', 'connect:preview', 'saucelabs-qunit:test']);
 };
 

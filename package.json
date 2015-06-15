@@ -12,7 +12,7 @@
     "url": "https://github.com/krampstudio/future.js.git"
   },
   "license": "MIT",
-  "main": "src/fwc.js",
+  "main": "src/index.js",
   "scripts": {
     "test": "grunt devtest"
   },
@@ -34,8 +34,7 @@
   },
   "dependencies": {
     "handlebars": "^3.0.0",
-    "lodash": "^3.5.0",
-    "webcomponents.js": "^0.7.3"
+    "webcomponents.js": "^0.7.2"
   },
   "config": {
     "host": "127.0.0.1",
