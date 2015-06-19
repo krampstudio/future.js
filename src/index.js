@@ -14,3 +14,4 @@ require("babel/polyfill");
 
 //load Future libraries
 require('./fwc.js');
+require('./router.js');

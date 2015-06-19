@@ -1,0 +1,15 @@
+{
+  "version": 3,
+  "sources": [
+    "node_modules/grunt-browserify/node_modules/browserify/node_modules/browser-pack/_prelude.js",
+    "test/router/test.js"
+  ],
+  "names": [],
+  "mappings": "AAAA;;;ACAA,IAAI,MAAM,GAAG,OAAO,CAAC,QAAQ,CAAC,CAAC;;AAE/B,KAAK,CAAC,MAAM,CAAC,KAAK,CAAC,CAAC;;AAEpB,KAAK,CAAC,IAAI,CAAC,QAAQ,EAAE,CAAC,EAAE,UAAS,MAAM,EAAC;AACpC,UAAM,CAAC,EAAE,CAAC,OAAO,MAAM,KAAK,WAAW,EAAE,8BAA8B,CAAC,CAAC;AACzE,UAAM,CAAC,EAAE,CAAC,OAAO,MAAM,KAAK,UAAU,EAAG,+BAA+B,CAAC,CAAC;CAC7E,CAAC,CAAC;;AAGH,KAAK,CAAC,IAAI,CAAC,SAAS,EAAE,CAAC,EAAE,UAAS,MAAM,EAAC;;AAErC,QAAI,OAAO,GAAG,MAAM,EAAE,CAAC;;AAEvB,UAAM,CAAC,EAAE,CAAC,OAAO,OAAO,KAAK,QAAQ,EAAa,oCAAoC,CAAC,CAAC;AACxF,UAAM,CAAC,EAAE,CAAC,OAAO,OAAO,CAAC,QAAQ,KAAK,UAAU,EAAE,wCAAwC,CAAC,CAAC;AAC5F,UAAM,CAAC,YAAY,CAAC,OAAO,EAAE,MAAM,EAAE,EAAa,4DAA4D,CAAC,CAAC;CACnH,CAAC,CAAC;;AAEH,KAAK,CAAC,IAAI,CAAC,qBAAqB,EAAE,CAAC,EAAE,UAAS,MAAM,EAAC;;AAEjD,QAAI,OAAO,GAAG,MAAM,EAAE,CAAC;;AAEvB,UAAM,CAAC,EAAE,CAAC,OAAO,OAAO,KAAK,QAAQ,EAAY,yBAAyB,CAAC,CAAC;AAC5E,UAAM,CAAC,EAAE,CAAC,OAAO,OAAO,CAAC,EAAE,KAAK,UAAU,EAAO,8BAA8B,CAAC,CAAC;AACjF,UAAM,CAAC,EAAE,CAAC,OAAO,OAAO,CAAC,OAAO,KAAK,UAAU,EAAE,uCAAuC,CAAC,CAAC;AAC1F,UAAM,CAAC,EAAE,CAAC,OAAO,OAAO,CAAC,GAAG,KAAK,UAAU,EAAM,mCAAmC,CAAC,CAAC;AACtF,UAAM,CAAC,EAAE,CAAC,OAAO,OAAO,CAAC,MAAM,KAAK,UAAU,EAAG,sCAAsC,CAAC,CAAC;CAC5F,CAAC,CAAC",
+  "file": "generated.js",
+  "sourceRoot": "",
+  "sourcesContent": [
+    "(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require==\"function\"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error(\"Cannot find module '\"+o+\"'\");throw f.code=\"MODULE_NOT_FOUND\",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require==\"function\"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})",
+    "var router = require('router');\n\nQUnit.module('API');\n\nQUnit.test(\"module\", 2, function(assert){\n    assert.ok(typeof router !== 'undefined', \"The module exports something\");\n    assert.ok(typeof router === 'function',  \"The module exports a function\");\n});\n\n\nQUnit.test(\"factory\", 3, function(assert){\n\n    var routing = router();\n\n    assert.ok(typeof routing === 'object',            \"the router definition is an object\");\n    assert.ok(typeof routing.register === 'function', \"the router has got the method register\");\n    assert.notDeepEqual(routing, router(),            \"the router is a factory and creates an new router instance\");\n});\n\nQUnit.test(\"is an event emitter\", 5, function(assert){\n\n    var routing = router();\n\n    assert.ok(typeof routing === 'object',           \"the router is an object\");\n    assert.ok(typeof routing.on === 'function',      \"the router has got method on\");\n    assert.ok(typeof routing.trigger === 'function', \"the router has got the method trigger\");\n    assert.ok(typeof routing.off === 'function',     \"the router has got the method off\");\n    assert.ok(typeof routing.events === 'function',  \"the router has got the method events\");\n});\n\n"
+  ]
+}
