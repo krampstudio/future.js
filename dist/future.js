@@ -4665,7 +4665,10 @@ var eventify = require('./eventify.js');
 
 var registry = new Map();
 
-var router = function router(config) {
+var router = function router() {
+    var routes = arguments[0] === undefined ? [] : arguments[0];
+
+    var routeStack = [];
 
     //strategy : History URL on popstate
     //strategy : on ajax request
@@ -4721,6 +4724,8 @@ var router = function router(config) {
                     }
                 }
             }
+
+            return this;
         },
 
         load: function load() {
@@ -4733,12 +4738,62 @@ var router = function router(config) {
                     module();
                 }
             });
+
+            return this;
         },
 
-        resolve: function resolve(url) {}
+        resolve: function resolve(url) {
+
+            return this;
+        },
+
+        add: function add() {
+            var routes = arguments[0] === undefined ? [] : arguments[0];
+
+            if (typeof routes === 'object' && typeof routes.url === 'string') {
+                routes = [routes];
+            }
+
+            var _iteratorNormalCompletion2 = true;
+            var _didIteratorError2 = false;
+            var _iteratorError2 = undefined;
+
+            try {
+                for (var _iterator2 = routes[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                    var route = _step2.value;
+
+                    if (typeof route !== 'object') {
+                        throw new TypeError('A route is always a plain object');
+                    }
+                    if (typeof route.url !== 'string' || route.url.length <= 0) {
+                        throw new TypeError('A route must have an url property');
+                    }
+                    if (!route.register && !route.load) {
+                        throw new TypeError('A route define at least a register or a load action');
+                    }
+
+                    routeStack.push(route);
+                }
+            } catch (err) {
+                _didIteratorError2 = true;
+                _iteratorError2 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion2 && _iterator2['return']) {
+                        _iterator2['return']();
+                    }
+                } finally {
+                    if (_didIteratorError2) {
+                        throw _iteratorError2;
+                    }
+                }
+            }
+
+            return this;
+        }
     };
 
-    return eventify(routing);
+    return eventify(routing).add(routes);
 };
 
 /*

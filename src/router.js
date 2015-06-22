@@ -11,8 +11,9 @@ const eventify = require('./eventify.js');
 
 var registry = new Map();
 
-let router = function router (config){
+let router = function router (routes = []){
 
+    var routeStack = [];
 
     //strategy : History URL on popstate
     //strategy : on ajax request
@@ -43,6 +44,7 @@ let router = function router (config){
                     }
                 }
             }
+            return this;
         },
 
         load (...modules){
@@ -53,14 +55,40 @@ let router = function router (config){
                 }
             });
 
+            return this;
         },
 
         resolve (url){
 
+            return this;
+        },
+
+        add(routes = []){
+
+            if(typeof routes === 'object' && typeof routes.url === 'string'){
+                routes = [routes];
+            }
+
+            for(let route of routes) {
+                if(typeof route !== 'object'){
+                    throw new TypeError('A route is always a plain object');
+                }
+                if(typeof route.url !== 'string' || route.url.length <= 0){
+                    throw new TypeError('A route must have an url property');
+                }
+                if( !route.register && !route.load){
+                    throw new TypeError('A route define at least a register or a load action');
+                }
+
+                routeStack.push(route);
+            }
+
+            return this;
         }
     };
 
-    return eventify(routing);
+
+    return eventify(routing).add(routes);
 };
 
 /*
