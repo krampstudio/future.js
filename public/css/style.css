@@ -1,0 +1,33 @@
+body{
+    color : #efefef;
+    background-color : #333;
+}
+a {
+    color : #3689B2;
+    text-decoration: none;
+}
+header {
+    position: relative;
+    height: 100px;
+    background-color: #222;
+    box-shadow: 0 1px 10px #111;
+}
+
+header nav {
+    position: absolute;
+    height: 100px;
+    right: 0;
+    top : 0;
+}
+header nav ul {
+    list-style-type: none;
+    height: 100px;
+}
+
+header nav ul li {
+    display: inline-block;
+    width: 100px;
+    height: 100px;
+    vertical-align: top;
+}
+
