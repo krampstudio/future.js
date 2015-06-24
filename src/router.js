@@ -8,6 +8,7 @@
  * @module fwc
  */
 const eventify = require('./eventify.js');
+const url      = require('url');
 
 var registry = new Map();
 
@@ -58,9 +59,21 @@ let router = function router (routes = []){
             return this;
         },
 
-        resolve (url){
+        resolve (path){
+            let exec = route => {
+                this.register(...route.register);
+                this.load(...route.modules);
+            };
 
-            return this;
+            //let toResolve = url.parse(path);
+
+            for(let route of routeStack){
+                if(route.url === '*' || route.url ===  path){
+                    return exec(route);
+                }
+               //todo resolve chunks
+
+            }
         },
 
         add(routes = []){
@@ -80,6 +93,12 @@ let router = function router (routes = []){
                     throw new TypeError('A route define at least a register or a load action');
                 }
 
+                if(typeof route.register === 'string'){
+                    route.register = [route.register];
+                }
+                if(typeof route.load === 'function'){
+                    route.load = [route.load];
+                }
                 routeStack.push(route);
             }
 
