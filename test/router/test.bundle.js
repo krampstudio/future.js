@@ -55,5 +55,25 @@ QUnit.test('config', 4, function (assert) {
     assert.ok(typeof routing === 'object', 'the router is an object');
 });
 
+QUnit.test('resolve', 3, function (assert) {
+
+    var loaded = false;
+    var load = function load() {
+        loaded = true;
+    };
+
+    var routing = router([{
+        url: '/foo',
+        load: load
+    }]);
+
+    assert.ok(typeof routing === 'object', 'the router is an object');
+    assert.equal(loaded, false, 'the route is not resolved');
+
+    routing.resolve('/foo');
+
+    assert.equal(loaded, true, 'the route is now resolved');
+});
+
 },{"router":"router"}]},{},[1])
 //# sourceMappingURL=test.bundle.js.map

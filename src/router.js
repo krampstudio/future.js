@@ -49,7 +49,6 @@ let router = function router (routes = []){
         },
 
         load (...modules){
-
             modules.forEach( module => {
                 if(typeof module === 'function'){
                     module();
@@ -61,8 +60,12 @@ let router = function router (routes = []){
 
         resolve (path){
             let exec = route => {
-                this.register(...route.register);
-                this.load(...route.modules);
+                if(route.register){
+                    this.register(...route.register);
+                }
+                if(route.load){
+                    this.load(...route.load);
+                }
             };
 
             //let toResolve = url.parse(path);

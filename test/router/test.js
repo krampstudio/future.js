@@ -10,7 +10,7 @@ QUnit.test("module", 2, function(assert){
 
 QUnit.test("factory", 6, function(assert){
 
-    var routing = router();
+    let routing = router();
 
     assert.ok(typeof routing === 'object',            "the router definition is an object");
     assert.ok(typeof routing.add === 'function',      "the router has got the method register");
@@ -22,7 +22,7 @@ QUnit.test("factory", 6, function(assert){
 
 QUnit.test("is an event emitter", 5, function(assert){
 
-    var routing = router();
+    let routing = router();
 
     assert.ok(typeof routing === 'object',           "the router is an object");
     assert.ok(typeof routing.on === 'function',      "the router has got method on");
@@ -46,5 +46,24 @@ QUnit.test("config", 4, function(assert){
     }]);
 
     assert.ok(typeof routing === 'object', "the router is an object");
+});
+
+QUnit.test("resolve", 3, function(assert){
+
+    var loaded = false;
+    let load   = function (){ loaded = true; };
+
+
+    let routing = router([{
+        url : '/foo',
+        load
+    }]);
+
+    assert.ok(typeof routing === 'object', "the router is an object");
+    assert.equal(loaded, false, 'the route is not resolved');
+
+    routing.resolve('/foo');
+
+    assert.equal(loaded, true, 'the route is now resolved');
 });
 
