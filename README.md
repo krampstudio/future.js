@@ -8,7 +8,7 @@ It features :
 
 - node.js as a basement
 - npm for module and dependency management
-- ES6 syntax through Babel.js
+- ES6/7 syntax through Babel.js
 - Handlebars for templates
 - A WebComponents layer (only CustomElements for now)
 - Browserify to compile everything
@@ -17,11 +17,10 @@ It features :
 
 ## Philosophy statements
 
- - browsers API are not reliable
+ - browsers API are not (yet) reliable
  - library over framework
  - developer friendly
  - open to changes
- - stability
 
 ## Samples
 

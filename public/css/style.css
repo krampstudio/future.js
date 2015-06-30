@@ -42,13 +42,13 @@ header nav ul li {
     height: 100px;
     line-height: 100px;
     padding: 0 20px;
-    border-top:solid 5px transparent;
+    border-top: solid 5px transparent;
+    font-size: 18px;
 }
 
 header nav ul li:hover {
     cursor: pointer;
     border-top:solid 5px #7EB0C9;
- /*#3A7492;*/
     transition: border-top 0.75s ease;
 }
 header nav ul li:hover a {
@@ -56,12 +56,37 @@ header nav ul li:hover a {
     transition: color 0.5s ease;
 }
 
-.pres p {
-    font-size: 20px;
-    margin: 50px 100px;
-    background-color: #bbb;
-    color: #222;
+.desc {
+    margin: 3%;
+}
+
+.desc p {
+    font-size: 24px;
+    background-color: #cfcfcf;
+    color: #555;
     padding: 20px;
+    margin: 25px;
     line-height: 30px;
-    border-radius: 2px;
+    border-radius: 3px;
+    overflow: hidden;
+    font-style: italic;
+    font-weight: bold;
+}
+.desc p img {
+    float: left;
+    margin: 15px 25px 15px 15px;
+}
+
+.technos h1 {
+    text-align: center;
+    font-size: 32px;
+    padding: 20px 0;
+    color : #7EB0C9;
+}
+.technos ul {
+    text-align: center;
+}
+.technos ul li {
+    display : inline-block;
+    padding: 15px;
 }
