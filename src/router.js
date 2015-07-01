@@ -8,29 +8,34 @@
  * @module fwc
  */
 const eventify = require('./eventify.js');
-const url      = require('url');
+const UrlPattern = require('url-pattern');
 
-var registry = new Map();
+/**
+ * Keep track of components registered
+ */
+let registry = new Map();
 
+/**
+ * @typedef route
+ * @property {String|Regex} url - the URL pattern of the route
+ * @property {String[]|String} [register] - collection of modules paths to register on match
+ * @property {Function[]|Function} [load]  - collection of functions to call on match
+ */
+
+/**
+ * The router creates a routing mechanism from routes.
+ * It helps you to load functions or to register components based on URLs.
+ *
+ * @param {route[]} [routes = []] - the routes to add to the routes
+ * @returns {routing} the routing object
+ */
 let router = function router (routes = []){
 
-    var routeStack = [];
+    let routeStack = [];
 
-    //strategy : History URL on popstate
-    //strategy : on ajax request
-
-    //event + condition -> load a service / register a component
-/*
-    on state change -> state
-        if state == 'foo' -> register
-        if state == 'bar' -> register
-
-    on ajax load -> url
-        if url == 'foo' -> register
-        if url == 'bar' -> register
-
-*/
-
+    /**
+     * @typedef routing
+     */
     let routing = {
 
         register (...components){
@@ -68,13 +73,15 @@ let router = function router (routes = []){
                 }
             };
 
-            //let toResolve = url.parse(path);
-
             for(let route of routeStack){
                 if(route.url === '*' || route.url ===  path){
                     return exec(route);
                 }
-               //todo resolve chunks
+
+                let pattern = new UrlPattern(route.url);
+                if(pattern.match(path)){
+                    return exec(route);
+                }
 
             }
         },
