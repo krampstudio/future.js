@@ -7,7 +7,12 @@ html {
 
 body{
     color : #efefef;
+    font-family: Roboto;
     background-color : #333;
+    font-size: 14px;
+}
+section {
+    font-family: Roboto;
 }
 
 a {
@@ -17,6 +22,24 @@ a {
 a:hover {
     color : #7EB0C9;
     transition: color 0.5s ease;
+}
+
+section h1,
+section h2,
+section h3 {
+    font-family: Orbitron;
+    color : #7EB0C9;
+}
+
+section h1 {
+    font-size : 2.2em;
+    text-align: center;
+}
+section h2 {
+    font-size: 1.8em;
+}
+section h3 {
+    font-size: 1.5em;
 }
 
 header {
@@ -41,11 +64,14 @@ header nav ul li {
     display: inline-block;
     height: 100px;
     line-height: 100px;
-    padding: 0 20px;
+    padding: 0 1.5em;
     border-top: solid 5px transparent;
-    font-size: 18px;
-}
 
+}
+header nav ul li a {
+    font-size: 1.3em;
+    font-family: Orbitron;
+}
 header nav ul li:hover {
     cursor: pointer;
     border-top:solid 5px #7EB0C9;
@@ -57,24 +83,20 @@ header nav ul li:hover a {
 }
 
 .desc {
-    margin: 3%;
-}
-
-.desc p {
+    margin:2em 1em;
+    padding: .5em;
     font-size: 24px;
     background-color: #cfcfcf;
     color: #555;
-    padding: 20px;
-    margin: 25px;
     line-height: 30px;
     border-radius: 3px;
     overflow: hidden;
     font-style: italic;
     font-weight: bold;
 }
-.desc p img {
+.desc img {
     float: left;
-    margin: 15px 25px 15px 15px;
+    margin:0 .5em;
 }
 
 .technos h1 {
