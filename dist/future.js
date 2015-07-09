@@ -4855,25 +4855,24 @@ module.exports = fwc;
  */
 
 /**
- * @module fwc
+ * @module router
  */
 'use strict';
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+function _slicedToArray(arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }
 
-var eventify = require('./eventify.js');
 var UrlPattern = require('url-pattern');
 
 /**
  * Keep track of components registered
  */
-var registry = new Map();
+var registry = new Set();
 
 /**
  * @typedef route
  * @property {String|Regex} url - the URL pattern of the route
- * @property {String[]|String} [register] - collection of modules paths to register on match
- * @property {Function[]|Function} [load]  - collection of functions to call on match
+ * @property {Function[]} handlers = [] - functions to execute when the route is resolved
+ * @property {Boolean} [once = false]  - the handlers will be executed only one time
  */
 
 /**
@@ -4882,38 +4881,62 @@ var registry = new Map();
  *
  * @param {route[]} [routes = []] - the routes to add to the routes
  * @returns {routing} the routing object
+ * @throws TypeError if the routes aren't correclty formater
  */
 var router = function router() {
     var routes = arguments[0] === undefined ? [] : arguments[0];
 
-    var routeStack = [];
+    /**
+     * Contains the routes (url/{handlers,once})
+     */
+    var routeStack = new Map();
 
     /**
      * @typedef routing
      */
     var routing = {
 
-        register: function register() {
-            for (var _len = arguments.length, components = Array(_len), _key = 0; _key < _len; _key++) {
-                components[_key] = arguments[_key];
-            }
+        /**
+         * Resolve an URL against the current route stack
+         * @param {String} url - the URL to resolve
+         */
+        resolve: function resolve(url) {
 
+            //exec the handlers of the route
+            var exec = function exec(routeUrl, route) {
+                if (route.once) {
+                    if (registry.has(routeUrl)) {
+                        return;
+                    }
+                    registry.add(routeUrl);
+                }
+                route.handlers.forEach(function (handler) {
+                    if (typeof handler === 'function') {
+                        handler();
+                    }
+                });
+            };
+
+            //resolve the stack
             var _iteratorNormalCompletion = true;
             var _didIteratorError = false;
             var _iteratorError = undefined;
 
             try {
+                for (var _iterator = routeStack.entries()[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var _step$value = _slicedToArray(_step.value, 2);
 
-                for (var _iterator = components[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                    var comp = _step.value;
+                    var routeUrl = _step$value[0];
+                    var route = _step$value[1];
 
-                    if (!registry.get(comp)) {
-                        registry.put(comp);
-                        try {
-                            require(comp);
-                        } catch (e) {
-                            this.trigger('error', 'Unable to load component' + e);
-                        }
+                    if (routeUrl === '*' || routeUrl === url) {
+                        return exec(routeUrl, route);
+                    }
+
+                    //match the url as a pattern
+                    var pattern = new UrlPattern(routeUrl);
+                    if (pattern.match(url)) {
+                        return exec(routeUrl, route);
                     }
                 }
             } catch (err) {
@@ -4930,137 +4953,47 @@ var router = function router() {
                     }
                 }
             }
-
-            return this;
         },
 
-        load: function load() {
-            for (var _len2 = arguments.length, modules = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-                modules[_key2] = arguments[_key2];
-            }
-
-            modules.forEach(function (module) {
-                if (typeof module === 'function') {
-                    module();
-                }
-            });
-
-            return this;
-        },
-
-        resolve: function resolve(path) {
-            var _this = this;
-
-            var exec = function exec(route) {
-                if (route.register) {
-                    _this.register.apply(_this, _toConsumableArray(route.register));
-                }
-                if (route.load) {
-                    _this.load.apply(_this, _toConsumableArray(route.load));
-                }
-            };
-
-            var _iteratorNormalCompletion2 = true;
-            var _didIteratorError2 = false;
-            var _iteratorError2 = undefined;
-
-            try {
-                for (var _iterator2 = routeStack[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                    var route = _step2.value;
-
-                    if (route.url === '*' || route.url === path) {
-                        return exec(route);
-                    }
-
-                    var pattern = new UrlPattern(route.url);
-                    if (pattern.match(path)) {
-                        return exec(route);
-                    }
-                }
-            } catch (err) {
-                _didIteratorError2 = true;
-                _iteratorError2 = err;
-            } finally {
-                try {
-                    if (!_iteratorNormalCompletion2 && _iterator2['return']) {
-                        _iterator2['return']();
-                    }
-                } finally {
-                    if (_didIteratorError2) {
-                        throw _iteratorError2;
-                    }
-                }
-            }
-        },
-
+        /**
+         * Add a route to the stack
+         * @param {route} route - the route to add
+         * @returns {routing} for chaining
+         * @throws TypeError if the route isn't correcly formated
+         */
         add: function add() {
-            var routes = arguments[0] === undefined ? [] : arguments[0];
+            var _ref = arguments[0] === undefined ? {} : arguments[0];
 
-            if (typeof routes === 'object' && typeof routes.url === 'string') {
-                routes = [routes];
+            var url = _ref.url;
+            var _ref$handlers = _ref.handlers;
+            var handlers = _ref$handlers === undefined ? [] : _ref$handlers;
+            var _ref$once = _ref.once;
+            var once = _ref$once === undefined ? false : _ref$once;
+
+            if (typeof url !== 'string' || url.length <= 0) {
+                throw new TypeError('the route key must be an URL');
+            }
+            if (!handlers || (!Array.isArray(handlers) || !handlers.length) && typeof handlers !== 'function') {
+                throw new TypeError('A route must have at least one handler');
             }
 
-            var _iteratorNormalCompletion3 = true;
-            var _didIteratorError3 = false;
-            var _iteratorError3 = undefined;
-
-            try {
-                for (var _iterator3 = routes[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-                    var route = _step3.value;
-
-                    if (typeof route !== 'object') {
-                        throw new TypeError('A route is always a plain object');
-                    }
-                    if (typeof route.url !== 'string' || route.url.length <= 0) {
-                        throw new TypeError('A route must have an url property');
-                    }
-                    if (!route.register && !route.load) {
-                        throw new TypeError('A route define at least a register or a load action');
-                    }
-
-                    if (typeof route.register === 'string') {
-                        route.register = [route.register];
-                    }
-                    if (typeof route.load === 'function') {
-                        route.load = [route.load];
-                    }
-                    routeStack.push(route);
-                }
-            } catch (err) {
-                _didIteratorError3 = true;
-                _iteratorError3 = err;
-            } finally {
-                try {
-                    if (!_iteratorNormalCompletion3 && _iterator3['return']) {
-                        _iterator3['return']();
-                    }
-                } finally {
-                    if (_didIteratorError3) {
-                        throw _iteratorError3;
-                    }
-                }
+            if (typeof handlers === 'function') {
+                handlers = [handlers];
             }
+            routeStack.set(url, { handlers: handlers, once: once });
 
             return this;
         }
     };
 
-    return eventify(routing).add(routes);
+    routes.forEach(function (route) {
+        return routing.add(route);
+    });
+
+    return routing;
 };
-
-/*
-
- router([{
-    url : '/foo',
-    regsiter : 'component1', 'component2',
-    load : 'service1'
- }])
-
-    then history.popstate -> resolve(url.state);
-
-*/
 
 module.exports = router;
 
-},{"./eventify.js":"eventify","url-pattern":2}]},{},[4])
+},{"url-pattern":2}]},{},[4])
 //# sourceMappingURL=future.js.map

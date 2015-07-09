@@ -5,21 +5,20 @@
  */
 
 /**
- * @module fwc
+ * @module router
  */
-const eventify = require('./eventify.js');
 const UrlPattern = require('url-pattern');
 
 /**
  * Keep track of components registered
  */
-let registry = new Map();
+let registry = new Set();
 
 /**
  * @typedef route
  * @property {String|Regex} url - the URL pattern of the route
- * @property {String[]|String} [register] - collection of modules paths to register on match
- * @property {Function[]|Function} [load]  - collection of functions to call on match
+ * @property {Function[]} handlers = [] - functions to execute when the route is resolved
+ * @property {Boolean} [once = false]  - the handlers will be executed only one time
  */
 
 /**
@@ -28,108 +27,82 @@ let registry = new Map();
  *
  * @param {route[]} [routes = []] - the routes to add to the routes
  * @returns {routing} the routing object
+ * @throws TypeError if the routes aren't correclty formater
  */
 let router = function router (routes = []){
 
-    let routeStack = [];
+
+    /**
+     * Contains the routes (url/{handlers,once})
+     */
+    let routeStack = new Map();
 
     /**
      * @typedef routing
      */
     let routing = {
 
-        register (...components){
+        /**
+         * Resolve an URL against the current route stack
+         * @param {String} url - the URL to resolve
+         */
+        resolve (url){
 
-            for(let comp of components){
-                if(!registry.get(comp)){
-                    registry.put(comp);
-                    try {
-                        require(comp);
-                    } catch(e){
-                        this.trigger('error', "Unable to load component" + e);
+            //exec the handlers of the route
+            let exec = (routeUrl, route) => {
+                if(route.once){
+                    if(registry.has(routeUrl)){
+                        return;
                     }
+                    registry.add(routeUrl);
                 }
-            }
-            return this;
-        },
-
-        load (...modules){
-            modules.forEach( module => {
-                if(typeof module === 'function'){
-                    module();
-                }
-            });
-
-            return this;
-        },
-
-        resolve (path){
-            let exec = route => {
-                if(route.register){
-                    this.register(...route.register);
-                }
-                if(route.load){
-                    this.load(...route.load);
-                }
+                route.handlers.forEach( handler => {
+                    if(typeof handler === 'function'){
+                        handler();
+                    }
+                });
             };
 
-            for(let route of routeStack){
-                if(route.url === '*' || route.url ===  path){
-                    return exec(route);
+            //resolve the stack
+            for(let [routeUrl, route] of routeStack.entries()){
+                if(routeUrl === '*' || routeUrl === url){
+                    return exec(routeUrl, route);
                 }
 
-                let pattern = new UrlPattern(route.url);
-                if(pattern.match(path)){
-                    return exec(route);
+                //match the url as a pattern
+                let pattern = new UrlPattern(routeUrl);
+                if(pattern.match(url)){
+                    return exec(routeUrl, route);
                 }
-
             }
         },
 
-        add(routes = []){
-
-            if(typeof routes === 'object' && typeof routes.url === 'string'){
-                routes = [routes];
+        /**
+         * Add a route to the stack
+         * @param {route} route - the route to add
+         * @returns {routing} for chaining
+         * @throws TypeError if the route isn't correcly formated
+         */
+        add({ url, handlers = [], once = false } = {}){
+            if(typeof url !== 'string' || url.length <= 0){
+                throw new TypeError('the route key must be an URL');
+            }
+            if(!handlers || ( (!Array.isArray(handlers) || !handlers.length) && typeof handlers !== 'function')){
+                throw new TypeError('A route must have at least one handler');
             }
 
-            for(let route of routes) {
-                if(typeof route !== 'object'){
-                    throw new TypeError('A route is always a plain object');
-                }
-                if(typeof route.url !== 'string' || route.url.length <= 0){
-                    throw new TypeError('A route must have an url property');
-                }
-                if( !route.register && !route.load){
-                    throw new TypeError('A route define at least a register or a load action');
-                }
-
-                if(typeof route.register === 'string'){
-                    route.register = [route.register];
-                }
-                if(typeof route.load === 'function'){
-                    route.load = [route.load];
-                }
-                routeStack.push(route);
+            if(typeof handlers === 'function'){
+                handlers = [handlers];
             }
+            routeStack.set(url, {handlers, once});
 
             return this;
-        }
+        },
     };
 
+    routes.forEach( route => routing.add(route));
 
-    return eventify(routing).add(routes);
+    return routing;
 };
-
-/*
-
- router([{
-    url : '/foo',
-    regsiter : 'component1', 'component2',
-    load : 'service1'
- }])
-
-    then history.popstate -> resolve(url.state);
-
-*/
 
 module.exports = router;

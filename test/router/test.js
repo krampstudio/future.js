@@ -8,55 +8,44 @@ QUnit.test("module", 2, function(assert){
 });
 
 
-QUnit.test("factory", 6, function(assert){
+QUnit.test("factory", 4, function(assert){
 
     let routing = router();
 
     assert.ok(typeof routing === 'object',            "the router definition is an object");
-    assert.ok(typeof routing.add === 'function',      "the router has got the method register");
-    assert.ok(typeof routing.register === 'function', "the router has got the method register");
-    assert.ok(typeof routing.load === 'function',     "the router has got the method register");
-    assert.ok(typeof routing.resolve === 'function',  "the router has got the method register");
+    assert.ok(typeof routing.add === 'function',      "the router has got the method add");
+    assert.ok(typeof routing.resolve === 'function',  "the router has got the method resolve");
     assert.notDeepEqual(routing, router(),            "the router is a factory and creates an new router instance");
-});
-
-QUnit.test("is an event emitter", 5, function(assert){
-
-    let routing = router();
-
-    assert.ok(typeof routing === 'object',           "the router is an object");
-    assert.ok(typeof routing.on === 'function',      "the router has got method on");
-    assert.ok(typeof routing.trigger === 'function', "the router has got the method trigger");
-    assert.ok(typeof routing.off === 'function',     "the router has got the method off");
-    assert.ok(typeof routing.events === 'function',  "the router has got the method events");
 });
 
 
 QUnit.module('routes');
 
-QUnit.test("config", 4, function(assert){
+QUnit.test("config", 6, function(assert){
 
     assert.throws( () => router([{}]),               TypeError, "Empty route");
     assert.throws( () => router([{'foo' : 'bar'}]),  TypeError, "Wrong route");
-    assert.throws( () => router([{'url' : '/foo'}]), TypeError, "Missing action");
+    assert.throws( () => router([{'url' : '/foo'}]), TypeError, "Missing handlers");
+    assert.throws( () => router([{'url' : '/foo', 'handlers' : true }]), TypeError, "Wrong handlers");
+    assert.throws( () => router([{'url' : '/foo', 'handlers' : [] }]), TypeError, "No handlers");
 
     let routing = router([{
         'url' : '/foo',
-        'register' : './comp.js'
+        'handlers' : () => {}
     }]);
 
     assert.ok(typeof routing === 'object', "the router is an object");
 });
 
-QUnit.test("resolve", 3, function(assert){
+QUnit.test("resolve one", 3, function(assert){
 
     var loaded = false;
-    let load   = function (){ loaded = true; };
+    let handlers   = () => loaded = true;
 
 
     let routing = router([{
         url : '/foo',
-        load
+        handlers
     }]);
 
     assert.ok(typeof routing === 'object', "the router is an object");
@@ -68,7 +57,7 @@ QUnit.test("resolve", 3, function(assert){
 });
 
 
-QUnit.test("resolve", 11, function(assert){
+QUnit.test("resolve a stack with patterns", 11, function(assert){
 
     var route = false;
     let route1   = () => route = 1;
@@ -77,13 +66,13 @@ QUnit.test("resolve", 11, function(assert){
 
     let routing = router([{
         url : '/foo',
-        load : route1
+        handlers : route1
     }, {
         url : '/bar/*',
-        load : route2
+        handlers : route2
     }, {
         url : '/baz/:id/baz',
-        load : route3
+        handlers : route3
     }]);
 
     assert.ok(typeof routing === 'object', "the router is an object");
@@ -124,5 +113,29 @@ QUnit.test("resolve", 11, function(assert){
     route = false;
     routing.resolve('/bazfoo/123/baz');
     assert.equal(route, false, '/bazfoo/123/baz : no route resolved');
+});
+
+QUnit.test("resolve once", 5, function(assert){
+
+    var loaded = 0;
+    let handlers   = () => loaded++;
+
+    let routing = router([{
+        url : '/foo',
+        handlers,
+        once : true
+    }]);
+
+    assert.ok(typeof routing === 'object', "the router is an object");
+    assert.equal(loaded, 0, 'the route is not resolved');
+
+    routing.resolve('/moo');
+    assert.equal(loaded, 0, 'the route is not yet resolved');
+
+    routing.resolve('/foo');
+    assert.equal(loaded, 1, 'the route is resolved');
+
+    routing.resolve('/foo');
+    assert.equal(loaded, 1, 'the route is not resloved again');
 });
 
