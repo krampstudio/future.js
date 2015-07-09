@@ -26,18 +26,18 @@ module.exports = function(grunt) {
         pkg: grunt.file.readJSON('package.json'),
 
         connect: {
+            options : {
+                hostname: '<%=pkg.config.host%>',
+                port: '<%=pkg.config.port%>',
+                base: '.'
+            },
             preview: {
                 options: {
-                    hostname: '<%=pkg.config.host%>',
-                    port: '<%=pkg.config.port%>',
-                    base: '.'
+                    livereload : true
                 }
             },
-            live : {
+            alive : {
                 options: {
-                    hostname: '<%=pkg.config.host%>',
-                    port: '<%=pkg.config.port%>',
-                    base: '.',
                     keepalive : true
                 }
             }
@@ -125,7 +125,10 @@ module.exports = function(grunt) {
             },
             test: {
                 files: ['test/**/test.js'],
-                tasks: ['compile-test']
+                tasks: ['compile-test'],
+                options: {
+                    livereload: true
+                },
             }
         },
 
