@@ -68,18 +68,20 @@ module.exports = function(grunt) {
                 options : {
                     alias : {
                         'fwc':      './src/fwc.js',
-                        'eventify': './src/eventify.js'
+                        'eventify': './src/eventify.js',
+                        'router':   './src/router.js'
                     }
                 }
             },
             test: {
                 files: {
-                    'test/fwc/api/test.bundle.js': ['test/fwc/api/test.js'],
-                    'test/fwc/integration/test.bundle.js': ['test/fwc/integration/test.js'],
-                    'test/eventify/test.bundle.js': ['test/eventify/test.js']
+                    'test/eventify/test.bundle.js':         ['test/eventify/test.js'],
+                    'test/fwc/api/test.bundle.js':          ['test/fwc/api/test.js'],
+                    'test/fwc/integration/test.bundle.js':  ['test/fwc/integration/test.js'],
+                    'test/router/test.bundle.js':           ['test/router/test.js'],
                 },
                 options : {
-                    external : ['fwc', 'eventify'],
+                    external : ['fwc', 'eventify', 'router'],
                 }
             }
         },
@@ -95,9 +97,10 @@ module.exports = function(grunt) {
             },
             test: {
                 files: {
-                    'test/fwc/api/test.bundle.js.map': ['test/fwc/api/test.bundle.js'],
+                    'test/eventify/test.bundle.js.map':        ['test/eventify/test.bundle.js'],
+                    'test/fwc/api/test.bundle.js.map':         ['test/fwc/api/test.bundle.js'],
                     'test/fwc/integration/test.bundle.js.map': ['test/fwc/integration/test.bundle.js'],
-                    'test/eventify/test.bundle.js.map': ['test/eventify/test.bundle.js']
+                    'test/router/test.bundle.js.map':          ['test/router/test.bundle.js'],
                 }
             }
         },
@@ -145,7 +148,8 @@ module.exports = function(grunt) {
                     urls: [
                         'http://<%=pkg.config.host%>:<%=pkg.config.port%>/test/eventify/test.html',
                         'http://<%=pkg.config.host%>:<%=pkg.config.port%>/test/fwc/api/test.html',
-                        'http://<%=pkg.config.host%>:<%=pkg.config.port%>/test/fwc/integration/test.html'
+                        'http://<%=pkg.config.host%>:<%=pkg.config.port%>/test/fwc/integration/test.html',
+                        'http://<%=pkg.config.host%>:<%=pkg.config.port%>/test/fwc/router/test.html'
                     ],
                     tunnelTimeout: 5,
                     build: "<%=pkg.version%>-" + Date.now(),

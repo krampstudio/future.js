@@ -34,6 +34,7 @@
   },
   "dependencies": {
     "handlebars": "^3.0.0",
+    "url-pattern": "^0.9.0",
     "webcomponents.js": "^0.7.2"
   },
   "config": {
