@@ -60,6 +60,9 @@
 .fico-book:before {
 	content: "\f007";
 }
+.fico-history:before {
+	content: "\f07e";
+}
 .fico-home:before {
 	content: "\f08d";
 }

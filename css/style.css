@@ -115,18 +115,15 @@ header nav a > span{
 /* Home intro */
 
 .intro {
-    margin: 2em 1em;
+    margin: 3em 1em 1em 1em;
     display: flex;
     flex-flow: row wrap;
-    justify-content: space-arounf;
-    align-items : stretch;
+    justify-content: space-around;
+    align-items : center;
 }
 
-.intro > div{
-    display: inline-block;
-}
 .intro > div:first-child {
-    flex-grow: 3;
+    flex: 3 0 0;
 }
 
 .intro > div:first-child p{
@@ -139,25 +136,70 @@ header nav a > span{
     padding: .5em;
 }
 
-.intro > div:first-child {
-    flex-grow: 1;
+.intro > div:last-child {
+    flex: 2 0 0;
+    text-align: center;
+    padding: .5em;
 }
 
 .intro > div:last-child a {
-    background: transparent;
-    color : #3689B2;
+    display: inline-block;
+    position: relative;
+    overflow: hidden;
+    padding: .5em;
     border: solid 2px #3689B2;
     border-radius: 4px;
+    background: transparent;
+    color : #3689B2;
+    font-family: Orbitron;
     font-size: 1.8em;
-    padding: .5em;
-    display: inline-block;
     text-align: center;
+}
+.intro > div:last-child a > span{
+    margin-right: .5em;
+}
+
+.intro > div:last-child a:before{
+   position:absolute;
+   top: calc(50% - .5em);
+   left: calc(50% - .5em);
+   width: 1em;
+   height: 1em;
+   content: ' ';
+   background-color:#ccc;
+   opacity: 0;
+   border-radius: 100%;
+}
+
+.intro > div:last-child a:focus{
+  color : #7EB0C9;
+}
+
+.intro > div:last-child a:focus:before{
+  animation: scaling-circle 2s;
+}
+
+@keyframes scaling-circle {
+    0% {
+      transform: scale(1);
+      opacity: .5;
+    }
+    75% {
+      transform: scale(100);
+    }
+    100% {
+       opacity: 0;
+    }
 }
 
 @media all and (max-width: 700px) {
-
     .intro {
         flex-flow: column nowrap;
+    }
+
+    .intro > div {
+        flex: 1 0 0;
+        margin-bottom: 1em;
     }
 }
 
@@ -173,4 +215,16 @@ header nav a > span{
 .technos ul li {
     display : inline-block;
     padding: 15px;
+}
+
+@media all and (max-width: 900px) {
+    .technos ul li img{
+        width: 150px;
+    }
+}
+@media all and (max-width: 700px) {
+
+    .technos ul li img{
+        width: 100px;
+    }
 }
