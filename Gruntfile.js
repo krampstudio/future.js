@@ -31,6 +31,7 @@ module.exports = function(grunt) {
                 port: '<%=pkg.config.port%>',
                 base: '.'
             },
+            test  : { },
             preview: {
                 options: {
                     livereload : true
@@ -138,6 +139,19 @@ module.exports = function(grunt) {
                 tasks: ['watch:core', 'watch:test'],
                 options: {
                     logConcurrentOutput: true
+                }
+            }
+        },
+
+        qunit : {
+            test : {
+                options: {
+                    urls : [
+                        'http://<%=pkg.config.host%>:<%=pkg.config.port%>/test/eventify/test.html',
+                        //'http://<%=pkg.config.host%>:<%=pkg.config.port%>/test/fwc/api/test.html',
+                        //'http://<%=pkg.config.host%>:<%=pkg.config.port%>/test/fwc/integration/test.html',
+                        //'http://<%=pkg.config.host%>:<%=pkg.config.port%>/test/fwc/router/test.html'
+                    ]
                 }
             }
         },
