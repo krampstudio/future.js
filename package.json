@@ -14,7 +14,7 @@
   "license": "MIT",
   "main": "src/index.js",
   "scripts": {
-    "test": "grunt devtest"
+    "test": "grunt build"
   },
   "devDependencies": {
     "babelify": "^6.1.2",
