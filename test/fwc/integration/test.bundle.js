@@ -875,26 +875,26 @@ QUnit.asyncTest('define attributes with type casting', 16, function (assert) {
         var fCast = container.querySelector('f-cast');
         assert.deepEqual(fCast, elt, 'The callback elt is the given node');
 
-        assert.equal(fCast.getAttribute('int'), '134.12', 'The attribute exists');
-        assert.equal(fCast.int, 134, 'The getter gives you the parsed value');
-        fCast.int = '5.77';
-        assert.equal(fCast.getAttribute('int'), '5', 'The value is updated once parsed');
-        assert.equal(fCast.int, 5, 'The getter gives you the parsed value');
+        assert.equal(fCast.getAttribute('int'), '134.12', "The attribute exists");
+        assert.equal(fCast.int, 134, "The getter gives you the parsed value");
+        fCast.int = "5.77";
+        assert.equal(fCast.getAttribute('int'), '5', "The value is updated once parsed");
+        assert.equal(fCast.int, 5, "The getter gives you the parsed value");
 
-        assert.equal(fCast.getAttribute('float'), 1.23, 'The attribute exists');
-        assert.equal(fCast.float, 1.23, 'The getter gives you the parsed value');
-        fCast.float = '00.77';
-        assert.equal(fCast.getAttribute('float'), '0.77', 'The value is updated once parsed');
-        assert.equal(fCast.float, 0.77, 'The getter gives you the parsed value');
+        assert.equal(fCast.getAttribute('float'), 1.23, "The attribute exists");
+        assert.equal(fCast.float, 1.23, "The getter gives you the parsed value");
+        fCast.float = "00.77";
+        assert.equal(fCast.getAttribute('float'), '0.77', "The value is updated once parsed");
+        assert.equal(fCast.float, 0.77, "The getter gives you the parsed value");
 
-        assert.ok(fCast.hasAttribute('bool'), 'The attribute exists');
-        assert.equal(fCast.bool, true, 'The attribute has the parsed value');
+        assert.ok(fCast.hasAttribute('bool'), "The attribute exists");
+        assert.equal(fCast.bool, true, "The attribute has the parsed value");
         fCast.bool = false;
-        assert.ok(!fCast.hasAttribute('bool'), 'The attribute doesn\'t exists anymore');
-        assert.equal(fCast.bool, false, 'The attribute has the false value');
+        assert.ok(!fCast.hasAttribute('bool'), "The attribute doesn't exists anymore");
+        assert.equal(fCast.bool, false, "The attribute has the false value");
         fCast.bool = true;
-        assert.ok(fCast.hasAttribute('bool'), 'The attribute is again there');
-        assert.equal(fCast.bool, true, 'The attribute has the true value');
+        assert.ok(fCast.hasAttribute('bool'), "The attribute is again there");
+        assert.equal(fCast.bool, true, "The attribute has the true value");
 
         QUnit.start();
     }).attr('int', { type: 'integer' }).attr('float', { type: 'float' }).attr('bool', { type: 'boolean' }).register();
@@ -957,7 +957,7 @@ QUnit.asyncTest('Component with a method', 7, function (assert) {
     assert.ok(container instanceof HTMLElement, 'The container exists');
 
     var mTarget = container.querySelector('.mtarget');
-    assert.ok(mTarget.style.display !== 'none', 'The mtarget content is displayed');
+    assert.ok(mTarget.style.display !== 'none', "The mtarget content is displayed");
 
     fwc('method').on('error', function (e) {
         console.error(e);
@@ -970,7 +970,7 @@ QUnit.asyncTest('Component with a method', 7, function (assert) {
 
         fMethod.hide();
 
-        assert.equal(mTarget.style.display, 'none', 'The mtarget content isn\'t displayed anymore');
+        assert.equal(mTarget.style.display, 'none', "The mtarget content isn't displayed anymore");
 
         QUnit.start();
     }).method('hide', function () {
@@ -1043,7 +1043,7 @@ QUnit.asyncTest('Component with dynamic content from a template', 8, function (a
 
         assert.equal(fDynContent.textContent.trim(), 'Hello world', 'The element has the content from the who attribute');
 
-        fDynContent.who = 'Bertrand';
+        fDynContent.who = "Bertrand";
         setTimeout(function () {
             assert.equal(fDynContent.textContent.trim(), 'Hello Bertrand', 'The element has the updated content');
             QUnit.start();
@@ -1086,8 +1086,8 @@ QUnit.asyncTest('Extend an anchor', 5, function (assert) {
         assert.ok(flink instanceof HTMLElement, 'The component is an HTMLElement');
         assert.ok(flink instanceof HTMLAnchorElement, 'The component is an HTMLAnchorElement');
 
-        assert.ok(link.href !== '#', 'Anchor\'s href use getter/setter to change the value');
-        assert.equal(flink.href, link.href, 'The extended component uses base component getter/setter');
+        assert.ok(link.href !== '#', "Anchor's href use getter/setter to change the value");
+        assert.equal(flink.href, link.href, "The extended component uses base component getter/setter");
 
         QUnit.start();
     }).extend('a').register();
