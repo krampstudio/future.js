@@ -149,7 +149,7 @@ module.exports = function(grunt) {
                         'http://<%=pkg.config.host%>:<%=pkg.config.port%>/test/eventify/test.html',
                         'http://<%=pkg.config.host%>:<%=pkg.config.port%>/test/fwc/api/test.html',
                         'http://<%=pkg.config.host%>:<%=pkg.config.port%>/test/fwc/integration/test.html',
-                        'http://<%=pkg.config.host%>:<%=pkg.config.port%>/test/fwc/router/test.html'
+                        'http://<%=pkg.config.host%>:<%=pkg.config.port%>/test/router/test.html'
                     ],
                     tunnelTimeout: 5,
                     build: "<%=pkg.version%>-" + Date.now(),
