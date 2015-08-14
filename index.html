@@ -8,7 +8,8 @@
     <link rel="stylesheet" href="css/reset.css" />
     <link rel="stylesheet" href="css/fonts.css" />
     <link rel="stylesheet" href="css/style.css" />
-    <!--<script type="text/javascript" src="../node_modules/webcomponents.js/webcomponents-lite.min.js"></script>-->
+    <link rel="stylesheet" href="./node_modules/prismjs/dist/prism-okaidia/prism-okaidia.css" />
+    <script type="text/javascript" src="./node_modules/future.js/node_modules/webcomponents.js/webcomponents-lite.min.js"></script>
 </head>
 <body>
 
@@ -32,7 +33,6 @@
         </section>
         <section class="technos">
             <h1>Technical stack</h1>
-            <p>Future.js is built using all those awesome technologies.</p>
             <ul>
                 <li><a href="http://nodejs.org" title="node.js"><img src="./img/nodejs.png" alt="node.js" /></a></li>
                 <li><a href="http://nodejs.org" title="npm"><img src="./img/npm.png" alt="npm" /></a></li>
@@ -43,49 +43,78 @@
                 <li><a href="http://nodejs.org" title="grunt"><img src="./img/grunt.png" alt="grunt" /></a></li>
             </ul>
         </section>
-        <section class="code">
-            <h1>Show me</h1>
+        <section class="hints">
             <article>
-                <h1>Define a component</h1>
-                <div>
-                    <span>JavaScript</span>
-                    <pre><code class="javascript">
-                        let fwc = require('fwc');
+                <h2>Node.js and npm is your platform</h2>
+                <p>Thanks to browserify, future.js benefits from all the node.js awesomeness : well architectured modules, tons of packages available, etc.</p>
+            </article>
+            <article>
+                <h2>Code in ES2015</h2>
+                <p>JavaScript is changing, you can code today using the brand new language features of ES6/7 and transpile to ES5 so it runs on a wide range of browsers.</p>
+            </article>
+            <article>
+                <h2>Create and re-use Web Components</h2>
+                <p>Web components is what we need, but it's not yet ready. We propose you a developer friendly, imperative approach to register your components. It's mainly based on the W3C's Custom Element specification. We also support the HTML Templates, and will include the others only when we think they are reliable (Shadow Dom, we are waiting for you).</p>
+            </article>
+        </section>
+        <section class="code">
+            <h1>Samples</h1>
+            <article>
+                <h2>Define a component</h2>
 
-                        fwc('load')                             //component name, default ns is f-
-                            .on('error', e =&gt; {              //listen on errors
-                                console.error('Ooops', e);
-                            })
-                            .on('click', function(elt) {        //native event delegation
-                                fetch(elt.src)
-                                    .then( res =&gt; elt.target.innerHTML = res; )
-                                    .catch( e =&gt; this.trigger('error', e); )
-                            })
-                            .access('target', {                 //define getter/setters
-                                get(val){
-                                    return document.querySelector(val);
-                                }
-                            })
-                            .register();                        //regsiter the component
-                    </code></pre>
-                </div>
-                <div>
-                    <span>HTML</span>
-                    <pre><code class="javascript">
-                        &lt;f-load src="foo.html" target=".foo"&gt;Load content&lt;/f-load&gt;
-                        &lt;div class="foo"&gt;&lt;/div&gt;
-                    </code></pre>
+                <div class="code-pane">
+                    <div>
+                        <span>JavaScript</span>
+                        <f-code lang="javascript">
+const fwc = require('fwc');
+
+// load is the component name, it uses the default namespace 'f-'
+fwc('load')
+
+  //listen on errors
+  .on('error', e =&gt; {
+    console.error('Ooops', e);
+  })
+
+  //native event delegation
+  .on('click', function (elt) {
+    fetch (elt.src)
+      .then( res =&gt; elt.target.innerHTML = res; )
+      .catch( e =&gt; this.trigger('error', e); )
+  })
+
+  //define getter/setters
+  .access('target', {
+    get (val){
+      return document.querySelector(val);
+    }
+  })
+
+  //regsiter the component
+  .register();</f-code>
+                    </div>
+                    <div>
+                        <span>HTML</span>
+                        <f-code lang="markup">
+&lt;f-load src="foo.html" target=".foo"&gt;Load content&lt;/f-load&gt;
+&lt;div class="foo"&gt;&lt;/div&gt;
+                        </f-code>
+                    </div>
+                    <div>
+                        <span>Result</span>
+                        <div>
+                            <f-load src="foo.html" target=".foo">Load content</f-load>
+                            <div class="foo"></div>
+                        </div>
+                    </div>
                 </div>
             </article>
         </section>
     </main>
     <footer>
-
+        Made with love and coffee by Bertrand Chevrier - @left 2015 - `${['chevrier', 'bertrand'].join('.')}@${['gmail', 'com'].join('.')}`
     </footer>
 
-    <!--<script src="../dist/future.js"></script>-->
-    <!--<script>-->
-        <!--var fwc = require('fwc');-->
-    <!--</script>-->
+    <script src="./js/main.min.js"></script>
 </body>
 </html>

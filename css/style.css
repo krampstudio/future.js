@@ -15,6 +15,7 @@ body{
 }
 section {
     font-family: Roboto;
+    margin : 3em 1em 6em 1em;
 }
 
 a {
@@ -34,11 +35,12 @@ section h3 {
 }
 
 section h1 {
-    font-size : 2.2em;
+    font-size : 2.5em;
     text-align: center;
+    font-weight: bold;
 }
 section h2 {
-    font-size: 1.8em;
+    font-size: 2em;
 }
 section h3 {
     font-size: 1.5em;
@@ -115,7 +117,7 @@ header nav a > span{
 /* Home intro */
 
 .intro {
-    margin: 3em 1em 1em 1em;
+    margin-top: 3em;
     display: flex;
     flex-flow: row wrap;
     justify-content: space-around;
@@ -203,12 +205,6 @@ header nav a > span{
     }
 }
 
-.technos h1 {
-    text-align: center;
-    font-size: 32px;
-    padding: 20px 0;
-    color : #7EB0C9;
-}
 .technos ul {
     text-align: center;
 }
@@ -227,4 +223,35 @@ header nav a > span{
     .technos ul li img{
         width: 100px;
     }
+}
+
+.hints{
+    display: flex;
+    flex-flow: row nowrap;
+    align-items : flex-start;
+
+}
+.hints article{
+    margin: .5em;
+    flex: 1 0 0;
+}
+.hints article h2 {
+    margin-bottom: .5em;
+    line-height: 1em;
+    height: 2em;
+}
+.hints article p {
+   font-size: 1.25em;
+}
+
+.code-pane {
+    margin: 1em 1em 1em;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items : flex-start;
+    justify-content: space-around;
+}
+.code-pane > div {
+    flex: 1 0 0;
+    margin: 0 .5em 0 .5em;
 }
