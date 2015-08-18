@@ -62,7 +62,7 @@ module.exports = function(grunt) {
 
         watch: {
             main: {
-                files: ['js/**/*.js', '!js/main.min.js'],
+                files: ['js/main.js', 'js/components/**/*.js'],
                 tasks: ['compile'],
                 options : {
                     livereload : true

@@ -1,5 +1,5 @@
-const fwc = require('future.js').fwc;
-const prism = require('prismjs');
+import { fwc } from 'future.js';
+import prism   from 'prismjs';
 
 fwc('code')
     .on('error', (e) => console.error(e))
