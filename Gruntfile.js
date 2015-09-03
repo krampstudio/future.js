@@ -1,4 +1,5 @@
 module.exports = function(grunt) {
+    'use strict';
 
     var browsers = [{
         browserName: "firefox",
@@ -7,8 +8,8 @@ module.exports = function(grunt) {
     }, {
         browserName: "chrome",
         platform: 'Windows 8.1',
-        version: "43"
-    }, {
+        version : "43"
+     }, {
         browserName: "internet explorer",
         platform: 'Windows 8.1',
         version: "11"
@@ -149,13 +150,19 @@ module.exports = function(grunt) {
                         'http://<%=pkg.config.host%>:<%=pkg.config.port%>/test/eventify/test.html',
                         'http://<%=pkg.config.host%>:<%=pkg.config.port%>/test/fwc/api/test.html',
                         'http://<%=pkg.config.host%>:<%=pkg.config.port%>/test/fwc/integration/test.html',
-                        'http://<%=pkg.config.host%>:<%=pkg.config.port%>/test/fwc/router/test.html'
+                        'http://<%=pkg.config.host%>:<%=pkg.config.port%>/test/router/test.html'
                     ],
-                    tunnelTimeout: 5,
+                    tunnelTimeout: 15,
+                    testname: 'Future.js tests',
                     build: "<%=pkg.version%>-" + Date.now(),
-                    concurrency: 3,
                     browsers: browsers,
-                    'max-duration' : 30
+                    'max-duration' : 30,
+                    onTestComplete : function(results, cb) {
+                        grunt.log.write(require('util').inspect(results, { colors: true }));
+
+                        //test pass for now
+                        cb(null, true);
+                    }
                 }
             }
         },

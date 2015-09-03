@@ -14,7 +14,7 @@
   "license": "MIT",
   "main": "src/index.js",
   "scripts": {
-    "test": "grunt devtest"
+    "test": "grunt saucetest"
   },
   "devDependencies": {
     "babelify": "^6.1.2",
@@ -33,6 +33,7 @@
     "time-grunt": "^1.1.0"
   },
   "dependencies": {
+    "babel": "^5.8.21",
     "handlebars": "^3.0.0",
     "url-pattern": "^0.9.0",
     "webcomponents.js": "^0.7.2"
