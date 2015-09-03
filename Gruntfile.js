@@ -1,20 +1,6 @@
 module.exports = function(grunt) {
     'use strict';
 
-    var browsers = [{
-        browserName: "firefox",
-        platform: 'Windows 8.1',
-        version: "37"
-    }, {
-        browserName: "chrome",
-        platform: 'Windows 8.1',
-        version : "43"
-     }, {
-        browserName: "internet explorer",
-        platform: 'Windows 8.1',
-        version: "11"
-    }];
-
     //display times
     require('time-grunt')(grunt);
 
@@ -29,8 +15,8 @@ module.exports = function(grunt) {
         connect: {
             options : {
                 hostname: '<%=pkg.config.host%>',
-                port: '<%=pkg.config.port%>',
-                base: '.'
+                port:     '<%=pkg.config.port%>',
+                base:     '.'
             },
             preview: {
                 options: {
@@ -47,7 +33,7 @@ module.exports = function(grunt) {
         open: {
             test: {
                 path: 'http://<%=pkg.config.host%>:<%=pkg.config.port%>/test/',
-                app: '<%=pkg.config.browser%>'
+                app:  '<%=pkg.config.browser%>'
             }
         },
 
@@ -152,15 +138,22 @@ module.exports = function(grunt) {
                         'http://<%=pkg.config.host%>:<%=pkg.config.port%>/test/fwc/integration/test.html',
                         'http://<%=pkg.config.host%>:<%=pkg.config.port%>/test/router/test.html'
                     ],
-                    tunnelTimeout: 15,
-                    testname: 'Future.js tests',
-                    build: "<%=pkg.version%>-" + Date.now(),
-                    browsers: browsers,
-                    'max-duration' : 30,
-                    onTestComplete : function(results, cb) {
-                        grunt.log.write(require('util').inspect(results, { colors: true }));
+                    tunnelTimeout:       15,
+                    testname:            'Future.js tests',
+                    build:               "<%=pkg.version%>-" + Date.now(),
+                    browsers:            grunt.file.readJSON('test/browsers.json'),
+                    tags:                ['future'],
+                    public:              'public',
+                    pollInterval:        2000,
+                    statusCheckAttempts: 30,
+                    onTestComplete:      function(results, cb) {
 
-                        //test pass for now
+                        //log failures
+                        if(!results.passed){
+                            grunt.log.write(require('util').inspect(results, { colors: true, depth : 10 }));
+                        }
+
+                        //but mark the test to pass to not block the build
                         cb(null, true);
                     }
                 }
