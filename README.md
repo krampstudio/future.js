@@ -1,6 +1,8 @@
-# future.js
+# future.js [![Build Status](https://travis-ci.org/krampstudio/future.js.svg?branch=master)](https://travis-ci.org/krampstudio/future.js)
 
-!['Future.js'](public/img/logo.png "Future.js")
+
+!['Future.js'](https://github.com/krampstudio/future.js/blob/gh-pages/img/logo.png "Future.js")
+
 
 Future is a stack for developing client side app.
 
