@@ -12,14 +12,14 @@
     "version": "11"
 }, {
     "browserName ": "firefox",
-    "platform": "OS X Yosemite",
+    "platform": "OS X 10.10",
     "version": "40"
 }, {
     "browserName": "chrome",
-    "platform": "OS X Yosemite",
+    "platform": "OS X 10.10",
     "version": "44"
 }, {
     "browserName": "safari",
-    "platform": "OS X Yosemite",
+    "platform": "OS X 10.10",
     "version": "8"
 }]
