@@ -16,10 +16,10 @@
     "version": "40"
 }, {
     "browserName": "chrome",
-    "platform": "OSi X Yosemite",
+    "platform": "OS X Yosemite",
     "version": "44"
 }, {
     "browserName": "safari",
-    "platform": "OSi X Yosemite",
+    "platform": "OS X Yosemite",
     "version": "8"
 }]
