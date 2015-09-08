@@ -138,14 +138,11 @@ module.exports = function(grunt) {
                         'http://<%=pkg.config.host%>:<%=pkg.config.port%>/test/fwc/integration/test.html',
                         'http://<%=pkg.config.host%>:<%=pkg.config.port%>/test/router/test.html'
                     ],
-                    tunnelTimeout:       15,
                     testname:            'Future.js tests',
                     build:               "<%=pkg.version%>-" + Date.now(),
                     browsers:            grunt.file.readJSON('test/browsers.json'),
                     tags:                ['future'],
                     public:              'public',
-                    pollInterval:        2000,
-                    statusCheckAttempts: 30,
                     onTestComplete:      function(results, cb) {
 
                         //log failures
