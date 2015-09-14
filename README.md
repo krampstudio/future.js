@@ -1,4 +1,4 @@
-# future.js [![Build Status](https://travis-ci.org/krampstudio/future.js.svg?branch=master)](https://travis-ci.org/krampstudio/future.js)
+# future.js [![Build Status](https://travis-ci.org/krampstudio/future.js.svg?branch=master)](https://travis-ci.org/krampstudio/future.js) [![Sauce Test Status](https://saucelabs.com/buildstatus/krampstudio)](https://saucelabs.com/u/krampstudio)
 
 !['Future.js'](https://github.com/krampstudio/future.js/blob/gh-pages/img/logo.png "Future.js")
 
