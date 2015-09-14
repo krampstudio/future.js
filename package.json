@@ -25,7 +25,6 @@
     "grunt-contrib-watch": "^0.6.1",
     "grunt-exorcise": "git+https://github.com/krampstudio/grunt-exorcise.git",
     "grunt-open": "^0.2.3",
-    "hbsfy": "^2.2.1",
     "load-grunt-tasks": "^3.1.0",
     "time-grunt": "^1.1.0"
   },

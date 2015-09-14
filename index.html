@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="css/fonts.css" />
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="./node_modules/prismjs/dist/prism-okaidia/prism-okaidia.css" />
+    <link rel="stylesheet" href="./js/components/load/load.css" />
     <script type="text/javascript" src="./node_modules/future.js/node_modules/webcomponents.js/webcomponents-lite.min.js"></script>
 </head>
 <body>
@@ -19,7 +20,7 @@
             <a href="#"><span class="fico-home"></span>Home</a>
             <a href="#"><span class="fico-steps"></span>Getting started</a>
             <a href="#"><span class="fico-book"></span>Docs</a>
-            <a href="#"><span class="fico-mark-github"></span>Code</a>
+            <a href="https://github.com/krampstudio/future.js"><span class="fico-mark-github"></span>Code</a>
         </nav>
     </header>
     <main>
@@ -60,32 +61,43 @@
         <section class="code">
             <h1>Samples</h1>
             <article>
-                <h2>Define a component</h2>
 
                 <div class="code-pane">
                     <div>
-                        <span>JavaScript</span>
+                        <h3>JavaScript</h3>
                         <f-code lang="javascript">
-const fwc = require('fwc');
+//fwc for future web components
+import { fwc } from 'future.js';
 
-// load is the component name, it uses the default namespace 'f-'
+// 'load' is the component name,
+// it'll use the default namespace 'f-'
 fwc('load')
 
-  //listen on errors
+  //lifecycle and state events
   .on('error', e =&gt; {
     console.error('Ooops', e);
   })
 
+  //lifecycle and state events
+  .on('create', elt =&gt; {
+    elt.textContent = elt.textContent.toLowerCase();
+  })
+
   //native event delegation
   .on('click', function (elt) {
-    fetch (elt.src)
-      .then( res =&gt; elt.target.innerHTML = res; )
-      .catch( e =&gt; this.trigger('error', e); )
+    window.fetch (elt.src)
+      .then( res =&gt; res.text() )
+      .then( html =&gt; elt.target.innerHTML = html)
+      .catch( e =&gt; this.trigger('error', e) );
   })
+
+  //define attributes
+  .attrs('src', 'target')
 
   //define getter/setters
   .access('target', {
     get (val){
+      //elt.target will return a DOM element
       return document.querySelector(val);
     }
   })
@@ -94,17 +106,17 @@ fwc('load')
   .register();</f-code>
                     </div>
                     <div>
-                        <span>HTML</span>
-                        <f-code lang="markup">
-&lt;f-load src="foo.html" target=".foo"&gt;Load content&lt;/f-load&gt;
-&lt;div class="foo"&gt;&lt;/div&gt;
-                        </f-code>
+                        <h3>HTML</h3>
+                        <f-code lang="markup">&lt;f-load src="dashboard.html" target=".dash"&gt;
+Start the time machine
+&lt;/f-load&gt;
+&lt;div class="dash"&gt;&lt;/div&gt;</f-code>
                     </div>
                     <div>
-                        <span>Result</span>
+                        <h3>Result</h3>
                         <div>
-                            <f-load src="foo.html" target=".foo">Load content</f-load>
-                            <div class="foo"></div>
+                            <f-load src="dashboard.html" target=".dash">Start the time machine</f-load>
+                            <div class="dash"></div>
                         </div>
                     </div>
                 </div>
@@ -112,7 +124,8 @@ fwc('load')
         </section>
     </main>
     <footer>
-        Made with love and coffee by Bertrand Chevrier - @left 2015 - `${['chevrier', 'bertrand'].join('.')}@${['gmail', 'com'].join('.')}`
+        <p>Made with coffee and open source software by Bertrand Chevrier</p>
+        <pre>`${['chevrier', 'bertrand'].join('.')}@${['gmail', 'com'].join('.')}`</pre>
     </footer>
 
     <script src="./js/main.min.js"></script>

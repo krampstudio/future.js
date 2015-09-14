@@ -46,6 +46,7 @@ section h3 {
     font-size: 1.5em;
 }
 
+
 /* Header and navigation */
 
 header {
@@ -114,6 +115,27 @@ header nav a > span{
     }
 }
 
+/* Footer */
+
+footer {
+    position: relative;
+    background-color: #222;
+    color: #fff;
+    padding: 1em;
+}
+footer p {
+    text-align: center;
+    margin: 1em;
+}
+footer pre {
+    text-align: center;
+    font-family: monospace;
+    color : #7EB0C9;
+    margin: 1em;
+    overflow-wrap: break-word;
+}
+
+
 /* Home intro */
 
 .intro {
@@ -173,11 +195,11 @@ header nav a > span{
    border-radius: 100%;
 }
 
-.intro > div:last-child a:focus{
+.intro > div:last-child a:hover{
   color : #7EB0C9;
 }
 
-.intro > div:last-child a:focus:before{
+.intro > div:last-child a:hover:before{
   animation: scaling-circle 2s;
 }
 
@@ -197,13 +219,17 @@ header nav a > span{
 @media all and (max-width: 700px) {
     .intro {
         flex-flow: column nowrap;
+        height: auto;
     }
 
     .intro > div {
-        flex: 1 0 0;
+        flex: 1 0 100% !important;
         margin-bottom: 1em;
     }
 }
+
+
+/* Technos */
 
 .technos ul {
     text-align: center;
@@ -225,6 +251,9 @@ header nav a > span{
     }
 }
 
+
+/* Hints */
+
 .hints{
     display: flex;
     flex-flow: row nowrap;
@@ -244,6 +273,26 @@ header nav a > span{
    font-size: 1.25em;
 }
 
+@media all and (max-width: 915px) {
+    .hints article h2 {
+        height: 3em;
+    }
+}
+@media all and (max-width: 700px) {
+    .hints{
+        flex-flow: column nowrap;
+    }
+    .hints article{
+        margin-bottom: 1em;
+        flex: 1 0 100%;
+    }
+    .hints article h2 {
+        height: inherit;
+    }
+}
+
+
+
 .code-pane {
     margin: 1em 1em 1em;
     display: flex;
@@ -254,4 +303,21 @@ header nav a > span{
 .code-pane > div {
     flex: 1 0 0;
     margin: 0 .5em 0 .5em;
+}
+@media all and (max-width: 900px) {
+    .code-pane {
+        flex-flow: row wrap;
+    }
+    .code-pane > div {
+        margin: .5em;
+    }
+}
+@media all and (max-width: 700px) {
+    .code-pane {
+        flex-flow: column nowrap;
+    }
+    .code-pane > div {
+        flex: 1 0 100%;
+        margin: 0 .5em 0 .5em;
+    }
 }

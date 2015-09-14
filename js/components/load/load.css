@@ -1,0 +1,13 @@
+f-load {
+    display: inline;
+    padding: .5em 1em;
+    line-height: 3em;
+    border: solid 1px #ddd;
+    border-radius: 2px;
+    background-color: #ccc;
+    color: #333;
+    cursor: pointer;
+}
+f-load:hover {
+    color: #000;
+}

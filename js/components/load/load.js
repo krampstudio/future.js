@@ -1,3 +1,4 @@
+//fwc for future web components
 import { fwc } from 'future.js';
 
 // load is the component name, it uses the default namespace 'f-'
@@ -6,6 +7,11 @@ fwc('load')
   //listen on errors
   .on('error', e => {
     console.error('Ooops', e);
+  })
+
+  //lifecycle and state events
+  .on('create', elt => {
+    elt.textContent = elt.textContent.toLowerCase();
   })
 
   //native event delegation

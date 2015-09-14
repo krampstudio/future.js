@@ -34,9 +34,7 @@ module.exports = function(grunt) {
         browserify: {
             options: {
                 transform: [
-                    'babelify', ['hbsfy', {
-                        'extensions': ['tpl']
-                    }]
+                    'babelify'
                 ],
                 browserifyOptions: {
                     debug: true
