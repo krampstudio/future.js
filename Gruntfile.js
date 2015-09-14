@@ -1,6 +1,8 @@
 module.exports = function(grunt) {
     'use strict';
 
+    var buildId = process.env.TRAVIS_BUILD_NUMBER || Date.now();
+
     //display times
     require('time-grunt')(grunt);
 
@@ -138,18 +140,20 @@ module.exports = function(grunt) {
                         'http://<%=pkg.config.host%>:<%=pkg.config.port%>/test/fwc/integration/test.html',
                         'http://<%=pkg.config.host%>:<%=pkg.config.port%>/test/router/test.html'
                     ],
-                    tunnelTimeout:       15,
-                    testname:            'Future.js tests',
-                    build:               "<%=pkg.version%>-" + Date.now(),
+                    testname:            'Future.js tests ' + buildId,
+                    build:               "<%=pkg.version%>-" + buildId,
                     browsers:            grunt.file.readJSON('test/browsers.json'),
                     tags:                ['future'],
                     public:              'public',
                     pollInterval:        2000,
                     statusCheckAttempts: 30,
+                    throttled:           2,
+                    'max-duration':      300,
                     onTestComplete:      function(results, cb) {
 
                         //log failures
                         if(!results.passed){
+                            grunt.log.write('test fails');
                             grunt.log.write(require('util').inspect(results, { colors: true, depth : 10 }));
                         }
 
