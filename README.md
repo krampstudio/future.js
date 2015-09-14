@@ -24,13 +24,8 @@ It features :
 
 ## Browser Support
 
-[![Sauce Test Status](https://saucelabs.com/browser-matrix/krampstudio.svg)](https://saucelabs.com/u/krampstudio)
+[![Sauce Test Status](matrix.png)](https://saucelabs.com/u/krampstudio)
 
-Tested on :
- - Firefox 40, 42
- - Chrome 45
- - Safari 8
- - IE 11
 
 ## Samples
 
