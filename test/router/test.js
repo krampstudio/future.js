@@ -1,9 +1,6 @@
-require('webcomponents.js/webcomponents-lite.js');
-require('../sauce.js');
-
-var router = require('router');
-var QUnit = require('qunitjs');
-
+import '../sauce.js';
+import QUnit from 'qunitjs';
+import router from 'router';
 
 QUnit.module('API');
 

@@ -1,4 +1,6 @@
-var eventify = require('eventify');
+import '../sauce.js';
+import QUnit from 'qunitjs';
+import eventify from 'eventify';
 
 QUnit.module('eventify');
 

@@ -1,5 +1,6 @@
 //expose QUnit results to sauce labs using globals (sad but true)
-var QUnit = require('qunitjs');
+import QUnit  from 'qunitjs';
+
 var testCases = [];
 
 QUnit.done(function(results) {
