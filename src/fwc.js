@@ -10,11 +10,11 @@
  * @module fwc
  */
 
-var eventify = require('./eventify.js');
+import eventify from './eventify.js';
 
 //The registry keeps a ref to previously registered
 //components in order to extend them.
-var registry = new Map();
+let registry = new Map();
 
 /**
  * Where everything starts, this function will gives you a reference to an component model.
@@ -24,7 +24,7 @@ var registry = new Map();
  * @returns  {fwComponent} the component model
  *
  */
-var fwc = function futureWebComponentFactory(name = '', options = {}){
+const fwc = function futureWebComponentFactory(name = '', options = {}){
 
     var namespace;
 
@@ -497,4 +497,4 @@ function validateEltName(name){
     return /^([a-z]+-)?[a-z]+[a-z0-9]*$/i.test(name);
 }
 
-module.exports = fwc;
+export default fwc;

@@ -29,7 +29,7 @@ let registry = new Set();
  * @returns {routing} the routing object
  * @throws TypeError if the routes aren't correclty formater
  */
-let router = function router (routes = []){
+export default function router (routes = []){
 
 
     /**
@@ -104,5 +104,3 @@ let router = function router (routes = []){
 
     return routing;
 };
-
-module.exports = router;
