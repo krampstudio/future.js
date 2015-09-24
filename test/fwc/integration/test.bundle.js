@@ -788,7 +788,7 @@ QUnit.asyncTest('register and access a component', 4, function (assert) {
     assert.ok(container instanceof HTMLElement, 'The container exists');
 
     fwc('base').on('error', function (e) {
-        console.error(e);
+        assert.ok(false, e);
     }).on('create', function (elt) {
 
         var fBase = container.querySelector('f-base');
@@ -800,18 +800,35 @@ QUnit.asyncTest('register and access a component', 4, function (assert) {
     }).register();
 });
 
-QUnit.asyncTest('register with another namespace', 4, function (assert) {
+QUnit.asyncTest('register with another namespace in options', 4, function (assert) {
     var container = document.getElementById('permanent-fixture');
     assert.ok(container instanceof HTMLElement, 'The container exists');
 
     fwc('bar', { namespace: 'foo' }).on('error', function (e) {
-        console.error(e);
+        assert.ok(false, e);
     }).on('create', function (elt) {
 
         var fooBar = container.querySelector('foo-bar');
         assert.equal(fooBar.nodeName, 'FOO-BAR', 'The foo-bar component is found');
         assert.equal(fooBar.nodeName, elt.nodeName, 'The foo-bar component is given in parameter');
         assert.deepEqual(fooBar, elt, 'The callback elt is the given node');
+
+        QUnit.start();
+    }).register();
+});
+
+QUnit.asyncTest('register with another namespace', 4, function (assert) {
+    var container = document.getElementById('permanent-fixture');
+    assert.ok(container instanceof HTMLElement, 'The container exists');
+
+    fwc('baz-bar').on('error', function (e) {
+        assert.ok(false, e);
+    }).on('create', function (elt) {
+
+        var bazBar = container.querySelector('baz-bar');
+        assert.equal(bazBar.nodeName, 'BAZ-BAR', 'The baz-bar component is found');
+        assert.equal(bazBar.nodeName, elt.nodeName, 'The baz-bar component is given in parameter');
+        assert.deepEqual(bazBar, elt, 'The callback elt is the given node');
 
         QUnit.start();
     }).register();
@@ -824,7 +841,7 @@ QUnit.asyncTest('register and multiple component', 7, function (assert) {
     var sum = 0;
 
     fwc('multi').on('error', function (e) {
-        console.error(e);
+        assert.ok(false, e);
     }).on('create', function (elt) {
 
         assert.equal(elt.nodeName, 'F-MULTI', 'The element is a multi');
@@ -839,6 +856,52 @@ QUnit.asyncTest('register and multiple component', 7, function (assert) {
     }).register();
 });
 
+QUnit.module('Lifecycle');
+
+QUnit.test('create', function (assert) {
+    assert.expect(3);
+
+    var done = assert.async();
+    var container = document.getElementById('permanent-fixture');
+    assert.ok(container instanceof HTMLElement, 'The container exists');
+
+    fwc('state-create').on('error', function (e) {
+        assert.ok(false, e);
+    }).on('create', function (elt) {
+
+        assert.equal(elt.nodeName, 'STATE-CREATE', 'The elt is created');
+
+        var stateCreate = container.querySelector('state-create');
+        assert.deepEqual(stateCreate, elt, 'The callback elt is the given node');
+
+        done();
+    }).register();
+});
+
+QUnit.test('detach', function (assert) {
+    assert.expect(3);
+
+    var done = assert.async();
+    var container = document.getElementById('permanent-fixture');
+    assert.ok(container instanceof HTMLElement, 'The container exists');
+
+    fwc('state-detach').on('error', function (e) {
+        assert.ok(false, e);
+    }).on('create', function (elt) {
+
+        var stateDestroy = container.querySelector('state-detach');
+        assert.deepEqual(stateDestroy, elt, 'The callback elt is the given node');
+        setTimeout(function () {
+            container.removeChild(elt);
+        }, 0);
+    }).on('detach', function () {
+        var stateDestroy = container.querySelector('state-detach');
+        assert.equal(stateDestroy, null, 'The elt is removed');
+
+        done();
+    }).register();
+});
+
 QUnit.module('Attributes');
 
 QUnit.asyncTest('define basic attributes', 8, function (assert) {
@@ -846,7 +909,7 @@ QUnit.asyncTest('define basic attributes', 8, function (assert) {
     assert.ok(container instanceof HTMLElement, 'The container exists');
 
     fwc('attr').on('error', function (e) {
-        console.error(e);
+        assert.ok(false, e);
     }).on('create', function (elt) {
 
         var fAttr = container.querySelector('f-attr');
@@ -869,7 +932,7 @@ QUnit.asyncTest('define attributes with type casting', 16, function (assert) {
     assert.ok(container instanceof HTMLElement, 'The container exists');
 
     fwc('cast').on('error', function (e) {
-        console.error(e);
+        assert.ok(false, e);
     }).on('create', function (elt) {
 
         var fCast = container.querySelector('f-cast');
@@ -905,7 +968,7 @@ QUnit.asyncTest('define attributes with accessors', 11, function (assert) {
     assert.ok(container instanceof HTMLElement, 'The container exists');
 
     fwc('access').on('error', function (e) {
-        console.error(e);
+        assert.ok(false, e);
     }).on('create', function (elt) {
 
         var fAccess = container.querySelector('f-access');
@@ -960,7 +1023,7 @@ QUnit.asyncTest('Component with a method', 7, function (assert) {
     assert.ok(mTarget.style.display !== 'none', "The mtarget content is displayed");
 
     fwc('method').on('error', function (e) {
-        console.error(e);
+        assert.ok(false, e);
     }).on('create', function (elt) {
 
         var fMethod = container.querySelector('f-method');
@@ -1007,7 +1070,7 @@ QUnit.asyncTest('Component with content from a callback', 11, function (assert) 
     assert.equal(container.querySelectorAll('f-content ul').length, 0, 'The component does not contain a list');
 
     fwc('content').on('error', function (e) {
-        console.error(e);
+        assert.ok(false, e);
     }).on('create', function (elt) {
 
         var fContent = container.querySelector('f-content');
@@ -1032,7 +1095,7 @@ QUnit.asyncTest('Component with dynamic content from a template', 8, function (a
     assert.equal(container.querySelectorAll('f-dyncontent h1').length, 0, 'The component does not contain an h1');
 
     fwc('dyncontent').on('error', function (e) {
-        console.error(e);
+        assert.ok(false, e);
     }).on('create', function (elt) {
 
         var fDynContent = container.querySelector('f-dyncontent');
@@ -1078,7 +1141,7 @@ QUnit.asyncTest('Extend an anchor', 5, function (assert) {
     var link = document.querySelector('a.link');
 
     fwc('link').on('error', function (e) {
-        console.error(e);
+        assert.ok(false, e);
     }).on('create', function (elt) {
 
         var flink = document.querySelector('.flink');
@@ -1098,7 +1161,7 @@ QUnit.asyncTest('Extend another component', 3, function (assert) {
     assert.ok(container instanceof HTMLElement, 'The container exists');
 
     fwc('upper').on('error', function (e) {
-        console.error(e);
+        assert.ok(false, e);
     }).on('create', function (elt) {
         assert.ok(false, 'the parent element should not be created');
     }).access('bar', {
@@ -1127,7 +1190,7 @@ QUnit.test('on click', 3, function (assert) {
     assert.ok(container instanceof HTMLElement, 'The container exists');
 
     fwc('native').on('error', function (e) {
-        console.error(e);
+        assert.ok(false, e);
     }).on('create', function (elt) {
 
         var fNative = document.querySelector('f-native');
