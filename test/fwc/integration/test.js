@@ -1,4 +1,7 @@
-var fwc = require('fwc');
+import 'webcomponents.js/webcomponents.js' ;
+import '../../sauce.js';
+import QUnit from 'qunitjs';
+import fwc from 'fwc';
 
 QUnit.module('Register');
 

@@ -1,4 +1,6 @@
-var router = require('router');
+import '../sauce.js';
+import QUnit from 'qunitjs';
+import router from 'router';
 
 QUnit.module('API');
 
