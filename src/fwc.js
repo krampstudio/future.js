@@ -45,6 +45,7 @@ var fwc = function futureWebComponentFactory(name = '', options = {}){
     let matchNs = name.match(/^[a-z]+(?=-)/i);
     if(matchNs && matchNs.length){
         namespace = matchNs[0];
+        name = name.replace(new RegExp('^' + namespace + '-', 'i'), '');
     } else {
         namespace = options.namespace || 'f';
     }
@@ -414,6 +415,7 @@ var fwc = function futureWebComponentFactory(name = '', options = {}){
                 }
             };
 
+
             //The prototype that is going to be regsitered
             //first we attach lifecycle callback with a predefined behavior
             var eltProto = {
@@ -439,7 +441,7 @@ var fwc = function futureWebComponentFactory(name = '', options = {}){
 
                 detachedCallback : {
                     value(...params){
-                        self.trigger(comp, 'flow', 'detach', this, ...params);
+                        self.trigger('flow', 'detach', this, ...params);
                     }
                 },
 
@@ -451,12 +453,11 @@ var fwc = function futureWebComponentFactory(name = '', options = {}){
                             renderContent(this);
                         }
                     }
-                },
+                }
             };
 
             //attach the attributes and methods definitions
             Object.assign(eltProto, data.attrs, data.methods);
-
 
             try {
 
