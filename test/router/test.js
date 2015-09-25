@@ -41,9 +41,8 @@ QUnit.test("config", 6, function(assert){
 
 QUnit.test("resolve one", 3, function(assert){
 
-    var loaded = false;
+    let loaded = false;
     let handlers   = () => loaded = true;
-
 
     let routing = router([{
         url : '/foo',
@@ -61,7 +60,7 @@ QUnit.test("resolve one", 3, function(assert){
 
 QUnit.test("resolve a stack with patterns", 11, function(assert){
 
-    var route = false;
+    let route = false;
     let route1   = () => route = 1;
     let route2   = () => route = 2;
     let route3   = () => route = 3;
@@ -119,7 +118,7 @@ QUnit.test("resolve a stack with patterns", 11, function(assert){
 
 QUnit.test("resolve once", 5, function(assert){
 
-    var loaded = 0;
+    let loaded = 0;
     let handlers   = () => loaded++;
 
     let routing = router([{

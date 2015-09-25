@@ -7,7 +7,7 @@
 /**
  * @module router
  */
-const UrlPattern = require('url-pattern');
+import UrlPattern from 'url-pattern';
 
 /**
  * Keep track of components registered
@@ -103,4 +103,4 @@ export default function router (routes = []){
     routes.forEach( route => routing.add(route));
 
     return routing;
-};
+}

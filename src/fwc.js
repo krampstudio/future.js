@@ -11,6 +11,7 @@
  */
 
 import eventify from './eventify.js';
+import htmlElements from './elements.json';
 
 //The registry keeps a ref to previously registered
 //components in order to extend them.
@@ -96,7 +97,7 @@ const fwc = function futureWebComponentFactory(name = '', options = {}){
             //create the attr definition, formated for Object.defineProperty
             data.attrs[name] = {
                 get() {
-                    var value = this.getAttribute(name);
+                    let value = this.getAttribute(name);
                     if(def.type){
                         let type = def.type.toLowerCase();
                         if(type === 'boolean'){
@@ -174,7 +175,6 @@ const fwc = function futureWebComponentFactory(name = '', options = {}){
          * @returns {fwComp|Array}
          */
         attrs(...attributes){
-            var self = this;
 
             //getter
             if(!attributes || attributes.length === 0){
@@ -335,7 +335,7 @@ const fwc = function futureWebComponentFactory(name = '', options = {}){
             } else {
 
                 //look at the list of supported elements for the prototype name
-                let htmlElements = require('./elements.json');
+
                 for(let eltName of Object.keys(htmlElements)){
                     if(htmlElements[eltName].nodes.indexOf(element) > -1){
                         protoName = eltName;
