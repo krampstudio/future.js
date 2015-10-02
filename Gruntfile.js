@@ -67,10 +67,10 @@ module.exports = function(grunt) {
                     'test/eventify/test.bundle.js':         ['test/eventify/test.js'],
                     'test/fwc/api/test.bundle.js':          ['test/fwc/api/test.js'],
                     'test/fwc/integration/test.bundle.js':  ['test/fwc/integration/test.js'],
-                    'test/router/test.bundle.js':           ['test/router/test.js'],
+                    'test/router/test.bundle.js':           ['test/router/test.js']
                 },
                 options : {
-                    external : ['fwc', 'eventify', 'router'],
+                    external : ['fwc', 'eventify', 'router']
                 }
             }
         },
@@ -89,7 +89,7 @@ module.exports = function(grunt) {
                     'test/eventify/test.bundle.js.map':        ['test/eventify/test.bundle.js'],
                     'test/fwc/api/test.bundle.js.map':         ['test/fwc/api/test.bundle.js'],
                     'test/fwc/integration/test.bundle.js.map': ['test/fwc/integration/test.bundle.js'],
-                    'test/router/test.bundle.js.map':          ['test/router/test.bundle.js'],
+                    'test/router/test.bundle.js.map':          ['test/router/test.bundle.js']
                 }
             }
         },
@@ -102,9 +102,9 @@ module.exports = function(grunt) {
                     sourceMapIn: 'dist/future.js.map'
                 },
                 files: {
-                    'dist/future.min.js': ['dist/future.js'],
-                },
-            },
+                    'dist/future.min.js': ['dist/future.js']
+                }
+            }
         },
 
         watch: {
@@ -117,7 +117,7 @@ module.exports = function(grunt) {
                 tasks: ['compile-test'],
                 options: {
                     livereload: true
-                },
+                }
             }
         },
 
@@ -141,7 +141,7 @@ module.exports = function(grunt) {
                         'http://<%=pkg.config.host%>:<%=pkg.config.port%>/test/router/test.html'
                     ],
                     testname:            'Future.js tests ' + buildId,
-                    build:               "<%=pkg.version%>-" + buildId,
+                    build:               '<%=pkg.version%>-' + buildId,
                     browsers:            grunt.file.readJSON('test/browsers.json'),
                     tags:                ['future'],
                     public:              'public',
@@ -162,7 +162,7 @@ module.exports = function(grunt) {
                     }
                 }
             }
-        },
+        }
     });
 
     grunt.registerTask('compile-core', 'Compile sources', ['browserify:core', 'exorcise:core']);

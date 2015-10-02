@@ -27,3 +27,6 @@ node_modules
 # Users Environment Variables
 .lock-wscript
 
+# compiled bundles
+*.bundle.js
+*.bundle.js.map
