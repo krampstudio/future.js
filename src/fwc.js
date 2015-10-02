@@ -10,11 +10,12 @@
  * @module fwc
  */
 
-var eventify = require('./eventify.js');
+import eventify from './eventify.js';
+import htmlElements from './elements.json';
 
 //The registry keeps a ref to previously registered
 //components in order to extend them.
-var registry = new Map();
+let registry = new Map();
 
 /**
  * Where everything starts, this function will gives you a reference to an component model.
@@ -24,7 +25,7 @@ var registry = new Map();
  * @returns  {fwComponent} the component model
  *
  */
-var fwc = function futureWebComponentFactory(name = '', options = {}){
+const fwc = function futureWebComponentFactory(name = '', options = {}){
 
     var namespace;
 
@@ -97,7 +98,7 @@ var fwc = function futureWebComponentFactory(name = '', options = {}){
             //create the attr definition, formated for Object.defineProperty
             data.attrs[name] = {
                 get() {
-                    var value = this.getAttribute(name);
+                    let value = this.getAttribute(name);
                     if(def.type){
                         let type = def.type.toLowerCase();
                         if(type === 'boolean'){
@@ -175,7 +176,6 @@ var fwc = function futureWebComponentFactory(name = '', options = {}){
          * @returns {fwComp|Array}
          */
         attrs(...attributes){
-            var self = this;
 
             //getter
             if(!attributes || attributes.length === 0){
@@ -336,7 +336,7 @@ var fwc = function futureWebComponentFactory(name = '', options = {}){
             } else {
 
                 //look at the list of supported elements for the prototype name
-                let htmlElements = require('./elements.json');
+
                 for(let eltName of Object.keys(htmlElements)){
                     if(htmlElements[eltName].nodes.indexOf(element) > -1){
                         protoName = eltName;
@@ -498,4 +498,4 @@ function validateEltName(name){
     return /^([a-z]+-)?[a-z]+[a-z0-9]*$/i.test(name);
 }
 
-module.exports = fwc;
+export default fwc;

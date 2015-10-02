@@ -4651,11 +4651,31 @@ module.exports={
 //load the ES6 polyfill
 'use strict';
 
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
 require("babel/polyfill");
 
-//load Future libraries
-require('./fwc.js');
-require('./router.js');
+//re-export Future libraries
+
+var _fwcJs = require('./fwc.js');
+
+Object.defineProperty(exports, 'fwc', {
+  enumerable: true,
+  get: function get() {
+    return _fwcJs.fwc;
+  }
+});
+
+var _routerJs = require('./router.js');
+
+Object.defineProperty(exports, 'router', {
+  enumerable: true,
+  get: function get() {
+    return _routerJs.router;
+  }
+});
 
 },{"./fwc.js":"fwc","./router.js":"router","babel/polyfill":184}],"eventify":[function(require,module,exports){
 /**
@@ -4674,6 +4694,10 @@ require('./router.js');
  */
 'use strict';
 
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+exports['default'] = eventify;
 var api = {
 
     /**
@@ -4727,7 +4751,6 @@ var api = {
             data[_key - 1] = arguments[_key];
         }
 
-        var self = this;
         if (this._events[name] && Array.isArray(this._events[name])) {
             this._events[name].forEach(function (event) {
                 return event.call.apply(event, [_this].concat(data));
@@ -4758,6 +4781,7 @@ var api = {
  * @param {Object} target - the target object
  * @returns {Object} the target for conveniance
  */
+
 function eventify() {
     var target = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
@@ -4766,8 +4790,7 @@ function eventify() {
     Object.keys(api).filter(function (prop) {
         return typeof api[prop] === 'function';
     }).forEach(function (method) {
-
-        target[method] = function delegate() {
+        target[method] = function () {
             for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
                 args[_key2] = arguments[_key2];
             }
@@ -4778,7 +4801,7 @@ function eventify() {
     return target;
 }
 
-module.exports = eventify;
+module.exports = exports['default'];
 
 },{}],"fwc":[function(require,module,exports){
 /**
@@ -4795,7 +4818,19 @@ module.exports = eventify;
 
 'use strict';
 
-var eventify = require('./eventify.js');
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _eventifyJs = require('./eventify.js');
+
+var _eventifyJs2 = _interopRequireDefault(_eventifyJs);
+
+var _elementsJson = require('./elements.json');
+
+var _elementsJson2 = _interopRequireDefault(_elementsJson);
 
 //The registry keeps a ref to previously registered
 //components in order to extend them.
@@ -4832,7 +4867,6 @@ var fwc = function futureWebComponentFactory() {
     var matchNs = name.match(/^[a-z]+(?=-)/i);
     if (matchNs && matchNs.length) {
         namespace = matchNs[0];
-        name = name.replace(new RegExp('^' + namespace + '-', 'i'), '');
     } else {
         namespace = options.namespace || 'f';
     }
@@ -4964,8 +4998,6 @@ var fwc = function futureWebComponentFactory() {
             for (var _len = arguments.length, attributes = Array(_len), _key = 0; _key < _len; _key++) {
                 attributes[_key] = arguments[_key];
             }
-
-            var self = this;
 
             //getter
             if (!attributes || attributes.length === 0) {
@@ -5131,16 +5163,16 @@ var fwc = function futureWebComponentFactory() {
             } else {
 
                 //look at the list of supported elements for the prototype name
-                var htmlElements = require('./elements.json');
+
                 var _iteratorNormalCompletion = true;
                 var _didIteratorError = false;
                 var _iteratorError = undefined;
 
                 try {
-                    for (var _iterator = Object.keys(htmlElements)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    for (var _iterator = Object.keys(_elementsJson2['default'])[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                         var eltName = _step.value;
 
-                        if (htmlElements[eltName].nodes.indexOf(element) > -1) {
+                        if (_elementsJson2['default'][eltName].nodes.indexOf(element) > -1) {
                             protoName = eltName;
                             break;
                         }
@@ -5355,7 +5387,7 @@ var fwc = function futureWebComponentFactory() {
                             params[_key6] = arguments[_key6];
                         }
 
-                        self.trigger.apply(self, ['flow', 'detach', this].concat(params));
+                        self.trigger.apply(self, [comp, 'flow', 'detach', this].concat(params));
                     }
                 },
 
@@ -5398,7 +5430,7 @@ var fwc = function futureWebComponentFactory() {
     };
 
     //make fwc a event emiter before returning it.
-    return eventify(comp);
+    return (0, _eventifyJs2['default'])(comp);
 };
 
 /**
@@ -5412,7 +5444,8 @@ function validateEltName(name) {
     );
 }
 
-module.exports = fwc;
+exports['default'] = fwc;
+module.exports = exports['default'];
 
 },{"./elements.json":187,"./eventify.js":"eventify"}],"router":[function(require,module,exports){
 /**
@@ -5426,9 +5459,19 @@ module.exports = fwc;
  */
 'use strict';
 
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+
 var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
 
-var UrlPattern = require('url-pattern');
+exports['default'] = router;
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _urlPattern = require('url-pattern');
+
+var _urlPattern2 = _interopRequireDefault(_urlPattern);
 
 /**
  * Keep track of components registered
@@ -5450,7 +5493,8 @@ var registry = new Set();
  * @returns {routing} the routing object
  * @throws TypeError if the routes aren't correclty formater
  */
-var router = function router() {
+
+function router() {
     var routes = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
 
     /**
@@ -5501,7 +5545,7 @@ var router = function router() {
                     }
 
                     //match the url as a pattern
-                    var pattern = new UrlPattern(routeUrl);
+                    var pattern = new _urlPattern2['default'](routeUrl);
                     if (pattern.match(url)) {
                         return exec(routeUrl, route);
                     }
@@ -5558,9 +5602,9 @@ var router = function router() {
     });
 
     return routing;
-};
+}
 
-module.exports = router;
+module.exports = exports['default'];
 
 },{"url-pattern":186}]},{},[188])
 //# sourceMappingURL=future.js.map

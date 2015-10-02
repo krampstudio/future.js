@@ -2,15 +2,18 @@ import '../sauce.js';
 import QUnit from 'qunitjs';
 import router from 'router';
 
+
 QUnit.module('API');
 
-QUnit.test("module", 2, function(assert){
+QUnit.test("module", assert => {
+    assert.expect(2);
+
     assert.ok(typeof router !== 'undefined', "The module exports something");
     assert.ok(typeof router === 'function',  "The module exports a function");
 });
 
-
-QUnit.test("factory", 4, function(assert){
+QUnit.test("factory", assert => {
+    assert.expect(4);
 
     let routing = router();
 
@@ -23,7 +26,8 @@ QUnit.test("factory", 4, function(assert){
 
 QUnit.module('routes');
 
-QUnit.test("config", 6, function(assert){
+QUnit.test("config", assert => {
+    assert.expect(6);
 
     assert.throws( () => router([{}]),               TypeError, "Empty route");
     assert.throws( () => router([{'foo' : 'bar'}]),  TypeError, "Wrong route");
@@ -39,11 +43,11 @@ QUnit.test("config", 6, function(assert){
     assert.ok(typeof routing === 'object', "the router is an object");
 });
 
-QUnit.test("resolve one", 3, function(assert){
+QUnit.test("resolve one", assert => {
+    assert.expect(3);
 
-    var loaded = false;
+    let loaded = false;
     let handlers   = () => loaded = true;
-
 
     let routing = router([{
         url : '/foo',
@@ -58,10 +62,10 @@ QUnit.test("resolve one", 3, function(assert){
     assert.equal(loaded, true, 'the route is now resolved');
 });
 
+QUnit.test("resolve a stack with patterns", assert => {
+    assert.expect(11);
 
-QUnit.test("resolve a stack with patterns", 11, function(assert){
-
-    var route = false;
+    let route = false;
     let route1   = () => route = 1;
     let route2   = () => route = 2;
     let route3   = () => route = 3;
@@ -117,9 +121,10 @@ QUnit.test("resolve a stack with patterns", 11, function(assert){
     assert.equal(route, false, '/bazfoo/123/baz : no route resolved');
 });
 
-QUnit.test("resolve once", 5, function(assert){
+QUnit.test("resolve once", assert => {
+    assert.expect(5);
 
-    var loaded = 0;
+    let loaded = 0;
     let handlers   = () => loaded++;
 
     let routing = router([{

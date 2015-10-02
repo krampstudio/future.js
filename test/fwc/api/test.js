@@ -3,17 +3,22 @@ import '../../sauce.js';
 import QUnit from 'qunitjs';
 import fwc   from 'fwc';
 
+
 QUnit.module('Module');
 
-QUnit.test('factory', 3, function(assert) {
+QUnit.test('factory', assert => {
+    assert.expect(3);
+
     assert.ok(typeof fwc === 'function', "The module expose a function");
     assert.ok(typeof fwc('foo') === 'object', "The module creates an object");
     assert.notEqual(fwc('foo'), fwc('foo'), "The factory creates a new object at each call");
 });
 
+
 QUnit.module('Options');
 
-QUnit.test('namespace', 3, function(assert) {
+QUnit.test('namespace', assert => {
+    assert.expect(3);
 
     assert.throws(function(){
         fwc('foo', { namespace : '12' });
@@ -30,11 +35,14 @@ QUnit.test('namespace', 3, function(assert) {
     fwc('foo', { namespace : 'bar' });
 });
 
+
 QUnit.module('Events');
 
-QUnit.asyncTest("emitter", 8, function(assert){
+QUnit.test("emitter", assert => {
+    assert.expect(8);
 
-    var comp = fwc('foo');
+    let comp = fwc('foo');
+    let done = assert.async();
 
     assert.ok(typeof comp === 'object', "the component definition is an object");
     assert.ok(typeof comp.on === 'function', "the component defintion holds the method on");
@@ -42,11 +50,11 @@ QUnit.asyncTest("emitter", 8, function(assert){
     assert.ok(typeof comp.off === 'function', "the component defintion holds the method off");
     assert.ok(typeof comp.events === 'function', "the component defintion holds the method events");
 
-    comp.on('error', function(e) {
+    comp.on('error', e => {
         assert.ok(e instanceof Error, 'An error is emitted');
         assert.equal(e.message, 'test error', 'The message is given in the error');
 
-        QUnit.start();
+        done();
     });
     assert.equal(comp.events('error').length, 1, "The component has on listener registered");
     comp.trigger('error', new Error('test error'));
@@ -55,10 +63,10 @@ QUnit.asyncTest("emitter", 8, function(assert){
 
 QUnit.module('Attributes');
 
+QUnit.test('definition', assert => {
+    assert.expect(5);
 
-QUnit.test('definition', 5, function(assert){
-
-    var comp = fwc('foo');
+    let comp = fwc('foo');
 
     assert.ok(typeof comp.attr === 'function', "the component definition holds the method attr");
     assert.equal(comp.attr('id', {}), comp, "The method chains with arguments");
@@ -67,10 +75,10 @@ QUnit.test('definition', 5, function(assert){
     assert.ok(typeof comp.attr('id').get === 'function', "the attribute definition has a getter");
 });
 
+QUnit.test('definition polymorphism', assert => {
+    assert.expect(3);
 
-QUnit.test('definition polymorphism', 3, function(assert){
-
-    var comp = fwc('foo');
+    let comp = fwc('foo');
 
     comp.attr({name : 'id'});
     assert.ok(typeof comp.attr('id') === 'object', "the method returns the attribute definition");
@@ -78,11 +86,12 @@ QUnit.test('definition polymorphism', 3, function(assert){
     assert.ok(typeof comp.attr('id').get === 'function', "the attribute definition has a getter");
 });
 
-QUnit.test('definition type casting', 6, function(assert){
+QUnit.test('definition type casting', assert => {
+    assert.expect(6);
 
-    var comp = fwc('foo');
+    let comp = fwc('foo');
 
-    var mock = {
+    let mock = {
         getAttribute(name){
             return this[name];
         },
@@ -109,20 +118,22 @@ QUnit.test('definition type casting', 6, function(assert){
     assert.equal(comp.attr('bool').get.call(mock), true, "the int getter returns the parsed value");
 });
 
-QUnit.test('multiple declarations', 3, function(assert){
+QUnit.test('multiple declarations', assert => {
+    assert.expect(3);
 
-    var comp = fwc('foo');
+    let comp = fwc('foo');
 
     assert.ok(typeof comp.attrs === 'function', "the component definition holds the method attrs");
     assert.equal(comp.attrs('id', 'selected'), comp, "The method chains with arguments");
     assert.deepEqual(comp.attrs(), ['id', 'selected'], "the method returns values without arguments");
 });
 
-QUnit.test('accessors', 13, function(assert){
+QUnit.test('accessors', assert => {
+    assert.expect(13);
 
-    var comp = fwc('foo');
+    let comp = fwc('foo');
 
-    var mock = {
+    let mock = {
         getAttribute(name){
             return this[name];
         },
@@ -132,7 +143,7 @@ QUnit.test('accessors', 13, function(assert){
         }
     };
 
-    var testAccessors = {
+    let testAccessors = {
         get(){
             return "foo";
         },
@@ -161,16 +172,15 @@ QUnit.test('accessors', 13, function(assert){
     assert.equal(comp.access('id').get.call(mock), 'bee', "The getter returns the defined value");
 });
 
+
 QUnit.module('Methods');
 
+QUnit.test('declaration', assert => {
+    assert.expect(5);
 
-QUnit.test('declaration', 5, function(assert){
+    let comp = fwc('foo');
 
-    var comp = fwc('foo');
-
-    var foo = function foo(...params){
-        return params;
-    };
+    let foo = (...params) => params;
 
     assert.ok(typeof comp.method === 'function', "the component definition holds the method method");
 
@@ -180,11 +190,13 @@ QUnit.test('declaration', 5, function(assert){
     assert.deepEqual(comp.method('foo').value.call(null, 'bar', 'baz'), ['bar', 'baz'], "The content function returns the arguments");
 });
 
+
 QUnit.module('Content');
 
-QUnit.test('callback', 6, function(assert){
+QUnit.test('callback', assert => {
+    assert.expect(6);
 
-    var comp = fwc('foo');
+    let comp = fwc('foo');
 
     assert.ok(typeof comp.content === 'function', "the component definition holds the method content");
 
@@ -192,32 +204,32 @@ QUnit.test('callback', 6, function(assert){
     assert.ok(typeof comp.content() === 'function', "The method returns the function without arguments");
     assert.equal(comp.content().call(), 'test', "The content function returns the string set");
 
-    comp.content(function template(data){
-        return `<p>${data.foo}</p>`;
-    });
-    var content = comp.content();
+    comp.content(data => `<p>${data.foo}</p>`);
+
+    let content = comp.content();
     assert.ok(typeof content === 'function', "The method return the set function without arguments");
     assert.equal(content({ foo: 'bar'}), '<p>bar</p>', "The function replace the content data");
 });
 
+QUnit.test('handlebar template', assert => {
+    assert.expect(2);
 
-QUnit.test('handlebar template', 2, function(assert){
-
-    var comp = fwc('foo');
+    let comp = fwc('foo');
 
     //template is handled externally, by browserify
     comp.content(require('./test.tpl'));
 
-    var content = comp.content();
+    let content = comp.content();
 
     assert.ok(typeof content === 'function', "The method return the set function without arguments");
     assert.equal(content({ foo: 'bar'}).trim(), '<span>bar</span>', "The function replace the content data");
 });
 
+
 QUnit.module('Extend');
 
-
-QUnit.test('element name', 4, function(assert) {
+QUnit.test('element name', assert => {
+    assert.expect(4);
 
     assert.throws(function(){
         fwc('foo').extend(12);
@@ -238,28 +250,28 @@ QUnit.test('element name', 4, function(assert) {
     fwc('foo').extend('bar');
 });
 
-QUnit.test('api', 5, function(assert){
+QUnit.test('api', assert => {
+    assert.expect(5);
 
-    var comp = fwc('foo');
+    let comp = fwc('foo');
 
     assert.ok(typeof comp.extend === 'function', "the component definition holds the method extend");
-
     assert.equal(comp.extend('a'), comp, "The method set and chains with arguments");
 
-    var baseProto = comp.extend();
+    let baseProto = comp.extend();
     assert.ok(typeof baseProto === 'object', "The method returns an object without arguments");
     assert.ok(Object.prototype.isPrototypeOf(baseProto), "The method returns an prototype");
     assert.ok(HTMLElement.prototype.isPrototypeOf(baseProto), "The method returns an HTMLElement prototype");
 });
 
+QUnit.test('extend an html element', assert => {
+    assert.expect(2);
 
-QUnit.test('extend an html element', 2, function(assert){
-
-    var comp = fwc('foo');
+    let comp = fwc('foo');
 
     comp.extend('a');
 
-    var baseProto = comp.extend();
+    let baseProto = comp.extend();
     assert.ok(HTMLElement.prototype.isPrototypeOf(baseProto), "Extending the a tag set the base prototype to HTMLElement");
     assert.ok(Object.is(baseProto, HTMLAnchorElement.prototype), "Extending the a tag set the base prototype to HTMLAnchorElement");
 });

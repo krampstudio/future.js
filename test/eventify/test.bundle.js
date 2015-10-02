@@ -3980,14 +3980,17 @@ var _eventify2 = _interopRequireDefault(_eventify);
 
 _qunitjs2['default'].module('eventify');
 
-_qunitjs2['default'].test("api", 2, function (assert) {
+_qunitjs2['default'].test("api", function (assert) {
+    assert.expect(2);
+
     assert.ok(typeof _eventify2['default'] !== 'undefined', "The module exports something");
     assert.ok(typeof _eventify2['default'] === 'function', "The module has an eventify method");
 });
 
 _qunitjs2['default'].module('eventification');
 
-_qunitjs2['default'].test("delegates", 5, function (assert) {
+_qunitjs2['default'].test("delegates", function (assert) {
+    assert.expect(5);
 
     var emitter = (0, _eventify2['default'])();
 
@@ -3998,7 +4001,9 @@ _qunitjs2['default'].test("delegates", 5, function (assert) {
     assert.ok(typeof emitter.events === 'function', "the emitter defintion holds the method eventify");
 });
 
-_qunitjs2['default'].test("listen and trigger with params", 3, function (assert) {
+_qunitjs2['default'].test("listen and trigger with params", function (assert) {
+    assert.expect(3);
+
     var done = assert.async();
 
     var emitter = (0, _eventify2['default'])();
@@ -4019,7 +4024,8 @@ _qunitjs2['default'].test("listen and trigger with params", 3, function (assert)
     emitter.trigger.apply(emitter, ['foo'].concat(params));
 });
 
-_qunitjs2['default'].test("on context", 3, function (assert) {
+_qunitjs2['default'].test("on context", function (assert) {
+    assert.expect(3);
 
     var emitter1 = (0, _eventify2['default'])();
     var emitter2 = (0, _eventify2['default'])();
@@ -4032,7 +4038,9 @@ _qunitjs2['default'].test("on context", 3, function (assert) {
     assert.equal(emitter2.events('foo').length, 1, "Emitter 2 has one event handler registered");
 });
 
-_qunitjs2['default'].test("trigger context", 2, function (assert) {
+_qunitjs2['default'].test("trigger context", function (assert) {
+    assert.expect(2);
+
     var done1 = assert.async();
     var done2 = assert.async();
 

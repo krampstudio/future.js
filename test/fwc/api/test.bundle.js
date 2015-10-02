@@ -7050,7 +7050,9 @@ var _fwc2 = _interopRequireDefault(_fwc);
 
 _qunitjs2['default'].module('Module');
 
-_qunitjs2['default'].test('factory', 3, function (assert) {
+_qunitjs2['default'].test('factory', function (assert) {
+    assert.expect(3);
+
     assert.ok(typeof _fwc2['default'] === 'function', "The module expose a function");
     assert.ok(typeof (0, _fwc2['default'])('foo') === 'object', "The module creates an object");
     assert.notEqual((0, _fwc2['default'])('foo'), (0, _fwc2['default'])('foo'), "The factory creates a new object at each call");
@@ -7058,7 +7060,8 @@ _qunitjs2['default'].test('factory', 3, function (assert) {
 
 _qunitjs2['default'].module('Options');
 
-_qunitjs2['default'].test('namespace', 3, function (assert) {
+_qunitjs2['default'].test('namespace', function (assert) {
+    assert.expect(3);
 
     assert.throws(function () {
         (0, _fwc2['default'])('foo', { namespace: '12' });
@@ -7077,9 +7080,11 @@ _qunitjs2['default'].test('namespace', 3, function (assert) {
 
 _qunitjs2['default'].module('Events');
 
-_qunitjs2['default'].asyncTest("emitter", 8, function (assert) {
+_qunitjs2['default'].test("emitter", function (assert) {
+    assert.expect(8);
 
     var comp = (0, _fwc2['default'])('foo');
+    var done = assert.async();
 
     assert.ok(typeof comp === 'object', "the component definition is an object");
     assert.ok(typeof comp.on === 'function', "the component defintion holds the method on");
@@ -7091,7 +7096,7 @@ _qunitjs2['default'].asyncTest("emitter", 8, function (assert) {
         assert.ok(e instanceof Error, 'An error is emitted');
         assert.equal(e.message, 'test error', 'The message is given in the error');
 
-        _qunitjs2['default'].start();
+        done();
     });
     assert.equal(comp.events('error').length, 1, "The component has on listener registered");
     comp.trigger('error', new Error('test error'));
@@ -7099,7 +7104,8 @@ _qunitjs2['default'].asyncTest("emitter", 8, function (assert) {
 
 _qunitjs2['default'].module('Attributes');
 
-_qunitjs2['default'].test('definition', 5, function (assert) {
+_qunitjs2['default'].test('definition', function (assert) {
+    assert.expect(5);
 
     var comp = (0, _fwc2['default'])('foo');
 
@@ -7110,7 +7116,8 @@ _qunitjs2['default'].test('definition', 5, function (assert) {
     assert.ok(typeof comp.attr('id').get === 'function', "the attribute definition has a getter");
 });
 
-_qunitjs2['default'].test('definition polymorphism', 3, function (assert) {
+_qunitjs2['default'].test('definition polymorphism', function (assert) {
+    assert.expect(3);
 
     var comp = (0, _fwc2['default'])('foo');
 
@@ -7120,7 +7127,8 @@ _qunitjs2['default'].test('definition polymorphism', 3, function (assert) {
     assert.ok(typeof comp.attr('id').get === 'function', "the attribute definition has a getter");
 });
 
-_qunitjs2['default'].test('definition type casting', 6, function (assert) {
+_qunitjs2['default'].test('definition type casting', function (assert) {
+    assert.expect(6);
 
     var comp = (0, _fwc2['default'])('foo');
 
@@ -7151,7 +7159,8 @@ _qunitjs2['default'].test('definition type casting', 6, function (assert) {
     assert.equal(comp.attr('bool').get.call(mock), true, "the int getter returns the parsed value");
 });
 
-_qunitjs2['default'].test('multiple declarations', 3, function (assert) {
+_qunitjs2['default'].test('multiple declarations', function (assert) {
+    assert.expect(3);
 
     var comp = (0, _fwc2['default'])('foo');
 
@@ -7160,7 +7169,8 @@ _qunitjs2['default'].test('multiple declarations', 3, function (assert) {
     assert.deepEqual(comp.attrs(), ['id', 'selected'], "the method returns values without arguments");
 });
 
-_qunitjs2['default'].test('accessors', 13, function (assert) {
+_qunitjs2['default'].test('accessors', function (assert) {
+    assert.expect(13);
 
     var comp = (0, _fwc2['default'])('foo');
 
@@ -7205,7 +7215,8 @@ _qunitjs2['default'].test('accessors', 13, function (assert) {
 
 _qunitjs2['default'].module('Methods');
 
-_qunitjs2['default'].test('declaration', 5, function (assert) {
+_qunitjs2['default'].test('declaration', function (assert) {
+    assert.expect(5);
 
     var comp = (0, _fwc2['default'])('foo');
 
@@ -7227,7 +7238,8 @@ _qunitjs2['default'].test('declaration', 5, function (assert) {
 
 _qunitjs2['default'].module('Content');
 
-_qunitjs2['default'].test('callback', 6, function (assert) {
+_qunitjs2['default'].test('callback', function (assert) {
+    assert.expect(6);
 
     var comp = (0, _fwc2['default'])('foo');
 
@@ -7237,15 +7249,17 @@ _qunitjs2['default'].test('callback', 6, function (assert) {
     assert.ok(typeof comp.content() === 'function', "The method returns the function without arguments");
     assert.equal(comp.content().call(), 'test', "The content function returns the string set");
 
-    comp.content(function template(data) {
+    comp.content(function (data) {
         return '<p>' + data.foo + '</p>';
     });
+
     var content = comp.content();
     assert.ok(typeof content === 'function', "The method return the set function without arguments");
     assert.equal(content({ foo: 'bar' }), '<p>bar</p>', "The function replace the content data");
 });
 
-_qunitjs2['default'].test('handlebar template', 2, function (assert) {
+_qunitjs2['default'].test('handlebar template', function (assert) {
+    assert.expect(2);
 
     var comp = (0, _fwc2['default'])('foo');
 
@@ -7260,7 +7274,8 @@ _qunitjs2['default'].test('handlebar template', 2, function (assert) {
 
 _qunitjs2['default'].module('Extend');
 
-_qunitjs2['default'].test('element name', 4, function (assert) {
+_qunitjs2['default'].test('element name', function (assert) {
+    assert.expect(4);
 
     assert.throws(function () {
         (0, _fwc2['default'])('foo').extend(12);
@@ -7281,12 +7296,12 @@ _qunitjs2['default'].test('element name', 4, function (assert) {
     (0, _fwc2['default'])('foo').extend('bar');
 });
 
-_qunitjs2['default'].test('api', 5, function (assert) {
+_qunitjs2['default'].test('api', function (assert) {
+    assert.expect(5);
 
     var comp = (0, _fwc2['default'])('foo');
 
     assert.ok(typeof comp.extend === 'function', "the component definition holds the method extend");
-
     assert.equal(comp.extend('a'), comp, "The method set and chains with arguments");
 
     var baseProto = comp.extend();
@@ -7295,7 +7310,8 @@ _qunitjs2['default'].test('api', 5, function (assert) {
     assert.ok(HTMLElement.prototype.isPrototypeOf(baseProto), "The method returns an HTMLElement prototype");
 });
 
-_qunitjs2['default'].test('extend an html element', 2, function (assert) {
+_qunitjs2['default'].test('extend an html element', function (assert) {
+    assert.expect(2);
 
     var comp = (0, _fwc2['default'])('foo');
 

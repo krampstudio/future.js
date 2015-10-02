@@ -12,7 +12,7 @@
 /**
  * The API itself is just a placeholder, all methods will be delegated to a target.
  */
-var api = {
+const api = {
 
     /**
      * Attach an handler to an event.
@@ -26,7 +26,7 @@ var api = {
      * @param {Function} handler - the callback to run once the event is triggered
      * @returns {Object} the target object
      */
-    on(name, handler){
+    on (name, handler) {
         if(typeof handler === 'function'){
             this._events[name] = this._events[name] || [];
             this._events[name].push(handler);
@@ -43,7 +43,7 @@ var api = {
      * @param {String} name - the name of the event
      * @returns {Object} the target object
      */
-    off(name){
+    off (name) {
         this._events[name] = [];
         return this;
     },
@@ -58,8 +58,7 @@ var api = {
      * @param {*} data - arguments given to the handlers
      * @returns {Object} the target object
      */
-    trigger : function(name, ...data){
-        var self = this;
+    trigger (name, ...data) {
         if(this._events[name] && Array.isArray(this._events[name])){
           this._events[name].forEach(event =>  event.call(this, ...data));
         }
@@ -75,7 +74,7 @@ var api = {
      * @param {String} [name] - the name of the event
      * @returns {Array} the handlers
      */
-    events (name){
+    events (name) {
         if(typeof name !== 'undefined'){
             return this._events[name];
         }
@@ -88,7 +87,7 @@ var api = {
  * @param {Object} target - the target object
  * @returns {Object} the target for conveniance
  */
-function eventify(target = {}){
+export default function eventify(target = {}){
 
     target._events = {};
 
@@ -96,13 +95,7 @@ function eventify(target = {}){
         .keys(api)
         .filter( prop => typeof api[prop] === 'function')
         .forEach( method => {
-
-            target[method] = function delegate(...args){
-                return api[method].apply(target, args);
-            };
-
-    });
+            target[method] = (...args) => api[method].apply(target, args);
+        });
     return target;
 }
-
-module.exports = eventify;

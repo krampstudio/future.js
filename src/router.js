@@ -7,7 +7,7 @@
 /**
  * @module router
  */
-const UrlPattern = require('url-pattern');
+import UrlPattern from 'url-pattern';
 
 /**
  * Keep track of components registered
@@ -29,7 +29,7 @@ let registry = new Set();
  * @returns {routing} the routing object
  * @throws TypeError if the routes aren't correclty formater
  */
-let router = function router (routes = []){
+export default function router (routes = []){
 
 
     /**
@@ -103,6 +103,4 @@ let router = function router (routes = []){
     routes.forEach( route => routing.add(route));
 
     return routing;
-};
-
-module.exports = router;
+}
