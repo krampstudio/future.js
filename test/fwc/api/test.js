@@ -75,7 +75,6 @@ QUnit.test('definition', assert => {
     assert.ok(typeof comp.attr('id').get === 'function', "the attribute definition has a getter");
 });
 
-
 QUnit.test('definition polymorphism', assert => {
     assert.expect(3);
 
@@ -211,7 +210,6 @@ QUnit.test('callback', assert => {
     assert.ok(typeof content === 'function', "The method return the set function without arguments");
     assert.equal(content({ foo: 'bar'}), '<p>bar</p>', "The function replace the content data");
 });
-
 
 QUnit.test('handlebar template', assert => {
     assert.expect(2);

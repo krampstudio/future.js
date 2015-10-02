@@ -2,9 +2,12 @@ import '../sauce.js';
 import QUnit from 'qunitjs';
 import eventify from 'eventify';
 
+
 QUnit.module('eventify');
 
-QUnit.test("api", 2, function(assert){
+QUnit.test("api", assert => {
+    assert.expect(2);
+
     assert.ok(typeof eventify !== 'undefined', "The module exports something");
     assert.ok(typeof eventify === 'function', "The module has an eventify method");
 });
@@ -12,9 +15,10 @@ QUnit.test("api", 2, function(assert){
 
 QUnit.module('eventification');
 
-QUnit.test("delegates", 5, function(assert){
+QUnit.test("delegates", assert => {
+    assert.expect(5);
 
-    var emitter = eventify();
+    let emitter = eventify();
 
     assert.ok(typeof emitter === 'object', "the emitter definition is an object");
     assert.ok(typeof emitter.on === 'function', "the emitter defintion holds the method on");
@@ -23,11 +27,13 @@ QUnit.test("delegates", 5, function(assert){
     assert.ok(typeof emitter.events === 'function', "the emitter defintion holds the method eventify");
 });
 
-QUnit.test("listen and trigger with params", 3, function(assert){
-    var done = assert.async();
+QUnit.test("listen and trigger with params", assert => {
+    assert.expect(3);
 
-    var emitter = eventify();
-    var params = ['bar', 'baz'];
+    let done = assert.async();
+
+    let emitter = eventify();
+    let params = ['bar', 'baz'];
 
     emitter.on('foo', (...args)  => {
         assert.ok(true, "The foo event is triggered on emitter");
@@ -40,10 +46,11 @@ QUnit.test("listen and trigger with params", 3, function(assert){
     emitter.trigger('foo', ...params);
 });
 
-QUnit.test("on context", 3, function(assert){
+QUnit.test("on context", assert => {
+    assert.expect(3);
 
-    var emitter1 = eventify();
-    var emitter2 = eventify();
+    let emitter1 = eventify();
+    let emitter2 = eventify();
 
     assert.notDeepEqual(emitter1, emitter2, "Emitters are different objects");
     emitter1.on('foo', () => {});
@@ -53,13 +60,14 @@ QUnit.test("on context", 3, function(assert){
     assert.equal(emitter2.events('foo').length, 1, "Emitter 2 has one event handler registered");
 });
 
+QUnit.test("trigger context", assert => {
+    assert.expect(2);
 
-QUnit.test("trigger context", 2, function(assert){
-    var done1 = assert.async();
-    var done2 = assert.async();
+    let done1 = assert.async();
+    let done2 = assert.async();
 
-    var emitter1 = eventify();
-    var emitter2 = eventify();
+    let emitter1 = eventify();
+    let emitter2 = eventify();
 
     emitter1.on('foo', success => {
         assert.ok(success, "The foo event is triggered on emitter1");

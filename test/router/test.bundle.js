@@ -3980,12 +3980,15 @@ var _router2 = _interopRequireDefault(_router);
 
 _qunitjs2['default'].module('API');
 
-_qunitjs2['default'].test("module", 2, function (assert) {
+_qunitjs2['default'].test("module", function (assert) {
+    assert.expect(2);
+
     assert.ok(typeof _router2['default'] !== 'undefined', "The module exports something");
     assert.ok(typeof _router2['default'] === 'function', "The module exports a function");
 });
 
-_qunitjs2['default'].test("factory", 4, function (assert) {
+_qunitjs2['default'].test("factory", function (assert) {
+    assert.expect(4);
 
     var routing = (0, _router2['default'])();
 
@@ -3997,7 +4000,8 @@ _qunitjs2['default'].test("factory", 4, function (assert) {
 
 _qunitjs2['default'].module('routes');
 
-_qunitjs2['default'].test("config", 6, function (assert) {
+_qunitjs2['default'].test("config", function (assert) {
+    assert.expect(6);
 
     assert.throws(function () {
         return (0, _router2['default'])([{}]);
@@ -4023,7 +4027,8 @@ _qunitjs2['default'].test("config", 6, function (assert) {
     assert.ok(typeof routing === 'object', "the router is an object");
 });
 
-_qunitjs2['default'].test("resolve one", 3, function (assert) {
+_qunitjs2['default'].test("resolve one", function (assert) {
+    assert.expect(3);
 
     var loaded = false;
     var handlers = function handlers() {
@@ -4043,7 +4048,8 @@ _qunitjs2['default'].test("resolve one", 3, function (assert) {
     assert.equal(loaded, true, 'the route is now resolved');
 });
 
-_qunitjs2['default'].test("resolve a stack with patterns", 11, function (assert) {
+_qunitjs2['default'].test("resolve a stack with patterns", function (assert) {
+    assert.expect(11);
 
     var route = false;
     var route1 = function route1() {
@@ -4107,7 +4113,8 @@ _qunitjs2['default'].test("resolve a stack with patterns", 11, function (assert)
     assert.equal(route, false, '/bazfoo/123/baz : no route resolved');
 });
 
-_qunitjs2['default'].test("resolve once", 5, function (assert) {
+_qunitjs2['default'].test("resolve once", function (assert) {
+    assert.expect(5);
 
     var loaded = 0;
     var handlers = function handlers() {

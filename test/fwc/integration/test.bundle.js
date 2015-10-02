@@ -11867,7 +11867,11 @@ var _fwc2 = _interopRequireDefault(_fwc);
 
 _qunitjs2['default'].module('Register');
 
-_qunitjs2['default'].asyncTest('register and access a component', 4, function (assert) {
+_qunitjs2['default'].test('register and access a component', function (assert) {
+    assert.expect(4);
+
+    var done = assert.async();
+
     var container = document.getElementById('permanent-fixture');
     assert.ok(container instanceof HTMLElement, 'The container exists');
 
@@ -11880,11 +11884,15 @@ _qunitjs2['default'].asyncTest('register and access a component', 4, function (a
         assert.equal(fBase.nodeName, elt.nodeName, 'The f-base component is given in parameter');
         assert.deepEqual(fBase, elt, 'The callback elt is the given node');
 
-        _qunitjs2['default'].start();
+        done();
     }).register();
 });
 
-_qunitjs2['default'].asyncTest('register with another namespace', 4, function (assert) {
+_qunitjs2['default'].test('register with another namespace', function (assert) {
+    assert.expect(4);
+
+    var done = assert.async();
+
     var container = document.getElementById('permanent-fixture');
     assert.ok(container instanceof HTMLElement, 'The container exists');
 
@@ -11897,11 +11905,15 @@ _qunitjs2['default'].asyncTest('register with another namespace', 4, function (a
         assert.equal(fooBar.nodeName, elt.nodeName, 'The foo-bar component is given in parameter');
         assert.deepEqual(fooBar, elt, 'The callback elt is the given node');
 
-        _qunitjs2['default'].start();
+        done();
     }).register();
 });
 
-_qunitjs2['default'].asyncTest('register and multiple component', 7, function (assert) {
+_qunitjs2['default'].test('register and multiple component', function (assert) {
+    assert.expect(7);
+
+    var done = assert.async();
+
     var container = document.getElementById('permanent-fixture');
     assert.ok(container instanceof HTMLElement, 'The container exists');
 
@@ -11918,14 +11930,18 @@ _qunitjs2['default'].asyncTest('register and multiple component', 7, function (a
 
         if (sum === 7) {
 
-            _qunitjs2['default'].start();
+            done();
         }
     }).register();
 });
 
 _qunitjs2['default'].module('Attributes');
 
-_qunitjs2['default'].asyncTest('define basic attributes', 8, function (assert) {
+_qunitjs2['default'].test('define basic attributes', function (assert) {
+    assert.expect(8);
+
+    var done = assert.async();
+
     var container = document.getElementById('permanent-fixture');
     assert.ok(container instanceof HTMLElement, 'The container exists');
 
@@ -11944,11 +11960,15 @@ _qunitjs2['default'].asyncTest('define basic attributes', 8, function (assert) {
         assert.equal(fAttr.foo, 'moo');
         assert.equal(fAttr.foo, fAttr.getAttribute('foo'));
 
-        _qunitjs2['default'].start();
+        done();
     }).attrs('foo', 'bar').register();
 });
 
-_qunitjs2['default'].asyncTest('define attributes with type casting', 16, function (assert) {
+_qunitjs2['default'].test('define attributes with type casting', function (assert) {
+    assert.expect(16);
+
+    var done = assert.async();
+
     var container = document.getElementById('permanent-fixture');
     assert.ok(container instanceof HTMLElement, 'The container exists');
 
@@ -11980,11 +12000,15 @@ _qunitjs2['default'].asyncTest('define attributes with type casting', 16, functi
         assert.ok(fCast.hasAttribute('bool'), "The attribute is again there");
         assert.equal(fCast.bool, true, "The attribute has the true value");
 
-        _qunitjs2['default'].start();
+        done();
     }).attr('int', { type: 'integer' }).attr('float', { type: 'float' }).attr('bool', { type: 'boolean' }).register();
 });
 
-_qunitjs2['default'].asyncTest('define attributes with accessors', 11, function (assert) {
+_qunitjs2['default'].test('define attributes with accessors', function (assert) {
+    assert.expect(11);
+
+    var done = assert.async();
+
     var container = document.getElementById('permanent-fixture');
     assert.ok(container instanceof HTMLElement, 'The container exists');
 
@@ -12007,7 +12031,7 @@ _qunitjs2['default'].asyncTest('define attributes with accessors', 11, function 
         fAccess.double = 2;
         assert.equal(fAccess.double, 4, 'The double setter is callede');
 
-        _qunitjs2['default'].start();
+        done();
     }).attrs('num', 'bool', 'inc').access('num', {
         get: function get(val) {
             return parseInt(val, 10);
@@ -12036,7 +12060,11 @@ _qunitjs2['default'].asyncTest('define attributes with accessors', 11, function 
 
 _qunitjs2['default'].module('Methods');
 
-_qunitjs2['default'].asyncTest('Component with a method', 7, function (assert) {
+_qunitjs2['default'].test('Component with a method', function (assert) {
+    assert.expect(7);
+
+    var done = assert.async();
+
     var container = document.getElementById('permanent-fixture');
     assert.ok(container instanceof HTMLElement, 'The container exists');
 
@@ -12056,7 +12084,7 @@ _qunitjs2['default'].asyncTest('Component with a method', 7, function (assert) {
 
         assert.equal(mTarget.style.display, 'none', "The mtarget content isn't displayed anymore");
 
-        _qunitjs2['default'].start();
+        done();
     }).method('hide', function () {
 
         var fMethod = container.querySelector('f-method');
@@ -12070,7 +12098,11 @@ _qunitjs2['default'].asyncTest('Component with a method', 7, function (assert) {
 
 _qunitjs2['default'].module('Content');
 
-_qunitjs2['default'].asyncTest('Component with content from a callback', 11, function (assert) {
+_qunitjs2['default'].test('Component with content from a callback', function (assert) {
+    assert.expect(11);
+
+    var done = assert.async();
+
     var container = document.getElementById('permanent-fixture');
     assert.ok(container instanceof HTMLElement, 'The container exists');
 
@@ -12102,11 +12134,15 @@ _qunitjs2['default'].asyncTest('Component with content from a callback', 11, fun
         assert.equal(elt.querySelectorAll('li').length, 2, 'The component contains now 2 list items');
         assert.equal(elt.querySelector('li:first-child').textContent, 'moo', 'The list items have the foo value');
 
-        _qunitjs2['default'].start();
+        done();
     }).attrs('foo', 'repeat').content(componentContent).register();
 });
 
-_qunitjs2['default'].asyncTest('Component with dynamic content from a template', 8, function (assert) {
+_qunitjs2['default'].test('Component with dynamic content from a template', function (assert) {
+    assert.expect(8);
+
+    var done = assert.async();
+
     var container = document.getElementById('permanent-fixture');
     assert.ok(container instanceof HTMLElement, 'The container exists');
 
@@ -12130,12 +12166,16 @@ _qunitjs2['default'].asyncTest('Component with dynamic content from a template',
         fDynContent.who = "Bertrand";
         setTimeout(function () {
             assert.equal(fDynContent.textContent.trim(), 'Hello Bertrand', 'The element has the updated content');
-            _qunitjs2['default'].start();
+            done();
         }, 0);
     }).attr('who', { update: true }).content(helloTpl).register();
 });
 
-_qunitjs2['default'].asyncTest('Component with dynamic content from an HTML template', 4, function (assert) {
+_qunitjs2['default'].test('Component with dynamic content from an HTML template', function (assert) {
+    assert.expect(4);
+
+    var done = assert.async();
+
     var container = document.getElementById('permanent-fixture');
     assert.ok(container instanceof HTMLElement, 'The container exists');
 
@@ -12149,13 +12189,17 @@ _qunitjs2['default'].asyncTest('Component with dynamic content from an HTML temp
         assert.equal(elt.querySelectorAll('p').length, 1, 'The component contains now a paragraph');
         assert.equal(elt.innerHTML, htpl.innerHTML, 'The component content is the same as the template');
 
-        _qunitjs2['default'].start();
+        done();
     }).content(htpl).register();
 });
 
 _qunitjs2['default'].module('extend');
 
-_qunitjs2['default'].asyncTest('Extend an anchor', 5, function (assert) {
+_qunitjs2['default'].test('Extend an anchor', function (assert) {
+    assert.expect(5);
+
+    var done = assert.async();
+
     var container = document.getElementById('permanent-fixture');
     assert.ok(container instanceof HTMLElement, 'The container exists');
 
@@ -12173,11 +12217,15 @@ _qunitjs2['default'].asyncTest('Extend an anchor', 5, function (assert) {
         assert.ok(link.href !== '#', "Anchor's href use getter/setter to change the value");
         assert.equal(flink.href, link.href, "The extended component uses base component getter/setter");
 
-        _qunitjs2['default'].start();
+        done();
     }).extend('a').register();
 });
 
-_qunitjs2['default'].asyncTest('Extend another component', 3, function (assert) {
+_qunitjs2['default'].test('Extend another component', function (assert) {
+    assert.expect(3);
+
+    var done = assert.async();
+
     var container = document.getElementById('permanent-fixture');
     assert.ok(container instanceof HTMLElement, 'The container exists');
 
@@ -12199,14 +12247,17 @@ _qunitjs2['default'].asyncTest('Extend another component', 3, function (assert) 
         assert.deepEqual(fsuperup, elt, 'The callback elt is the given node');
         assert.equal(elt.bar, 'BAR', 'Super element prototype has been extended');
 
-        _qunitjs2['default'].start();
+        done();
     }).extend('upper').register();
 });
 
 _qunitjs2['default'].module('Native events');
 
-_qunitjs2['default'].test('on click', 3, function (assert) {
+_qunitjs2['default'].test('on click', function (assert) {
+    assert.expect(3);
+
     var done = assert.async();
+
     var container = document.getElementById('permanent-fixture');
     assert.ok(container instanceof HTMLElement, 'The container exists');
 
