@@ -16,7 +16,7 @@ QUnit.test('register and access a component', assert => {
 
     fwc('base')
         .on('error', function(e){
-            console.error(e);
+            assert.ok(false, e);
         })
         .on('create', function(elt){
 
@@ -24,6 +24,30 @@ QUnit.test('register and access a component', assert => {
             assert.equal(fBase.nodeName, 'F-BASE', 'The f-base component is found');
             assert.equal(fBase.nodeName, elt.nodeName, 'The f-base component is given in parameter');
             assert.deepEqual(fBase, elt, 'The callback elt is the given node');
+
+            done();
+        })
+        .register();
+});
+
+QUnit.test('register with another namespace  in options', assert => {
+    assert.expect(4);
+
+    let done = assert.async();
+
+    let container = document.getElementById('permanent-fixture');
+    assert.ok(container instanceof HTMLElement, 'The container exists');
+
+    fwc('bar', {namespace : 'foo'})
+        .on('error', function(e){
+            assert.ok(false, e);
+        })
+        .on('create', function(elt){
+
+            let fooBar = container.querySelector('foo-bar');
+            assert.equal(fooBar.nodeName, 'FOO-BAR', 'The foo-bar component is found');
+            assert.equal(fooBar.nodeName, elt.nodeName, 'The foo-bar component is given in parameter');
+            assert.deepEqual(fooBar, elt, 'The callback elt is the given node');
 
             done();
         })
@@ -38,16 +62,16 @@ QUnit.test('register with another namespace', assert => {
     let container = document.getElementById('permanent-fixture');
     assert.ok(container instanceof HTMLElement, 'The container exists');
 
-    fwc('bar', {namespace : 'foo'})
+    fwc('baz-bar')
         .on('error', function(e){
-            console.error(e);
+            assert.ok(false, e);
         })
         .on('create', function(elt){
 
-            let fooBar = container.querySelector('foo-bar');
-            assert.equal(fooBar.nodeName, 'FOO-BAR', 'The foo-bar component is found');
-            assert.equal(fooBar.nodeName, elt.nodeName, 'The foo-bar component is given in parameter');
-            assert.deepEqual(fooBar, elt, 'The callback elt is the given node');
+            let bazBar = container.querySelector('baz-bar');
+            assert.equal(bazBar.nodeName, 'BAZ-BAR', 'The baz-bar component is found');
+            assert.equal(bazBar.nodeName, elt.nodeName, 'The baz-bar component is given in parameter');
+            assert.deepEqual(bazBar, elt, 'The callback elt is the given node');
 
             done();
         })
@@ -66,7 +90,7 @@ QUnit.test('register and multiple component', assert => {
 
     fwc('multi')
         .on('error', function(e){
-            console.error(e);
+            assert.ok(false, e);
         })
         .on('create', function(elt){
 
@@ -95,7 +119,7 @@ QUnit.test('define basic attributes', assert => {
 
     fwc('attr')
         .on('error', function(e){
-            console.error(e);
+            assert.ok(false, e);
         })
         .on('create', function(elt){
 
@@ -126,7 +150,7 @@ QUnit.test('define attributes with type casting', assert => {
 
     fwc('cast')
         .on('error', function(e){
-            console.error(e);
+            assert.ok(false, e);
         })
         .on('create', function(elt){
 
@@ -172,7 +196,7 @@ QUnit.test('define attributes with accessors', assert => {
 
     fwc('access')
         .on('error', function(e){
-            console.error(e);
+            assert.ok(false, e);
         })
         .on('create', function(elt){
 
@@ -239,7 +263,7 @@ QUnit.test('Component with a method', assert => {
 
     fwc('method')
         .on('error', function(e){
-            console.error(e);
+            assert.ok(false, e);
         })
         .on('create', function(elt){
 
@@ -252,11 +276,11 @@ QUnit.test('Component with a method', assert => {
 
             assert.equal(mTarget.style.display, 'none', "The mtarget content isn't displayed anymore");
 
-            done();
+            QUnit.start();
         })
         .method('hide', function(){
 
-            let fMethod = container.querySelector('f-method');
+            var fMethod = container.querySelector('f-method');
             assert.deepEqual(fMethod, this, 'This is the given node');
 
             assert.equal(this.target, '.mtarget', 'The attribute value is correct');
@@ -295,7 +319,7 @@ QUnit.test('Component with content from a callback', assert => {
 
     fwc('content')
         .on('error', function(e){
-            console.error(e);
+            assert.ok(false, e);
         })
         .on('create', function(elt){
 
@@ -329,7 +353,7 @@ QUnit.test('Component with dynamic content from a template', assert => {
 
     fwc('dyncontent')
         .on('error', function(e){
-            console.error(e);
+            assert.ok(false, e);
         })
         .on('create', function(elt){
 
@@ -392,11 +416,11 @@ QUnit.test('Extend an anchor', assert => {
 
     fwc('link')
         .on('error', function(e){
-            console.error(e);
+            assert.ok(false, e);
         })
         .on('create', function(elt){
 
-            let flink = document.querySelector('.flink');
+            var flink = document.querySelector('.flink');
 
             assert.ok(flink instanceof HTMLElement, 'The component is an HTMLElement');
             assert.ok(flink instanceof HTMLAnchorElement, 'The component is an HTMLAnchorElement');
@@ -420,7 +444,7 @@ QUnit.test('Extend another component', assert => {
 
     fwc('upper')
         .on('error', function(e){
-            console.error(e);
+            assert.ok(false, e);
         })
         .on('create', function(elt){
             assert.ok(false, 'the parent element should not be created');
@@ -460,7 +484,7 @@ QUnit.test('on click', assert => {
 
     fwc('native')
         .on('error', function(e){
-            console.error(e);
+            assert.ok(false, e);
         })
         .on('create', function(elt){
 
