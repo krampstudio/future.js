@@ -140,6 +140,29 @@ QUnit.test('define basic attributes', assert => {
         .register();
 });
 
+
+QUnit.test('define forbidden attributes', assert => {
+    assert.expect(3);
+
+    assert.throws( e => {
+        fwc('attr-wrong')
+            .attrs('id')
+            .register();
+    }, TypeError, 'The attribute id cannot be used');
+
+    assert.throws( e => {
+        fwc('attr-wrong')
+            .attrs('class')
+            .register();
+    }, TypeError, 'The attribute class cannot be used');
+
+    assert.throws( e => {
+        fwc('attr-wrong')
+            .attrs('is')
+            .register();
+    }, TypeError, 'The attribute is cannot be used');
+});
+
 QUnit.test('define attributes with type casting', assert => {
     assert.expect(16);
 

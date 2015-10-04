@@ -5270,6 +5270,9 @@ var fwc = function futureWebComponentFactory() {
          */
         attr: function attr(name, def) {
 
+            //forbidden attributes
+            var forbidden = ['id', 'class', 'is'];
+
             if (typeof name === 'object' && typeof name.name === 'string') {
                 var temp = name;
                 def = name;
@@ -5279,6 +5282,10 @@ var fwc = function futureWebComponentFactory() {
             //returns the definitino
             if (!def) {
                 return data.attrs[name];
+            }
+
+            if (forbidden.indexOf(name) > -1) {
+                throw new TypeError('You can\'t modify the behavior of the attribute ' + name);
             }
 
             //maintain a list of attributes that trigger rerender on change

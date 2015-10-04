@@ -49,6 +49,7 @@ attrCaster.double  = attrCaster.float;
 attrCaster.number  = attrCaster.float;
 attrCaster.integer = attrCaster.int;
 
+
 /**
  * Where everything starts, this function will gives you a reference to an component model.
  * @param {String} name - the component name with or without the namespace that matches the HTMLElement naming rules.
@@ -111,6 +112,9 @@ const fwc = function futureWebComponentFactory(name = '', options = {}){
          */
         attr(name, def){
 
+            //forbidden attributes
+            const forbidden = ['id', 'class', 'is'];
+
             if(typeof name === 'object' && typeof name.name === 'string'){
                 let temp = name;
                 def = name;
@@ -120,6 +124,10 @@ const fwc = function futureWebComponentFactory(name = '', options = {}){
             //returns the definitino
             if(!def){
                 return data.attrs[name];
+            }
+
+            if(forbidden.indexOf(name) > -1){
+                throw new TypeError(`You can't modify the behavior of the attribute ${name}`);
             }
 
             //maintain a list of attributes that trigger rerender on change
