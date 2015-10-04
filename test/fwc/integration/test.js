@@ -117,22 +117,22 @@ QUnit.test('define basic attributes', assert => {
     let container = document.getElementById('permanent-fixture');
     assert.ok(container instanceof HTMLElement, 'The container exists');
 
-    fwc('attr')
+    fwc('attr-basic')
         .on('error', function(e){
             assert.ok(false, e);
         })
         .on('create', function(elt){
 
-            let fAttr = container.querySelector('f-attr');
-            assert.deepEqual(fAttr, elt, 'The callback elt is the given node');
-            assert.equal(fAttr.foo, '');
-            assert.equal(fAttr.bar, 'pur');
-            assert.equal(fAttr.foo, fAttr.getAttribute('foo'));
-            assert.equal(fAttr.bar, fAttr.getAttribute('bar'));
+            let attrBasic = container.querySelector('attr-basic');
+            assert.deepEqual(attrBasic, elt, 'The callback elt is the given node');
+            assert.equal(attrBasic.foo, '');
+            assert.equal(attrBasic.bar, 'pur');
+            assert.equal(attrBasic.foo, attrBasic.getAttribute('foo'));
+            assert.equal(attrBasic.bar, attrBasic.getAttribute('bar'));
 
-            fAttr.foo = 'moo';
-            assert.equal(fAttr.foo, 'moo');
-            assert.equal(fAttr.foo, fAttr.getAttribute('foo'));
+            attrBasic.foo = 'moo';
+            assert.equal(attrBasic.foo, 'moo');
+            assert.equal(attrBasic.foo, attrBasic.getAttribute('foo'));
 
             done();
         })
@@ -148,41 +148,47 @@ QUnit.test('define attributes with type casting', assert => {
     let container = document.getElementById('permanent-fixture');
     assert.ok(container instanceof HTMLElement, 'The container exists');
 
-    fwc('cast')
+    fwc('attr-cast')
         .on('error', function(e){
             assert.ok(false, e);
         })
         .on('create', function(elt){
 
-            let fCast = container.querySelector('f-cast');
-            assert.deepEqual(fCast, elt, 'The callback elt is the given node');
+            let attrCast = container.querySelector('attr-cast');
+            assert.deepEqual(attrCast, elt, 'The callback elt is the given node');
 
-            assert.equal(fCast.getAttribute('int'), '134.12', "The attribute exists");
-            assert.equal(fCast.int, 134, "The getter gives you the parsed value");
-            fCast.int = "5.77";
-            assert.equal(fCast.getAttribute('int'), '5', "The value is updated once parsed");
-            assert.equal(fCast.int, 5, "The getter gives you the parsed value");
+            assert.equal(attrCast.getAttribute('int'), '134.12', "The attribute exists");
+            assert.equal(attrCast.int, 134, "The getter gives you the parsed value");
+            attrCast.int = "5.77";
+            assert.equal(attrCast.getAttribute('int'), '5', "The value is updated once parsed");
+            assert.equal(attrCast.int, 5, "The getter gives you the parsed value");
 
-            assert.equal(fCast.getAttribute('float'), 1.23, "The attribute exists");
-            assert.equal(fCast.float, 1.23, "The getter gives you the parsed value");
-            fCast.float = "00.77";
-            assert.equal(fCast.getAttribute('float'), '0.77', "The value is updated once parsed");
-            assert.equal(fCast.float, 0.77, "The getter gives you the parsed value");
+            assert.equal(attrCast.getAttribute('float'), 1.23, "The attribute exists");
+            assert.equal(attrCast.float, 1.23, "The getter gives you the parsed value");
+            attrCast.float = "00.77";
+            assert.equal(attrCast.getAttribute('float'), '0.77', "The value is updated once parsed");
+            assert.equal(attrCast.float, 0.77, "The getter gives you the parsed value");
 
-            assert.ok(fCast.hasAttribute('bool'), "The attribute exists");
-            assert.equal(fCast.bool, true, "The attribute has the parsed value");
-            fCast.bool = false;
-            assert.ok(!fCast.hasAttribute('bool'), "The attribute doesn't exists anymore");
-            assert.equal(fCast.bool, false, "The attribute has the false value");
-            fCast.bool = true;
-            assert.ok(fCast.hasAttribute('bool'), "The attribute is again there");
-            assert.equal(fCast.bool, true, "The attribute has the true value");
+            assert.ok(attrCast.hasAttribute('bool'), "The attribute exists");
+            assert.equal(attrCast.bool, true, "The attribute has the parsed value");
+            attrCast.bool = false;
+            assert.ok(!attrCast.hasAttribute('bool'), "The attribute doesn't exists anymore");
+            assert.equal(attrCast.bool, false, "The attribute has the false value");
+            attrCast.bool = true;
+            assert.ok(attrCast.hasAttribute('bool'), "The attribute is again there");
+            assert.equal(attrCast.bool, true, "The attribute has the true value");
 
             done();
         })
-        .attr('int',   { type : 'integer' })
-        .attr('float', { type : 'float' })
-        .attr('bool',  { type : 'boolean' })
+        .attr('int',     { type : 'int' })
+        .attr('float',   { type : 'float' })
+        .attr('bool',    { type : 'boolean' })
+        .attr('array',   { type : 'array' })
+        .attr('array2',  { type : '[]' })
+        .attr('strings', { type : 'string[]' })
+        .attr('ints',    { type : 'int[]' })
+        .attr('floats',  { type : 'float[]' })
+        .attr('bools',   { type : 'string[]' })
         .register();
 });
 
@@ -247,6 +253,7 @@ QUnit.test('define attributes with accessors', assert => {
         })
         .register();
 });
+
 
 QUnit.module('Methods');
 
