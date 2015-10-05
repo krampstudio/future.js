@@ -5199,12 +5199,25 @@ var attrCaster = {
         set: function set(value) {
             return parseInt(value, 10);
         }
+    },
+    array: {
+        get: function get(name) {
+            return this.getAttribute(name).split(' ').filter(function (i) {
+                return !!i;
+            });
+        },
+        set: function set(value) {
+            return Array.from(value).filter(function (i) {
+                return !!i;
+            }).join(' ');
+        }
     }
 };
 attrCaster.bool = attrCaster.boolean;
 attrCaster.double = attrCaster.float;
 attrCaster.number = attrCaster.float;
 attrCaster.integer = attrCaster.int;
+attrCaster['[]'] = attrCaster.array;
 
 /**
  * Where everything starts, this function will gives you a reference to an component model.

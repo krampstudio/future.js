@@ -43,11 +43,20 @@ let attrCaster = {
             return parseInt(value, 10);
         }
     },
+    array : {
+        get(name){
+            return this.getAttribute(name).split(' ').filter( i => !!i);
+        },
+        set(value){
+            return Array.from(value).filter( i => !!i).join(' ');
+        }
+    }
 };
 attrCaster.bool    = attrCaster.boolean;
 attrCaster.double  = attrCaster.float;
 attrCaster.number  = attrCaster.float;
 attrCaster.integer = attrCaster.int;
+attrCaster['[]']   = attrCaster.array;
 
 
 /**

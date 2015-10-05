@@ -164,7 +164,7 @@ QUnit.test('define forbidden attributes', assert => {
 });
 
 QUnit.test('define attributes with type casting', assert => {
-    assert.expect(16);
+    assert.expect(24);
 
     let done = assert.async();
 
@@ -180,26 +180,38 @@ QUnit.test('define attributes with type casting', assert => {
             let attrCast = container.querySelector('attr-cast');
             assert.deepEqual(attrCast, elt, 'The callback elt is the given node');
 
-            assert.equal(attrCast.getAttribute('int'), '134.12', "The attribute exists");
-            assert.equal(attrCast.int, 134, "The getter gives you the parsed value");
+            assert.equal(attrCast.getAttribute('int'), '134.12', "The int attribute exists and has the initial value");
+            assert.equal(attrCast.int, 134, "The int getter gives you the casted value");
             attrCast.int = "5.77";
-            assert.equal(attrCast.getAttribute('int'), '5', "The value is updated once parsed");
-            assert.equal(attrCast.int, 5, "The getter gives you the parsed value");
+            assert.equal(attrCast.getAttribute('int'), '5', "The int value is updated once casted");
+            assert.equal(attrCast.int, 5, "The int getter gives you the casted value");
 
-            assert.equal(attrCast.getAttribute('float'), 1.23, "The attribute exists");
-            assert.equal(attrCast.float, 1.23, "The getter gives you the parsed value");
+            assert.equal(attrCast.getAttribute('float'), '1.23', "The float attribute exists and has the intial value");
+            assert.equal(attrCast.float, 1.23, "The float getter gives you the casted value");
             attrCast.float = "00.77";
-            assert.equal(attrCast.getAttribute('float'), '0.77', "The value is updated once parsed");
-            assert.equal(attrCast.float, 0.77, "The getter gives you the parsed value");
+            assert.equal(attrCast.getAttribute('float'), '0.77', "The float value is updated once casted");
+            assert.equal(attrCast.float, 0.77, "The float getter gives you the casted value");
 
-            assert.ok(attrCast.hasAttribute('bool'), "The attribute exists");
-            assert.equal(attrCast.bool, true, "The attribute has the parsed value");
+            assert.ok(attrCast.hasAttribute('bool'), "The bool attribute exists and has the initial value");
+            assert.equal(attrCast.bool, true, "The bool attribute has the casted value");
             attrCast.bool = false;
-            assert.ok(!attrCast.hasAttribute('bool'), "The attribute doesn't exists anymore");
-            assert.equal(attrCast.bool, false, "The attribute has the false value");
+            assert.ok(!attrCast.hasAttribute('bool'), "The bool attribute doesn't exists anymore");
+            assert.equal(attrCast.bool, false, "The bool attribute has the false value");
             attrCast.bool = true;
-            assert.ok(attrCast.hasAttribute('bool'), "The attribute is again there");
-            assert.equal(attrCast.bool, true, "The attribute has the true value");
+            assert.ok(attrCast.hasAttribute('bool'), "The bool attribute is again there");
+            assert.equal(attrCast.bool, true, "The bool attribute has the true value");
+
+            assert.equal(attrCast.getAttribute('array'), 'foo bar baz', "The array attribute exists and has the initial value");
+            assert.deepEqual(attrCast.array, ['foo', 'bar', 'baz'], "The array getter gives you the casted value");
+            attrCast.array = ['john', 'doe'];
+            assert.equal(attrCast.getAttribute('array'), 'john doe', "The value is updated once casted");
+            assert.deepEqual(attrCast.array, ['john', 'doe'], "The getter gives you the casted value");
+
+            assert.equal(attrCast.getAttribute('array2'), 'a b c d', "The attribute exists");
+            assert.deepEqual(attrCast.array2, ['a', 'b', 'c', 'd'], "The getter gives you the casted value");
+            attrCast.array2 = [false, 'john', undefined, 'doe', null];
+            assert.equal(attrCast.getAttribute('array2'), 'john doe', "The value is updated once casted");
+            assert.deepEqual(attrCast.array2, ['john', 'doe'], "The getter gives you the casted value");
 
             done();
         })
