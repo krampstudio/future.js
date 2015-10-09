@@ -109,7 +109,7 @@ module.exports = function(grunt) {
 
         watch: {
             core: {
-                files: ['src/*.js'],
+                files: ['src/**/*.js'],
                 tasks: ['compile-core']
             },
             test: {

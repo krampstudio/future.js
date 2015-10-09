@@ -164,7 +164,7 @@ QUnit.test('define forbidden attributes', assert => {
 });
 
 QUnit.test('define attributes with type casting', assert => {
-    assert.expect(24);
+    assert.expect(36);
 
     let done = assert.async();
 
@@ -213,6 +213,24 @@ QUnit.test('define attributes with type casting', assert => {
             assert.equal(attrCast.getAttribute('array2'), 'john doe', "The value is updated once casted");
             assert.deepEqual(attrCast.array2, ['john', 'doe'], "The getter gives you the casted value");
 
+            assert.equal(attrCast.getAttribute('strings'), 'a 2 false d', "The attribute exists");
+            assert.deepEqual(attrCast.strings, ['a', '2', 'false', 'd'], "The getter gives you the casted value");
+            attrCast.strings = [false, 'false', 12, 'doe', null];
+            assert.equal(attrCast.getAttribute('strings'), 'false 12 doe', "The value is updated once casted");
+            assert.deepEqual(attrCast.strings, ['false', '12', 'doe'], "The getter gives you the casted value");
+
+            assert.equal(attrCast.getAttribute('ints'), '1 2.2 3 4', "The attribute exists");
+            assert.deepEqual(attrCast.ints, [1, 2, 3, 4], "The getter gives you the casted value");
+            attrCast.ints = [false, 0, 12, '24.25', -1];
+            assert.equal(attrCast.getAttribute('ints'), '0 12 24 -1', "The value is updated once casted");
+            assert.deepEqual(attrCast.ints, [0, 12, 24, -1], "The getter gives you the casted value");
+
+            assert.equal(attrCast.getAttribute('bools'), '0 1 false true', "The attribute exists");
+            assert.deepEqual(attrCast.bools, [false, true, false, true], "The getter gives you the casted value");
+            attrCast.bools = [false, 0, null, true, -1];
+            assert.equal(attrCast.getAttribute('bools'), 'false false false true true', "The value is updated once casted");
+            assert.deepEqual(attrCast.bools, [false, false, false, true, true], "The getter gives you the casted value");
+
             done();
         })
         .attr('int',     { type : 'int' })
@@ -223,7 +241,7 @@ QUnit.test('define attributes with type casting', assert => {
         .attr('strings', { type : 'string[]' })
         .attr('ints',    { type : 'int[]' })
         .attr('floats',  { type : 'float[]' })
-        .attr('bools',   { type : 'string[]' })
+        .attr('bools',   { type : 'boolean[]' })
         .register();
 });
 

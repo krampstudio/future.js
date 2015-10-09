@@ -12,51 +12,12 @@
 
 import eventify from './eventify.js';
 import htmlElements from './elements.json';
+import { caster as attrCaster } from './fwc/attr.js';
 
 //The registry keeps a ref to previously registered
 //components in order to extend them.
 let registry = new Map();
 
-//used for casting type while retrieving/setting attr values
-let attrCaster = {
-    boolean : {
-        get(name){
-            return this.hasAttribute(name);
-        },
-        set(value){
-            return !!value;
-        }
-    },
-    float : {
-        get(name){
-            return parseFloat(this.getAttribute(name));
-        },
-        set(value){
-            return parseFloat(value);
-        }
-    },
-    int : {
-        get(name){
-            return parseInt(this.getAttribute(name), 10);
-        },
-        set(value){
-            return parseInt(value, 10);
-        }
-    },
-    array : {
-        get(name){
-            return this.getAttribute(name).split(' ').filter( i => !!i);
-        },
-        set(value){
-            return Array.from(value).filter( i => !!i).join(' ');
-        }
-    }
-};
-attrCaster.bool    = attrCaster.boolean;
-attrCaster.double  = attrCaster.float;
-attrCaster.number  = attrCaster.float;
-attrCaster.integer = attrCaster.int;
-attrCaster['[]']   = attrCaster.array;
 
 
 /**

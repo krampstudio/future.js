@@ -4976,6 +4976,134 @@ module.exports={
 
 },{}],192:[function(require,module,exports){
 /**
+* Future.js - 2015
+ * @author Bertrand Chevrier <chevrier.bertrand@gmail.com>
+ * @license MIT
+ */
+
+/**
+ * Attribute stuffs for Future.js Web Component.
+ * @module fwc/attr
+ */
+
+/**
+ * used for casting type while retrieving/setting attr values
+ */
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+
+var _caster;
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var caster = (_caster = {
+    boolean: {
+        get: function get(name) {
+            return this.hasAttribute(name);
+        },
+        set: function set(value) {
+            return !!value;
+        }
+    },
+    float: {
+        get: function get(name) {
+            return parseFloat(this.getAttribute(name));
+        },
+        set: function set(value) {
+            return parseFloat(value);
+        }
+    },
+    int: {
+        get: function get(name) {
+            return parseInt(this.getAttribute(name), 10);
+        },
+        set: function set(value) {
+            return parseInt(value, 10);
+        }
+    },
+    array: {
+        get: function get(name) {
+            return this.getAttribute(name).split(' ').filter(function (item) {
+                return !!item;
+            });
+        },
+        set: function set(value) {
+            return Array.from(value).filter(function (item) {
+                return !!item;
+            }).join(' ');
+        }
+    }
+}, _defineProperty(_caster, 'string[]', {
+    get: function get(name) {
+        return this.getAttribute(name).split(' ').filter(function (item) {
+            return !!item;
+        }).map(function (item) {
+            return item.toString();
+        });
+    },
+    set: function set(value) {
+        return Array.from(value).filter(function (item) {
+            return !!item;
+        }).map(function (item) {
+            return item.toString();
+        }).join(' ');
+    }
+}), _defineProperty(_caster, 'int[]', {
+    get: function get(name) {
+        return this.getAttribute(name).split(' ').map(function (item) {
+            return parseInt(item, 10);
+        }).filter(function (item) {
+            return !isNaN(item);
+        });
+    },
+    set: function set(value) {
+        return Array.from(value).map(function (item) {
+            return parseInt(item, 10);
+        }).filter(function (item) {
+            return !isNaN(item);
+        }).join(' ');
+    }
+}), _defineProperty(_caster, 'float[]', {
+    get: function get(name) {
+        return this.getAttribute(name).split(' ').map(function (item) {
+            return parseFloat(item);
+        }).filter(function (item) {
+            return !itemsNaN(item);
+        });
+    },
+    set: function set(value) {
+        return Array.from(value).map(function (item) {
+            return parseFloat(item);
+        }).filter(function (item) {
+            return !itemsNaN(item);
+        }).join(' ');
+    }
+}), _defineProperty(_caster, 'boolean[]', {
+    get: function get(name) {
+        return this.getAttribute(name).split(' ').map(function (item) {
+            return item !== '0' && item !== 'false';
+        });
+    },
+    set: function set(value) {
+        return Array.from(value).map(function (item) {
+            return !!item ? 'true' : 'false';
+        }).join(' ');
+    }
+}), _caster);
+
+exports.caster = caster;
+//type aliases
+caster.bool = caster.boolean;
+caster.double = caster.float;
+caster.number = caster.float;
+caster.integer = caster.int;
+caster['[]'] = caster.array;
+
+},{}],193:[function(require,module,exports){
+/**
  * Future.js - 2015
  * @author Bertrand Chevrier <chevrier.bertrand@gmail.com>
  * @license MIT
@@ -5170,54 +5298,11 @@ var _elementsJson = require('./elements.json');
 
 var _elementsJson2 = _interopRequireDefault(_elementsJson);
 
+var _fwcAttrJs = require('./fwc/attr.js');
+
 //The registry keeps a ref to previously registered
 //components in order to extend them.
 var registry = new Map();
-
-//used for casting type while retrieving/setting attr values
-var attrCaster = {
-    boolean: {
-        get: function get(name) {
-            return this.hasAttribute(name);
-        },
-        set: function set(value) {
-            return !!value;
-        }
-    },
-    float: {
-        get: function get(name) {
-            return parseFloat(this.getAttribute(name));
-        },
-        set: function set(value) {
-            return parseFloat(value);
-        }
-    },
-    int: {
-        get: function get(name) {
-            return parseInt(this.getAttribute(name), 10);
-        },
-        set: function set(value) {
-            return parseInt(value, 10);
-        }
-    },
-    array: {
-        get: function get(name) {
-            return this.getAttribute(name).split(' ').filter(function (i) {
-                return !!i;
-            });
-        },
-        set: function set(value) {
-            return Array.from(value).filter(function (i) {
-                return !!i;
-            }).join(' ');
-        }
-    }
-};
-attrCaster.bool = attrCaster.boolean;
-attrCaster.double = attrCaster.float;
-attrCaster.number = attrCaster.float;
-attrCaster.integer = attrCaster.int;
-attrCaster['[]'] = attrCaster.array;
 
 /**
  * Where everything starts, this function will gives you a reference to an component model.
@@ -5316,8 +5401,8 @@ var fwc = function futureWebComponentFactory() {
                     var value = undefined;
 
                     //call type caster
-                    if (def.type && attrCaster[def.type]) {
-                        value = attrCaster[def.type].get.call(this, name);
+                    if (def.type && _fwcAttrJs.caster[def.type]) {
+                        value = _fwcAttrJs.caster[def.type].get.call(this, name);
                     } else {
                         value = this.getAttribute(name);
                     }
@@ -5338,8 +5423,8 @@ var fwc = function futureWebComponentFactory() {
                 set: function set(value) {
 
                     //call type caster
-                    if (def.type && attrCaster[def.type]) {
-                        value = attrCaster[def.type].set.call(this, value);
+                    if (def.type && _fwcAttrJs.caster[def.type]) {
+                        value = _fwcAttrJs.caster[def.type].set.call(this, value);
                     }
 
                     //call setter
@@ -5833,7 +5918,7 @@ function validateEltName(name) {
 exports['default'] = fwc;
 module.exports = exports['default'];
 
-},{"./elements.json":191,"./eventify.js":"eventify"}],"router":[function(require,module,exports){
+},{"./elements.json":191,"./eventify.js":"eventify","./fwc/attr.js":192}],"router":[function(require,module,exports){
 /**
  * Future.js - 2015
  * @author Bertrand Chevrier <chevrier.bertrand@gmail.com>
@@ -5992,5 +6077,5 @@ function router() {
 
 module.exports = exports['default'];
 
-},{"url-pattern":190}]},{},[192])
+},{"url-pattern":190}]},{},[193])
 //# sourceMappingURL=future.js.map
