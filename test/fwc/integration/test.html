@@ -23,8 +23,19 @@
             <f-multi value="2"></f-multi>
             <f-multi value="4"></f-multi>
 
-            <f-attr foo bar="pur"></f-attr>
-            <f-cast int="134.12" float="1.23" bool></f-cast>
+            <attr-basic foo bar="pur"></attr-basic>
+            <attr-wrong is="a" id="wrong1" class="wrong"></attr-wrong>
+            <attr-cast
+                int="134.12"
+                float="1.23"
+                bool
+                array="foo bar baz"
+                array2="a b c d"
+                strings="a 2 false d"
+                ints="1 2.2 3 4"
+                floats=".23 1.324 12"
+                bools="0 1 false true"
+            ></attr-cast>
             <f-access num="1" bool inc="0" double="0"></f-access>
 
             <f-method target=".mtarget"></f-method>

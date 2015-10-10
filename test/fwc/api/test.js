@@ -69,10 +69,10 @@ QUnit.test('definition', assert => {
     let comp = fwc('foo');
 
     assert.ok(typeof comp.attr === 'function', "the component definition holds the method attr");
-    assert.equal(comp.attr('id', {}), comp, "The method chains with arguments");
-    assert.ok(typeof comp.attr('id') === 'object', "the method returns the attribute definition");
-    assert.ok(typeof comp.attr('id').set === 'function', "the attribute definition has a setter");
-    assert.ok(typeof comp.attr('id').get === 'function', "the attribute definition has a getter");
+    assert.equal(comp.attr('bar', {}), comp, "The method chains with arguments");
+    assert.ok(typeof comp.attr('bar') === 'object', "the method returns the attribute definition");
+    assert.ok(typeof comp.attr('bar').set === 'function', "the attribute definition has a setter");
+    assert.ok(typeof comp.attr('bar').get === 'function', "the attribute definition has a getter");
 });
 
 QUnit.test('definition polymorphism', assert => {
@@ -80,10 +80,10 @@ QUnit.test('definition polymorphism', assert => {
 
     let comp = fwc('foo');
 
-    comp.attr({name : 'id'});
-    assert.ok(typeof comp.attr('id') === 'object', "the method returns the attribute definition");
-    assert.ok(typeof comp.attr('id').set === 'function', "the attribute definition has a setter");
-    assert.ok(typeof comp.attr('id').get === 'function', "the attribute definition has a getter");
+    comp.attr({name : 'bar'});
+    assert.ok(typeof comp.attr('bar') === 'object', "the method returns the attribute definition");
+    assert.ok(typeof comp.attr('bar').set === 'function', "the attribute definition has a setter");
+    assert.ok(typeof comp.attr('bar').get === 'function', "the attribute definition has a getter");
 });
 
 QUnit.test('definition type casting', assert => {
@@ -124,8 +124,8 @@ QUnit.test('multiple declarations', assert => {
     let comp = fwc('foo');
 
     assert.ok(typeof comp.attrs === 'function', "the component definition holds the method attrs");
-    assert.equal(comp.attrs('id', 'selected'), comp, "The method chains with arguments");
-    assert.deepEqual(comp.attrs(), ['id', 'selected'], "the method returns values without arguments");
+    assert.equal(comp.attrs('bar', 'selected'), comp, "The method chains with arguments");
+    assert.deepEqual(comp.attrs(), ['bar', 'selected'], "the method returns values without arguments");
 });
 
 QUnit.test('accessors', assert => {
@@ -162,14 +162,14 @@ QUnit.test('accessors', assert => {
     assert.equal(comp.access('test').get.call(mock), 'foo', "The getter returns the defined value");
     assert.equal(comp.access('test').set.call(mock, 'foo'), 'foobar', "The setter returns the defined value");
 
-    comp.attrs('id');
-    assert.ok(typeof comp.access('id') === 'object', "Attributes have default accessors");
+    comp.attrs('bar');
+    assert.ok(typeof comp.access('bar') === 'object', "Attributes have default accessors");
     assert.ok(typeof comp.access('foo') === 'undefined', "Only attributes have default accessors");
-    assert.ok(typeof comp.access('id').get === 'function', "The method returns the accessors without arguments");
-    assert.ok(typeof comp.access('id').set === 'function', "The method returns the accessors without arguments");
+    assert.ok(typeof comp.access('bar').get === 'function', "The method returns the accessors without arguments");
+    assert.ok(typeof comp.access('bar').set === 'function', "The method returns the accessors without arguments");
 
-    assert.equal(comp.access('id').set.call(mock, 'bee'), 'bee', "The setter returns the defined value");
-    assert.equal(comp.access('id').get.call(mock), 'bee', "The getter returns the defined value");
+    assert.equal(comp.access('bar').set.call(mock, 'bee'), 'bee', "The setter returns the defined value");
+    assert.equal(comp.access('bar').get.call(mock), 'bee', "The getter returns the defined value");
 });
 
 
