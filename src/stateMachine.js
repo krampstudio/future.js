@@ -16,36 +16,47 @@
  * @param {String[]} available - the list of available states
  * @returns {stateApi} a new state api
  */
-export default function stateFactory (...available){
+export default function stateMachine (...available){
 
+    const enabled  = new Set();
     const currents = new Set();
 
-    //check parameters
+    //check and enable
     for( let state of available ) {
         if(typeof state !== 'string'){
             throw new TypeError('Only strings are available for state names');
         }
+        enabled.add(state);
     }
+
 
     /**
      * @typedef stateApi
      */
     const stateApi = {
 
+        /**
+         * List the available states
+         * @returns {String[]} the available states
+         */
         list(){
-            return available;
+            return Array.from(enabled);
         },
 
+        /**
+         * set the current states
+         * @param {String...} states - the state
+         */
         set(...states){
             states
-                .filter( state => available.indexOf(state) > -1)
+                .filter( state => enabled.has(state) )
                 .forEach( state => currents.add(state) );
         },
 
         toggle(...states){
 
             states
-                .filter( state => available.indexOf(state) > -1)
+                .filter( state => enabled.has(state) )
                 .forEach( state => {
                     if(this.is(state)){
                         this.delete(state);
