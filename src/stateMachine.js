@@ -45,7 +45,7 @@ export default function stateMachine (...available){
 
         /**
          * set the current states
-         * @param {String...} states - the state
+         * @param {String...} states - the states to set
          */
         set(...states){
             states
@@ -53,6 +53,10 @@ export default function stateMachine (...available){
                 .forEach( state => currents.add(state) );
         },
 
+        /**
+         * Toggle states. If current then remove otherwise set it.
+         * @param {String...} states - the states to toggle
+         */
         toggle(...states){
 
             states
@@ -66,12 +70,29 @@ export default function stateMachine (...available){
                 });
         },
 
+        /**
+         * Check whether the given state was set
+         * @param {String} states - the state to check
+         * @returns {Boolean} true if current
+         */
         is(state){
             return currents.has(state);
         },
-        remove(state){
-            currents.delete(state);
+
+        /**
+         * Remove (unset) the given states
+         * @param {String...} states - the states to remove
+         */
+        remove(...states){
+
+            states
+                .filter( state => enabled.has(state) )
+                .forEach( state => currents.delete(state) );
         },
+
+        /**
+         * Clear all current states
+         */
         clear(){
             currents.clear();
         }

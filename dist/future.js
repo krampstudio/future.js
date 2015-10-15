@@ -6024,7 +6024,7 @@ function stateMachine() {
 
         /**
          * set the current states
-         * @param {String...} states - the state
+         * @param {String...} states - the states to set
          */
         set: function set() {
             for (var _len2 = arguments.length, states = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
@@ -6038,6 +6038,10 @@ function stateMachine() {
             });
         },
 
+        /**
+         * Toggle states. If current then remove otherwise set it.
+         * @param {String...} states - the states to toggle
+         */
         toggle: function toggle() {
             var _this = this;
 
@@ -6056,12 +6060,34 @@ function stateMachine() {
             });
         },
 
+        /**
+         * Check whether the given state was set
+         * @param {String} states - the state to check
+         * @returns {Boolean} true if current
+         */
         is: function is(state) {
             return currents.has(state);
         },
-        remove: function remove(state) {
-            currents['delete'](state);
+
+        /**
+         * Remove (unset) the given states
+         * @param {String...} states - the states to remove
+         */
+        remove: function remove() {
+            for (var _len4 = arguments.length, states = Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+                states[_key4] = arguments[_key4];
+            }
+
+            states.filter(function (state) {
+                return enabled.has(state);
+            }).forEach(function (state) {
+                return currents['delete'](state);
+            });
         },
+
+        /**
+         * Clear all current states
+         */
         clear: function clear() {
             currents.clear();
         }
