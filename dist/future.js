@@ -6053,7 +6053,7 @@ function stateMachine() {
                 return enabled.has(state);
             }).forEach(function (state) {
                 if (_this.is(state)) {
-                    _this['delete'](state);
+                    _this.remove(state);
                 } else {
                     _this.set(state);
                 }

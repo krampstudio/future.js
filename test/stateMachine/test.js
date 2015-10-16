@@ -43,7 +43,7 @@ QUnit.test('define states', assert => {
     stateMachine('foo', 'bar');
 });
 
-QUnit.test('available', assert => {
+QUnit.test('list enabled states', assert => {
 
     assert.expect(3);
 
@@ -87,7 +87,7 @@ QUnit.test('set states', assert => {
 });
 
 
-QUnit.test('clear states', assert => {
+QUnit.test('remove states', assert => {
 
     assert.expect(13);
 
@@ -113,4 +113,58 @@ QUnit.test('clear states', assert => {
     assert.ok( ! state.is('bar'), 'the state bar is not set anymore');
     assert.ok( ! state.is('baz'), 'the state baz is not set anymore');
     assert.ok( ! state.is('noz'), 'the state noz is still not set');
+});
+
+
+QUnit.test('clear states', assert => {
+
+    assert.expect(9);
+
+    let states = ['foo', 'bar', 'baz', 'noz'];
+    let state = stateMachine(...states);
+
+    assert.deepEqual(state.list(), states, 'Available states are those configured');
+
+    state.set('foo', 'bar', 'baz');
+    assert.ok(state.is('foo'), 'the state foo is set');
+    assert.ok(state.is('bar'), 'the state bar is set');
+    assert.ok(state.is('baz'), 'the state baz is set');
+    assert.ok( ! state.is('noz'), 'the state noz is not set');
+
+    state.clear();
+    assert.ok( ! state.is('foo'), 'the state foo is now cleared');
+    assert.ok( ! state.is('bar'), 'the state bar is now cleared');
+    assert.ok( ! state.is('baz'), 'the state baz is now cleared');
+    assert.ok( ! state.is('noz'), 'the state noz is now cleared');
+
+});
+
+QUnit.test('toggle states', assert => {
+
+    assert.expect(11);
+
+    let states = ['foo', 'bar', 'baz', 'noz'];
+    let state = stateMachine(...states);
+
+    assert.deepEqual(state.list(), states, 'Available states are those configured');
+
+    state.set('foo', 'bar', 'baz');
+    assert.ok(state.is('foo'), 'the state foo is set');
+    assert.ok(state.is('bar'), 'the state bar is set');
+    assert.ok(state.is('baz'), 'the state baz is set');
+    assert.ok( ! state.is('noz'), 'the state noz is not set');
+
+    state.toggle('foo');
+    assert.ok( ! state.is('foo'), 'the state foo is now removed');
+
+    state.toggle('foo');
+    assert.ok(state.is('foo'), 'the state foo is now set');
+
+    state.toggle('bar', 'noz');
+    assert.ok( ! state.is('bar'), 'the state bar is now removed');
+    assert.ok(state.is('noz'), 'the state noz is now set');
+
+    state.toggle('bar', 'noz');
+    assert.ok(state.is('bar'), 'the state bar is now set');
+    assert.ok( ! state.is('noz'), 'the state noz is now removed');
 });

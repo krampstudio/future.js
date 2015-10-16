@@ -58,12 +58,11 @@ export default function stateMachine (...available){
          * @param {String...} states - the states to toggle
          */
         toggle(...states){
-
             states
                 .filter( state => enabled.has(state) )
                 .forEach( state => {
                     if(this.is(state)){
-                        this.delete(state);
+                        this.remove(state);
                     } else {
                         this.set(state);
                     }
@@ -84,7 +83,6 @@ export default function stateMachine (...available){
          * @param {String...} states - the states to remove
          */
         remove(...states){
-
             states
                 .filter( state => enabled.has(state) )
                 .forEach( state => currents.delete(state) );
