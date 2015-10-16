@@ -11,7 +11,7 @@
  */
 
 import eventify from './eventify.js';
-import htmlElements from './elements.json';
+import htmlElements from './fwc/elements.json';
 import { caster as attrCaster } from './fwc/attr.js';
 
 //The registry keeps a ref to previously registered
@@ -19,20 +19,18 @@ import { caster as attrCaster } from './fwc/attr.js';
 let registry = new Map();
 
 
-
 /**
  * Where everything starts, this function will gives you a reference to an component model.
  * @param {String} name - the component name with or without the namespace that matches the HTMLElement naming rules.
- * @param {Object} [options]
+ * @param {Object} [options] - additional configuration options
  * @param {String} [options.namespace = 'f'] - set the component namespace manually
  * @returns  {fwComponent} the component model
- *
  */
 const fwc = function futureWebComponentFactory(name = '', options = {}){
 
-    var namespace;
+    let namespace;
 
-    var data = {
+    const data = {
         baseProto: HTMLElement.prototype,
         attrs:     {},
         methods:   {},
@@ -188,7 +186,7 @@ const fwc = function futureWebComponentFactory(name = '', options = {}){
             data.attrs = {};
 
             //each attribute get his own getter setter
-            attributes.forEach( (attr) => {
+            attributes.forEach( attr => {
                 if(typeof attr === 'string'){
                     attr = { name : attr };
                 }
@@ -407,12 +405,12 @@ const fwc = function futureWebComponentFactory(name = '', options = {}){
              */
             var delegateNativeEvents = function delegateNativeEvents(elt){
                 for(let eventType of Object.keys(self.events())){
-                    if(typeof elt['on' + eventType] !== 'undefined'){
-                        for(let event of self.events(eventType)){
+                    if(typeof elt['on' + eventType.toLowerCase()] !== 'undefined'){
+                        self.events(eventType).forEach( () => {
                             elt.addEventListener(eventType, (...params) => {
                                 self.trigger(eventType, elt, ...params);
                             });
-                        }
+                        });
                     }
                 }
             };
@@ -448,7 +446,7 @@ const fwc = function futureWebComponentFactory(name = '', options = {}){
                 },
 
                 attributeChangedCallback : {
-                    value(name, old, val){
+                    value(name/*, old, val*/){
 
                         //some attributes changes triggers a re render
                         if(data.update.indexOf(name) > -1){

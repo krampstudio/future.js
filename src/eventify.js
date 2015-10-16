@@ -60,7 +60,7 @@ const api = {
      */
     trigger (name, ...data) {
         if(this._events[name] && Array.isArray(this._events[name])){
-          this._events[name].forEach(event =>  event.call(this, ...data));
+            this._events[name].forEach(event =>  event.call(this, ...data));
         }
         return this;
     },
