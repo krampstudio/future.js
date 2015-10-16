@@ -4976,134 +4976,6 @@ module.exports={
 
 },{}],192:[function(require,module,exports){
 /**
-* Future.js - 2015
- * @author Bertrand Chevrier <chevrier.bertrand@gmail.com>
- * @license MIT
- */
-
-/**
- * Attribute stuffs for Future.js Web Component.
- * @module fwc/attr
- */
-
-/**
- * used for casting type while retrieving/setting attr values
- */
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-    value: true
-});
-
-var _caster;
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-var caster = (_caster = {
-    boolean: {
-        get: function get(name) {
-            return this.hasAttribute(name);
-        },
-        set: function set(value) {
-            return !!value;
-        }
-    },
-    float: {
-        get: function get(name) {
-            return parseFloat(this.getAttribute(name));
-        },
-        set: function set(value) {
-            return parseFloat(value);
-        }
-    },
-    int: {
-        get: function get(name) {
-            return parseInt(this.getAttribute(name), 10);
-        },
-        set: function set(value) {
-            return parseInt(value, 10);
-        }
-    },
-    array: {
-        get: function get(name) {
-            return this.getAttribute(name).split(' ').filter(function (item) {
-                return !!item;
-            });
-        },
-        set: function set(value) {
-            return Array.from(value).filter(function (item) {
-                return !!item;
-            }).join(' ');
-        }
-    }
-}, _defineProperty(_caster, 'string[]', {
-    get: function get(name) {
-        return this.getAttribute(name).split(' ').filter(function (item) {
-            return !!item;
-        }).map(function (item) {
-            return item.toString();
-        });
-    },
-    set: function set(value) {
-        return Array.from(value).filter(function (item) {
-            return !!item;
-        }).map(function (item) {
-            return item.toString();
-        }).join(' ');
-    }
-}), _defineProperty(_caster, 'int[]', {
-    get: function get(name) {
-        return this.getAttribute(name).split(' ').map(function (item) {
-            return parseInt(item, 10);
-        }).filter(function (item) {
-            return !isNaN(item);
-        });
-    },
-    set: function set(value) {
-        return Array.from(value).map(function (item) {
-            return parseInt(item, 10);
-        }).filter(function (item) {
-            return !isNaN(item);
-        }).join(' ');
-    }
-}), _defineProperty(_caster, 'float[]', {
-    get: function get(name) {
-        return this.getAttribute(name).split(' ').map(function (item) {
-            return parseFloat(item);
-        }).filter(function (item) {
-            return !itemsNaN(item);
-        });
-    },
-    set: function set(value) {
-        return Array.from(value).map(function (item) {
-            return parseFloat(item);
-        }).filter(function (item) {
-            return !itemsNaN(item);
-        }).join(' ');
-    }
-}), _defineProperty(_caster, 'boolean[]', {
-    get: function get(name) {
-        return this.getAttribute(name).split(' ').map(function (item) {
-            return item !== '0' && item !== 'false';
-        });
-    },
-    set: function set(value) {
-        return Array.from(value).map(function (item) {
-            return !!item ? 'true' : 'false';
-        }).join(' ');
-    }
-}), _caster);
-
-exports.caster = caster;
-//type aliases
-caster.bool = caster.boolean;
-caster.double = caster.float;
-caster.number = caster.float;
-caster.integer = caster.int;
-caster['[]'] = caster.array;
-
-},{}],193:[function(require,module,exports){
-/**
  * Future.js - 2015
  * @author Bertrand Chevrier <chevrier.bertrand@gmail.com>
  * @license MIT
@@ -5271,7 +5143,7 @@ module.exports = exports['default'];
 
 },{}],"fwc":[function(require,module,exports){
 /**
-* Future.js - 2015
+ * Future.js - 2015
  * @author Bertrand Chevrier <chevrier.bertrand@gmail.com>
  * @license MIT
  */
@@ -5297,8 +5169,6 @@ var _eventifyJs2 = _interopRequireDefault(_eventifyJs);
 var _elementsJson = require('./elements.json');
 
 var _elementsJson2 = _interopRequireDefault(_elementsJson);
-
-var _fwcAttrJs = require('./fwc/attr.js');
 
 //The registry keeps a ref to previously registered
 //components in order to extend them.
@@ -5368,9 +5238,6 @@ var fwc = function futureWebComponentFactory() {
          */
         attr: function attr(name, def) {
 
-            //forbidden attributes
-            var forbidden = ['id', 'class', 'is'];
-
             if (typeof name === 'object' && typeof name.name === 'string') {
                 var temp = name;
                 def = name;
@@ -5382,29 +5249,24 @@ var fwc = function futureWebComponentFactory() {
                 return data.attrs[name];
             }
 
-            if (forbidden.indexOf(name) > -1) {
-                throw new TypeError('You can\'t modify the behavior of the attribute ' + name);
-            }
-
             //maintain a list of attributes that trigger rerender on change
             if (def.update === true) {
                 data.update.push(name);
             }
 
-            if (def.type) {
-                def.type = def.type.toLowerCase();
-            }
-
             //create the attr definition, formated for Object.defineProperty
             data.attrs[name] = {
                 get: function get() {
-                    var value = undefined;
-
-                    //call type caster
-                    if (def.type && _fwcAttrJs.caster[def.type]) {
-                        value = _fwcAttrJs.caster[def.type].get.call(this, name);
-                    } else {
-                        value = this.getAttribute(name);
+                    var value = this.getAttribute(name);
+                    if (def.type) {
+                        var type = def.type.toLowerCase();
+                        if (type === 'boolean') {
+                            value = this.hasAttribute(name);
+                        } else if (type === 'integer') {
+                            value = parseInt(value, 10);
+                        } else if (type === 'float') {
+                            value = parseFloat(value);
+                        }
                     }
 
                     //call user defined getter
@@ -5421,10 +5283,16 @@ var fwc = function futureWebComponentFactory() {
                     return value;
                 },
                 set: function set(value) {
-
-                    //call type caster
-                    if (def.type && _fwcAttrJs.caster[def.type]) {
-                        value = _fwcAttrJs.caster[def.type].set.call(this, value);
+                    var type;
+                    if (def.type) {
+                        type = def.type.toLowerCase();
+                        if (type === 'boolean') {
+                            value = !!value;
+                        } else if (type === 'integer') {
+                            value = parseInt(value, 10);
+                        } else if (type === 'float') {
+                            value = parseFloat(value);
+                        }
                     }
 
                     //call setter
@@ -5439,7 +5307,7 @@ var fwc = function futureWebComponentFactory() {
                         value = def.set.call(this, this.getAttribute(name), value);
                     }
 
-                    if (def.type === 'boolean') {
+                    if (type === 'boolean') {
                         if (value) {
                             this.setAttribute(name, '');
                         } else {
@@ -5918,7 +5786,7 @@ function validateEltName(name) {
 exports['default'] = fwc;
 module.exports = exports['default'];
 
-},{"./elements.json":191,"./eventify.js":"eventify","./fwc/attr.js":192}],"router":[function(require,module,exports){
+},{"./elements.json":191,"./eventify.js":"eventify"}],"router":[function(require,module,exports){
 /**
  * Future.js - 2015
  * @author Bertrand Chevrier <chevrier.bertrand@gmail.com>
@@ -6077,5 +5945,158 @@ function router() {
 
 module.exports = exports['default'];
 
-},{"url-pattern":190}]},{},[193])
+},{"url-pattern":190}],"stateMachine":[function(require,module,exports){
+/**
+ * Future.js - 2015
+ * @author Bertrand Chevrier <chevrier.bertrand@gmail.com>
+ * @license MIT
+ */
+
+/**
+ * Creates a state context
+ *
+ * @example
+ * let state = stateFactory('active', 'hidden', 'enabled')
+ * state.set('active');
+ * state.is('active');
+ *
+ * @param {String[]} available - the list of available states
+ * @returns {stateApi} a new state api
+ */
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+exports['default'] = stateMachine;
+
+function stateMachine() {
+
+    var enabled = new Set();
+    var currents = new Set();
+
+    //check and enable
+    var _iteratorNormalCompletion = true;
+    var _didIteratorError = false;
+    var _iteratorError = undefined;
+
+    try {
+        for (var _len = arguments.length, available = Array(_len), _key = 0; _key < _len; _key++) {
+            available[_key] = arguments[_key];
+        }
+
+        for (var _iterator = available[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var state = _step.value;
+
+            if (typeof state !== 'string') {
+                throw new TypeError('Only strings are available for state names');
+            }
+            enabled.add(state);
+        }
+
+        /**
+         * @typedef stateApi
+         */
+    } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+    } finally {
+        try {
+            if (!_iteratorNormalCompletion && _iterator['return']) {
+                _iterator['return']();
+            }
+        } finally {
+            if (_didIteratorError) {
+                throw _iteratorError;
+            }
+        }
+    }
+
+    var stateApi = {
+
+        /**
+         * List the available states
+         * @returns {String[]} the available states
+         */
+        list: function list() {
+            return Array.from(enabled);
+        },
+
+        /**
+         * set the current states
+         * @param {String...} states - the states to set
+         */
+        set: function set() {
+            for (var _len2 = arguments.length, states = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+                states[_key2] = arguments[_key2];
+            }
+
+            states.filter(function (state) {
+                return enabled.has(state);
+            }).forEach(function (state) {
+                return currents.add(state);
+            });
+        },
+
+        /**
+         * Toggle states. If current then remove otherwise set it.
+         * @param {String...} states - the states to toggle
+         */
+        toggle: function toggle() {
+            var _this = this;
+
+            for (var _len3 = arguments.length, states = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+                states[_key3] = arguments[_key3];
+            }
+
+            states.filter(function (state) {
+                return enabled.has(state);
+            }).forEach(function (state) {
+                if (_this.is(state)) {
+                    _this.remove(state);
+                } else {
+                    _this.set(state);
+                }
+            });
+        },
+
+        /**
+         * Check whether the given state was set
+         * @param {String} states - the state to check
+         * @returns {Boolean} true if current
+         */
+        is: function is(state) {
+            return currents.has(state);
+        },
+
+        /**
+         * Remove (unset) the given states
+         * @param {String...} states - the states to remove
+         */
+        remove: function remove() {
+            for (var _len4 = arguments.length, states = Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+                states[_key4] = arguments[_key4];
+            }
+
+            states.filter(function (state) {
+                return enabled.has(state);
+            }).forEach(function (state) {
+                return currents['delete'](state);
+            });
+        },
+
+        /**
+         * Clear all current states
+         */
+        clear: function clear() {
+            currents.clear();
+        }
+    };
+
+    return stateApi;
+}
+
+module.exports = exports['default'];
+
+},{}]},{},[192])
 //# sourceMappingURL=future.js.map
