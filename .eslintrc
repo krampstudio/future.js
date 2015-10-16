@@ -1,29 +1,32 @@
 {
-  "rules": {
-    "indent": [
-      2,
-      4
-    ],
-    "quotes": [
-      2,
-      "single"
-    ],
-    "linebreak-style": [
-      2,
-      "unix"
-    ],
-    "semi": [
-      2,
-      "always"
-    ],
-  },
-  "env": {
-    "es6": true,
-    "node": true,
-    "browser": true
-  },
+  "parser" : "babel-eslint",
   "extends": "eslint:recommended",
-    "ecmaFeatures": {
-      "modules": true
-    },
+  "env": {
+    "es6":      true,
+    "node":     true,
+    "commonjs": true,
+    "browser":  true
+  },
+  "ecmaFeatures": {
+    "modules":          true,
+    "classes":          false,
+    "superInFunctions": false,
+    "jsx":              false
+  },
+  "rules": {
+    "indent":           [ 2, 4 ],
+    "quotes":           [ 2, "single"],
+    "linebreak-style":  [ 2, "unix" ],
+    "semi":             [ 2, "always" ],
+    "valid-jsdoc":      [1, { "prefer": { "return": "returns" }, "requireReturn": false}],
+    "eqeqeq":           [2, "smart"],
+    "no-alert":         2,
+    "no-console":       2,
+    "no-debugger":      2,
+    "no-eval":          2,
+    "no-throw-literal": 2,
+    "no-with":          2,
+    "arrow-spacing":    [2, { "before": false, "after": false }],
+    "no-const-assign":  2
+  }
 }

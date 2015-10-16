@@ -1,5 +1,5 @@
 /**
- * Future.js - 2015
+* Future.js - 2015
  * @author Bertrand Chevrier <chevrier.bertrand@gmail.com>
  * @license MIT
  */
@@ -12,10 +12,13 @@
 
 import eventify from './eventify.js';
 import htmlElements from './elements.json';
+import { caster as attrCaster } from './fwc/attr.js';
 
 //The registry keeps a ref to previously registered
 //components in order to extend them.
 let registry = new Map();
+
+
 
 /**
  * Where everything starts, this function will gives you a reference to an component model.
@@ -79,6 +82,9 @@ const fwc = function futureWebComponentFactory(name = '', options = {}){
          */
         attr(name, def){
 
+            //forbidden attributes
+            const forbidden = ['id', 'class', 'is'];
+
             if(typeof name === 'object' && typeof name.name === 'string'){
                 let temp = name;
                 def = name;
@@ -90,26 +96,29 @@ const fwc = function futureWebComponentFactory(name = '', options = {}){
                 return data.attrs[name];
             }
 
+            if(forbidden.indexOf(name) > -1){
+                throw new TypeError(`You can't modify the behavior of the attribute ${name}`);
+            }
+
             //maintain a list of attributes that trigger rerender on change
             if(def.update === true){
                 data.update.push(name);
             }
 
+            if(def.type){
+                def.type = def.type.toLowerCase();
+            }
+
             //create the attr definition, formated for Object.defineProperty
             data.attrs[name] = {
                 get() {
-                    let value = this.getAttribute(name);
-                    if(def.type){
-                        let type = def.type.toLowerCase();
-                        if(type === 'boolean'){
-                            value = this.hasAttribute(name);
-                        }
-                        else if(type === 'integer'){
-                            value = parseInt(value, 10);
-                        }
-                        else if(type === 'float'){
-                            value = parseFloat(value);
-                        }
+                    let value;
+
+                    //call type caster
+                    if(def.type && attrCaster[def.type]){
+                        value = attrCaster[def.type].get.call(this, name);
+                    } else {
+                        value = this.getAttribute(name);
                     }
 
                     //call user defined getter
@@ -126,17 +135,10 @@ const fwc = function futureWebComponentFactory(name = '', options = {}){
                     return value;
                 },
                 set (value) {
-                    var type;
-                    if(def.type){
-                        type = def.type.toLowerCase();
-                        if(type === 'boolean'){
-                            value = !!value;
-                        } else if(type === 'integer'){
-                            value = parseInt(value, 10);
-                        }
-                        else if(type === 'float'){
-                            value = parseFloat(value);
-                        }
+
+                    //call type caster
+                    if(def.type && attrCaster[def.type]){
+                        value = attrCaster[def.type].set.call(this, value);
                     }
 
                     //call setter
@@ -151,7 +153,7 @@ const fwc = function futureWebComponentFactory(name = '', options = {}){
                         value = def.set.call(this, this.getAttribute(name), value);
                     }
 
-                    if (type === 'boolean'){
+                    if (def.type === 'boolean'){
                         if(value){
                             this.setAttribute(name, '');
                         } else {
