@@ -97,7 +97,7 @@ export default function router (routes = []){
             routeStack.set(url, {handlers, once});
 
             return this;
-        },
+        }
     };
 
     routes.forEach( route => routing.add(route));

@@ -10,7 +10,7 @@
  */
 
 //load the ES6 polyfill
-import "babel/polyfill";
+import 'babel/polyfill';
 
 //re-export Future libraries
 export { fwc as fwc } from './fwc.js';

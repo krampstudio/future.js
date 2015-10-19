@@ -82,12 +82,12 @@ export const caster = {
             return this.getAttribute(name)
                        .split(' ')
                        .map( item => parseFloat(item))
-                       .filter( item => !itemsNaN(item));
+                       .filter( item => !isNaN(item));
         },
         set(value){
             return Array.from(value)
                         .map( item => parseFloat(item))
-                        .filter( item => !itemsNaN(item))
+                        .filter( item => !isNaN(item))
                         .join(' ');
         }
     },
@@ -99,7 +99,7 @@ export const caster = {
         },
         set(value){
             return Array.from(value)
-                        .map( item => !!item ? 'true' : 'false')
+                        .map( item => item ? 'true' : 'false')
                         .join(' ');
         }
     }
