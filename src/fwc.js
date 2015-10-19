@@ -13,6 +13,7 @@
 import eventify from './eventify.js';
 import htmlElements from './fwc/elements.json';
 import { caster as attrCaster } from './fwc/attr.js';
+import stateMachine from './stateMachine.js';
 
 //The registry keeps a ref to previously registered
 //components in order to extend them.
@@ -81,7 +82,7 @@ const fwc = function futureWebComponentFactory(name = '', options = {}){
         attr(name, def){
 
             //forbidden attributes
-            const forbidden = ['id', 'class', 'is'];
+            const forbidden = ['id', 'class', 'is', 'state'];
 
             if(typeof name === 'object' && typeof name.name === 'string'){
                 let temp = name;
@@ -251,6 +252,10 @@ const fwc = function futureWebComponentFactory(name = '', options = {}){
             return this;
         },
 
+        state(name, value){
+
+        },
+
         /**
          * Get/Set component content function
          *
@@ -367,7 +372,7 @@ const fwc = function futureWebComponentFactory(name = '', options = {}){
 
             //re trigger generic events
             this.on('flow',  (name, elt) => this.trigger(name, elt));
-            this.on('state', (name, ...params) => this.trigger.call(this, name, ...params));
+            //this.on('state', (name, ...params) => this.trigger.call(this, name, ...params));
 
             /**
              * Render the content of the element
@@ -415,13 +420,16 @@ const fwc = function futureWebComponentFactory(name = '', options = {}){
                 }
             };
 
-
             //The prototype that is going to be regsitered
             //first we attach lifecycle callback with a predefined behavior
             var eltProto = {
 
                 createdCallback : {
                     value(){
+
+                        this.state = stateMachine('disabled', 'hidden');
+
+                        //compute state from prop/attrs
 
                         //render the content
                         renderContent(this);

@@ -351,6 +351,38 @@ QUnit.test('Component with a method', assert => {
         .register();
 });
 
+
+QUnit.module('State');
+
+QUnit.test('Component with a method', assert => {
+    assert.expect(7);
+
+    let done = assert.async();
+
+    let container = document.getElementById('permanent-fixture');
+    assert.ok(container instanceof HTMLElement, 'The container exists');
+
+    let mTarget = container.querySelector('.mtarget');
+    assert.ok(mTarget.style.display !== 'none', "The mtarget content is displayed");
+
+    fwc('method')
+        .on('error', function(e){
+            assert.ok(false, e);
+        })
+        .on('create', function(elt){
+
+            let fMethod = container.querySelector('f-method');
+            assert.deepEqual(fMethod, elt, 'The callback elt is the given node');
+
+
+
+            elt.state.is('hidden');
+        })
+        .state('hidden', (elt, switcher) => switcher(elt.style.display === 'none'))
+        .register();
+});
+
+
 QUnit.module('Content');
 
 QUnit.test('Component with content from a callback', assert => {
