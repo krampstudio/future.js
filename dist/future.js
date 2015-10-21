@@ -4793,6 +4793,138 @@ var slice = [].slice;
 });
 
 },{}],191:[function(require,module,exports){
+/**
+* Future.js - 2015
+ * @author Bertrand Chevrier <chevrier.bertrand@gmail.com>
+ * @license MIT
+ */
+
+/**
+ * Attribute stuffs for Future.js Web Component.
+ * @module fwc/attr
+ */
+
+/**
+ * used for casting type while retrieving/setting attr values
+ */
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+
+var _caster;
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var caster = (_caster = {
+    boolean: {
+        get: function get(name) {
+            return this.hasAttribute(name);
+        },
+        set: function set(value) {
+            return !!value;
+        }
+    },
+    float: {
+        get: function get(name) {
+            return parseFloat(this.getAttribute(name));
+        },
+        set: function set(value) {
+            return parseFloat(value);
+        }
+    },
+    int: {
+        get: function get(name) {
+            return parseInt(this.getAttribute(name), 10);
+        },
+        set: function set(value) {
+            return parseInt(value, 10);
+        }
+    },
+    array: {
+        get: function get(name) {
+            return this.getAttribute(name).split(' ').filter(function (item) {
+                return !!item;
+            });
+        },
+        set: function set(value) {
+            return Array.from(value).filter(function (item) {
+                return !!item;
+            }).join(' ');
+        }
+    }
+}, _defineProperty(_caster, 'string[]', {
+    get: function get(name) {
+        return this.getAttribute(name).split(' ').filter(function (item) {
+            return !!item;
+        }).map(function (item) {
+            return item.toString();
+        });
+    },
+    set: function set(value) {
+        return Array.from(value).filter(function (item) {
+            return !!item;
+        }).map(function (item) {
+            return item.toString();
+        }).join(' ');
+    }
+}), _defineProperty(_caster, 'int[]', {
+    get: function get(name) {
+        return this.getAttribute(name).split(' ').map(function (item) {
+            return parseInt(item, 10);
+        }).filter(function (item) {
+            return !isNaN(item);
+        });
+    },
+    set: function set(value) {
+        return Array.from(value).map(function (item) {
+            return parseInt(item, 10);
+        }).filter(function (item) {
+            return !isNaN(item);
+        }).join(' ');
+    }
+}), _defineProperty(_caster, 'float[]', {
+    get: function get(name) {
+        return this.getAttribute(name).split(' ').map(function (item) {
+            return parseFloat(item);
+        }).filter(function (item) {
+            return !isNaN(item);
+        });
+    },
+    set: function set(value) {
+        return Array.from(value).map(function (item) {
+            return parseFloat(item);
+        }).filter(function (item) {
+            return !isNaN(item);
+        }).join(' ');
+    }
+}), _defineProperty(_caster, 'boolean[]', {
+    get: function get(name) {
+        return this.getAttribute(name).split(' ').map(function (item) {
+            return item !== '0' && item !== 'false';
+        });
+    },
+    set: function set(value) {
+        return Array.from(value).map(function (item) {
+            return item ? 'true' : 'false';
+        }).join(' ');
+    }
+}), _caster);
+
+exports.caster = caster;
+//type aliases
+caster.bool = caster.boolean;
+caster.double = caster.float;
+caster.number = caster.float;
+caster.integer = caster.int;
+caster['[]'] = caster.array;
+caster['integer[]'] = caster['int[]'];
+caster['double[]'] = caster['float[]'];
+caster['number[]'] = caster['float[]'];
+caster['bool[]'] = caster['boolean[]'];
+
+},{}],192:[function(require,module,exports){
 module.exports={
   "HTMLAnchorElement": {
     "nodes": ["a"]
@@ -4974,7 +5106,7 @@ module.exports={
 }
 
 
-},{}],192:[function(require,module,exports){
+},{}],193:[function(require,module,exports){
 /**
  * Future.js - 2015
  * @author Bertrand Chevrier <chevrier.bertrand@gmail.com>
@@ -4993,7 +5125,7 @@ Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
-require("babel/polyfill");
+require('babel/polyfill');
 
 //re-export Future libraries
 
@@ -5143,7 +5275,7 @@ module.exports = exports['default'];
 
 },{}],"fwc":[function(require,module,exports){
 /**
- * Future.js - 2015
+* Future.js - 2015
  * @author Bertrand Chevrier <chevrier.bertrand@gmail.com>
  * @license MIT
  */
@@ -5166,9 +5298,11 @@ var _eventifyJs = require('./eventify.js');
 
 var _eventifyJs2 = _interopRequireDefault(_eventifyJs);
 
-var _elementsJson = require('./elements.json');
+var _fwcElementsJson = require('./fwc/elements.json');
 
-var _elementsJson2 = _interopRequireDefault(_elementsJson);
+var _fwcElementsJson2 = _interopRequireDefault(_fwcElementsJson);
+
+var _fwcAttrJs = require('./fwc/attr.js');
 
 //The registry keeps a ref to previously registered
 //components in order to extend them.
@@ -5177,16 +5311,15 @@ var registry = new Map();
 /**
  * Where everything starts, this function will gives you a reference to an component model.
  * @param {String} name - the component name with or without the namespace that matches the HTMLElement naming rules.
- * @param {Object} [options]
+ * @param {Object} [options] - additional configuration options
  * @param {String} [options.namespace = 'f'] - set the component namespace manually
  * @returns  {fwComponent} the component model
- *
  */
 var fwc = function futureWebComponentFactory() {
     var name = arguments.length <= 0 || arguments[0] === undefined ? '' : arguments[0];
     var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
-    var namespace;
+    var namespace = undefined;
 
     var data = {
         baseProto: HTMLElement.prototype,
@@ -5238,6 +5371,9 @@ var fwc = function futureWebComponentFactory() {
          */
         attr: function attr(name, def) {
 
+            //forbidden attributes
+            var forbidden = ['id', 'class', 'is'];
+
             if (typeof name === 'object' && typeof name.name === 'string') {
                 var temp = name;
                 def = name;
@@ -5249,24 +5385,29 @@ var fwc = function futureWebComponentFactory() {
                 return data.attrs[name];
             }
 
+            if (forbidden.indexOf(name) > -1) {
+                throw new TypeError('You can\'t modify the behavior of the attribute ' + name);
+            }
+
             //maintain a list of attributes that trigger rerender on change
             if (def.update === true) {
                 data.update.push(name);
             }
 
+            if (def.type) {
+                def.type = def.type.toLowerCase();
+            }
+
             //create the attr definition, formated for Object.defineProperty
             data.attrs[name] = {
                 get: function get() {
-                    var value = this.getAttribute(name);
-                    if (def.type) {
-                        var type = def.type.toLowerCase();
-                        if (type === 'boolean') {
-                            value = this.hasAttribute(name);
-                        } else if (type === 'integer') {
-                            value = parseInt(value, 10);
-                        } else if (type === 'float') {
-                            value = parseFloat(value);
-                        }
+                    var value = undefined;
+
+                    //call type caster
+                    if (def.type && _fwcAttrJs.caster[def.type]) {
+                        value = _fwcAttrJs.caster[def.type].get.call(this, name);
+                    } else {
+                        value = this.getAttribute(name);
                     }
 
                     //call user defined getter
@@ -5283,16 +5424,10 @@ var fwc = function futureWebComponentFactory() {
                     return value;
                 },
                 set: function set(value) {
-                    var type;
-                    if (def.type) {
-                        type = def.type.toLowerCase();
-                        if (type === 'boolean') {
-                            value = !!value;
-                        } else if (type === 'integer') {
-                            value = parseInt(value, 10);
-                        } else if (type === 'float') {
-                            value = parseFloat(value);
-                        }
+
+                    //call type caster
+                    if (def.type && _fwcAttrJs.caster[def.type]) {
+                        value = _fwcAttrJs.caster[def.type].set.call(this, value);
                     }
 
                     //call setter
@@ -5307,7 +5442,7 @@ var fwc = function futureWebComponentFactory() {
                         value = def.set.call(this, this.getAttribute(name), value);
                     }
 
-                    if (type === 'boolean') {
+                    if (def.type === 'boolean') {
                         if (value) {
                             this.setAttribute(name, '');
                         } else {
@@ -5508,10 +5643,10 @@ var fwc = function futureWebComponentFactory() {
                 var _iteratorError = undefined;
 
                 try {
-                    for (var _iterator = Object.keys(_elementsJson2['default'])[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    for (var _iterator = Object.keys(_fwcElementsJson2['default'])[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                         var eltName = _step.value;
 
-                        if (_elementsJson2['default'][eltName].nodes.indexOf(element) > -1) {
+                        if (_fwcElementsJson2['default'][eltName].nodes.indexOf(element) > -1) {
                             protoName = eltName;
                             break;
                         }
@@ -5632,49 +5767,20 @@ var fwc = function futureWebComponentFactory() {
                     var _loop = function () {
                         var eventType = _step3.value;
 
-                        if (typeof elt['on' + eventType] !== 'undefined') {
-                            _iteratorNormalCompletion4 = true;
-                            _didIteratorError4 = false;
-                            _iteratorError4 = undefined;
-
-                            try {
-                                for (_iterator4 = self.events(eventType)[Symbol.iterator](); !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-                                    var _event = _step4.value;
-
-                                    elt.addEventListener(eventType, function () {
-                                        for (var _len4 = arguments.length, params = Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
-                                            params[_key4] = arguments[_key4];
-                                        }
-
-                                        self.trigger.apply(self, [eventType, elt].concat(params));
-                                    });
-                                }
-                            } catch (err) {
-                                _didIteratorError4 = true;
-                                _iteratorError4 = err;
-                            } finally {
-                                try {
-                                    if (!_iteratorNormalCompletion4 && _iterator4['return']) {
-                                        _iterator4['return']();
+                        if (typeof elt['on' + eventType.toLowerCase()] !== 'undefined') {
+                            self.events(eventType).forEach(function () {
+                                elt.addEventListener(eventType, function () {
+                                    for (var _len4 = arguments.length, params = Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+                                        params[_key4] = arguments[_key4];
                                     }
-                                } finally {
-                                    if (_didIteratorError4) {
-                                        throw _iteratorError4;
-                                    }
-                                }
-                            }
+
+                                    self.trigger.apply(self, [eventType, elt].concat(params));
+                                });
+                            });
                         }
                     };
 
                     for (var _iterator3 = Object.keys(self.events())[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-                        var _iteratorNormalCompletion4;
-
-                        var _didIteratorError4;
-
-                        var _iteratorError4;
-
-                        var _iterator4, _step4;
-
                         _loop();
                     }
                 } catch (err) {
@@ -5731,7 +5837,7 @@ var fwc = function futureWebComponentFactory() {
                 },
 
                 attributeChangedCallback: {
-                    value: function value(name, old, val) {
+                    value: function value(name /*, old, val*/) {
 
                         //some attributes changes triggers a re render
                         if (data.update.indexOf(name) > -1) {
@@ -5786,7 +5892,7 @@ function validateEltName(name) {
 exports['default'] = fwc;
 module.exports = exports['default'];
 
-},{"./elements.json":191,"./eventify.js":"eventify"}],"router":[function(require,module,exports){
+},{"./eventify.js":"eventify","./fwc/attr.js":191,"./fwc/elements.json":192}],"router":[function(require,module,exports){
 /**
  * Future.js - 2015
  * @author Bertrand Chevrier <chevrier.bertrand@gmail.com>
@@ -6098,5 +6204,5 @@ function stateMachine() {
 
 module.exports = exports['default'];
 
-},{}]},{},[192])
+},{}]},{},[193])
 //# sourceMappingURL=future.js.map
