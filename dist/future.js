@@ -5317,9 +5317,13 @@ var registry = new Map();
  */
 var fwc = function futureWebComponentFactory() {
     var name = arguments.length <= 0 || arguments[0] === undefined ? '' : arguments[0];
-    var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
-    var namespace = undefined;
+    var _ref = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
+    var _ref$namespace = _ref.namespace;
+    var namespace = _ref$namespace === undefined ? 'f' : _ref$namespace;
+    var _ref$autoRegister = _ref.autoRegister;
+    var autoRegister = _ref$autoRegister === undefined ? true : _ref$autoRegister;
 
     var data = {
         baseProto: HTMLElement.prototype,
@@ -5339,8 +5343,6 @@ var fwc = function futureWebComponentFactory() {
     if (matchNs && matchNs.length) {
         namespace = matchNs[0];
         name = name.replace(new RegExp('^' + namespace + '-', 'i'), '');
-    } else {
-        namespace = options.namespace || 'f';
     }
 
     //validate namesapce
@@ -5704,6 +5706,28 @@ var fwc = function futureWebComponentFactory() {
                 return (_trigger = _this2.trigger).call.apply(_trigger, [_this2, name].concat(params));
             });
 
+            var autoRegisterDone = false;
+            var lookupAutoResgister = function lookupAutoResgister(rendered) {
+                if (autoRegister && !autoRegisterDone) {
+                    (function () {
+                        var pattern = new RegExp('^' + namespace + '-', 'i');
+                        Array.from(rendered.querySelectorAll('*')).filter(function (elt) {
+                            return elt.tagName.match(pattern) && !registry.has(elt.tagName);
+                        }).forEach(function (elt) {
+                            var eltName = elt.tagName.replace(namespace + '-', '').toLowerCase();
+                            fwc(eltName, { namespace: namespace }).on('flow', function (name) {
+                                for (var _len4 = arguments.length, params = Array(_len4 > 1 ? _len4 - 1 : 0), _key4 = 1; _key4 < _len4; _key4++) {
+                                    params[_key4 - 1] = arguments[_key4];
+                                }
+
+                                return self.trigger.apply(self, [name + '.' + eltName].concat(params));
+                            }).register();
+                        });
+                        autoRegisterDone = true;
+                    })();
+                }
+            };
+
             /**
              * Render the content of the element
              * @param {HTMLElement} elt - the component instance
@@ -5741,11 +5765,14 @@ var fwc = function futureWebComponentFactory() {
                     self.trigger('rendering', elt);
 
                     var rendered = data.content(attrs);
+                    if (typeof rendered === 'string') {
+                        rendered = document.createRange().createContextualFragment(rendered);
+                    }
+
                     if (rendered instanceof DocumentFragment || rendered instanceof HTMLElement) {
+
                         elt.innerHTML = '';
                         elt.appendChild(rendered);
-                    } else {
-                        elt.innerHTML = rendered;
                     }
 
                     self.trigger('rendered', elt);
@@ -5770,8 +5797,8 @@ var fwc = function futureWebComponentFactory() {
                         if (typeof elt['on' + eventType.toLowerCase()] !== 'undefined') {
                             self.events(eventType).forEach(function () {
                                 elt.addEventListener(eventType, function () {
-                                    for (var _len4 = arguments.length, params = Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
-                                        params[_key4] = arguments[_key4];
+                                    for (var _len5 = arguments.length, params = Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
+                                        params[_key5] = arguments[_key5];
                                     }
 
                                     self.trigger.apply(self, [eventType, elt].concat(params));
@@ -5806,6 +5833,10 @@ var fwc = function futureWebComponentFactory() {
                 createdCallback: {
                     value: function value() {
 
+                        self.trigger('flow', 'creating', this);
+
+                        lookupAutoResgister(this);
+
                         //render the content
                         renderContent(this);
 
@@ -5818,8 +5849,8 @@ var fwc = function futureWebComponentFactory() {
 
                 attachedCallback: {
                     value: function value() {
-                        for (var _len5 = arguments.length, params = Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
-                            params[_key5] = arguments[_key5];
+                        for (var _len6 = arguments.length, params = Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
+                            params[_key6] = arguments[_key6];
                         }
 
                         self.trigger.apply(self, ['flow', 'attach', this].concat(params));
@@ -5828,8 +5859,8 @@ var fwc = function futureWebComponentFactory() {
 
                 detachedCallback: {
                     value: function value() {
-                        for (var _len6 = arguments.length, params = Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
-                            params[_key6] = arguments[_key6];
+                        for (var _len7 = arguments.length, params = Array(_len7), _key7 = 0; _key7 < _len7; _key7++) {
+                            params[_key7] = arguments[_key7];
                         }
 
                         self.trigger.apply(self, ['flow', 'detach', this].concat(params));

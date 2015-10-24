@@ -26,9 +26,7 @@ let registry = new Map();
  * @param {String} [options.namespace = 'f'] - set the component namespace manually
  * @returns  {fwComponent} the component model
  */
-const fwc = function futureWebComponentFactory(name = '', options = {}){
-
-    let namespace;
+const fwc = function futureWebComponentFactory(name = '', { namespace = 'f', autoRegister = true} = {}){
 
     const data = {
         baseProto: HTMLElement.prototype,
@@ -48,8 +46,6 @@ const fwc = function futureWebComponentFactory(name = '', options = {}){
     if(matchNs && matchNs.length){
         namespace = matchNs[0];
         name = name.replace(new RegExp('^' + namespace + '-', 'i'), '');
-    } else {
-        namespace = options.namespace || 'f';
     }
 
     //validate namesapce
@@ -369,6 +365,22 @@ const fwc = function futureWebComponentFactory(name = '', options = {}){
             this.on('flow',  (name, elt) => this.trigger(name, elt));
             this.on('state', (name, ...params) => this.trigger.call(this, name, ...params));
 
+            let autoRegisterDone = false;
+            const lookupAutoResgister = function lookupAutoResgister(rendered){
+                if(autoRegister && !autoRegisterDone){
+                    let pattern = new RegExp('^' + namespace + '-', 'i');
+                    Array.from(rendered.querySelectorAll('*'))
+                         .filter( elt => elt.tagName.match(pattern) && !registry.has(elt.tagName))
+                         .forEach( elt => {
+                             let eltName = elt.tagName.replace(namespace + '-', '').toLowerCase();
+                             fwc(eltName, { namespace })
+                                .on('flow', (name, ...params) => self.trigger(`${name}.${eltName}`, ...params))
+                                .register();
+                         });
+                    autoRegisterDone = true;
+                }
+            };
+
             /**
              * Render the content of the element
              * @param {HTMLElement} elt - the component instance
@@ -385,11 +397,15 @@ const fwc = function futureWebComponentFactory(name = '', options = {}){
                     self.trigger('rendering', elt);
 
                     let rendered = data.content(attrs);
+                    if(typeof rendered === 'string'){
+                        rendered = document.createRange().createContextualFragment(rendered);
+                    }
+
                     if(rendered instanceof DocumentFragment || rendered instanceof HTMLElement){
+
+
                         elt.innerHTML = '';
                         elt.appendChild(rendered);
-                    } else {
-                        elt.innerHTML = rendered;
                     }
 
                     self.trigger('rendered', elt);
@@ -422,6 +438,11 @@ const fwc = function futureWebComponentFactory(name = '', options = {}){
 
                 createdCallback : {
                     value(){
+
+                        self.trigger('flow', 'creating', this);
+
+                        lookupAutoResgister(this);
+
 
                         //render the content
                         renderContent(this);

@@ -301,7 +301,7 @@ QUnit.test('define attributes with accessors', assert => {
             get(val){
                 val = parseInt(val, 10);
                 this.setAttribute('inc', ++val);
-               return val;
+                return val;
             }
         })
         .register();
@@ -459,6 +459,34 @@ QUnit.test('Component with dynamic content from an HTML template', assert => {
             done();
         })
         .content(htpl)
+        .register();
+});
+
+
+QUnit.test('Component with auto registered content', assert => {
+
+    assert.expect(2);
+
+    let done = assert.async();
+
+    let container = document.getElementById('permanent-fixture');
+    assert.ok(container instanceof HTMLElement, 'The container exists');
+
+    fwc('content-autotpl')
+        .on('create', function(elt){
+
+            let contentAutoTpl = container.querySelector('content-autotpl');
+            assert.deepEqual(contentAutoTpl, elt, 'The callback elt is the given node');
+
+            let item = elt.querySelector('content-autotplitem');
+
+            done();
+        })
+        .content( () => `
+            <div>
+            <content-autotplitem></content-autotplitem>
+            </div>
+        `)
         .register();
 });
 
