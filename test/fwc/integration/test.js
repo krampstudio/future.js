@@ -465,7 +465,7 @@ QUnit.test('Component with dynamic content from an HTML template', assert => {
 
 QUnit.test('Component with auto registered content', assert => {
 
-    assert.expect(2);
+    assert.expect(4);
 
     let done = assert.async();
 
@@ -473,12 +473,18 @@ QUnit.test('Component with auto registered content', assert => {
     assert.ok(container instanceof HTMLElement, 'The container exists');
 
     fwc('content-autotpl')
-        .on('create', function(elt){
+        .on('create', elt => {
 
             let contentAutoTpl = container.querySelector('content-autotpl');
             assert.deepEqual(contentAutoTpl, elt, 'The callback elt is the given node');
 
-            let item = elt.querySelector('content-autotplitem');
+        })
+        .on('create.autotplitem', (elt, parent) => {
+            let contentAutoTpl = container.querySelector('content-autotpl');
+            assert.deepEqual(contentAutoTpl, parent, 'The callback parent is the given node');
+
+            let contentAutoTplItem = parent.querySelector('content-autotplitem');
+            assert.deepEqual(contentAutoTplItem, elt, 'The callback elt is the auto regsitered node');
 
             done();
         })

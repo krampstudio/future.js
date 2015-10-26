@@ -5351,6 +5351,29 @@ var fwc = function futureWebComponentFactory() {
     }
 
     /**
+     * Lookup for custom element to register in the content.
+     * The lookup is restricted to to same namespace
+     * @param {HTMLElement} elt - the main element instance
+     * @param {DocumentFragment|HTMLElement} content - the content to lookup inside
+     * @fires fwc#flow all flow events from the sub element, namspaced
+     */
+    var lookupAutoResgister = function lookupAutoResgister(elt, content) {
+        var pattern = new RegExp('^' + namespace + '-', 'i');
+        Array.from(content.querySelectorAll('*')).filter(function (contentElt) {
+            return contentElt.tagName.match(pattern) && !registry.has(contentElt.tagName.toLowerCase());
+        }).forEach(function (contentElt) {
+            var contentEltName = contentElt.tagName.toLowerCase().replace(namespace + '-', '');
+            fwc(contentEltName, { namespace: namespace }).on('flow', function (event, eventElt) {
+                for (var _len = arguments.length, params = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+                    params[_key - 2] = arguments[_key];
+                }
+
+                return self.trigger.apply(self, ['flow', event + '.' + contentEltName, eventElt, elt].concat(params));
+            }).register();
+        });
+    };
+
+    /**
      * Helps you to create a component definition.
      * @typedef fwComponent
      */
@@ -5471,8 +5494,8 @@ var fwc = function futureWebComponentFactory() {
         attrs: function attrs() {
             var _this = this;
 
-            for (var _len = arguments.length, attributes = Array(_len), _key = 0; _key < _len; _key++) {
-                attributes[_key] = arguments[_key];
+            for (var _len2 = arguments.length, attributes = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+                attributes[_key2] = arguments[_key2];
             }
 
             //getter
@@ -5542,8 +5565,8 @@ var fwc = function futureWebComponentFactory() {
 
             data.methods[name] = {
                 value: function value() {
-                    for (var _len2 = arguments.length, params = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-                        params[_key2] = arguments[_key2];
+                    for (var _len3 = arguments.length, params = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+                        params[_key3] = arguments[_key3];
                     }
 
                     return _value.call.apply(_value, [this].concat(params));
@@ -5694,39 +5717,21 @@ var fwc = function futureWebComponentFactory() {
 
             //re trigger generic events
             this.on('flow', function (name, elt) {
-                return _this2.trigger(name, elt);
+                for (var _len4 = arguments.length, params = Array(_len4 > 2 ? _len4 - 2 : 0), _key4 = 2; _key4 < _len4; _key4++) {
+                    params[_key4 - 2] = arguments[_key4];
+                }
+
+                return _this2.trigger.apply(_this2, [name, elt].concat(params));
             });
             this.on('state', function (name) {
                 var _trigger;
 
-                for (var _len3 = arguments.length, params = Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
-                    params[_key3 - 1] = arguments[_key3];
+                for (var _len5 = arguments.length, params = Array(_len5 > 1 ? _len5 - 1 : 0), _key5 = 1; _key5 < _len5; _key5++) {
+                    params[_key5 - 1] = arguments[_key5];
                 }
 
                 return (_trigger = _this2.trigger).call.apply(_trigger, [_this2, name].concat(params));
             });
-
-            var autoRegisterDone = false;
-            var lookupAutoResgister = function lookupAutoResgister(rendered) {
-                if (autoRegister && !autoRegisterDone) {
-                    (function () {
-                        var pattern = new RegExp('^' + namespace + '-', 'i');
-                        Array.from(rendered.querySelectorAll('*')).filter(function (elt) {
-                            return elt.tagName.match(pattern) && !registry.has(elt.tagName);
-                        }).forEach(function (elt) {
-                            var eltName = elt.tagName.replace(namespace + '-', '').toLowerCase();
-                            fwc(eltName, { namespace: namespace }).on('flow', function (name) {
-                                for (var _len4 = arguments.length, params = Array(_len4 > 1 ? _len4 - 1 : 0), _key4 = 1; _key4 < _len4; _key4++) {
-                                    params[_key4 - 1] = arguments[_key4];
-                                }
-
-                                return self.trigger.apply(self, [name + '.' + eltName].concat(params));
-                            }).register();
-                        });
-                        autoRegisterDone = true;
-                    })();
-                }
-            };
 
             /**
              * Render the content of the element
@@ -5771,6 +5776,11 @@ var fwc = function futureWebComponentFactory() {
 
                     if (rendered instanceof DocumentFragment || rendered instanceof HTMLElement) {
 
+                        if (autoRegister && !data.autoRegisterDone) {
+                            lookupAutoResgister(elt, rendered);
+                            data.autoRegisterDone = true;
+                        }
+
                         elt.innerHTML = '';
                         elt.appendChild(rendered);
                     }
@@ -5797,8 +5807,8 @@ var fwc = function futureWebComponentFactory() {
                         if (typeof elt['on' + eventType.toLowerCase()] !== 'undefined') {
                             self.events(eventType).forEach(function () {
                                 elt.addEventListener(eventType, function () {
-                                    for (var _len5 = arguments.length, params = Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
-                                        params[_key5] = arguments[_key5];
+                                    for (var _len6 = arguments.length, params = Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
+                                        params[_key6] = arguments[_key6];
                                     }
 
                                     self.trigger.apply(self, [eventType, elt].concat(params));
@@ -5835,8 +5845,6 @@ var fwc = function futureWebComponentFactory() {
 
                         self.trigger('flow', 'creating', this);
 
-                        lookupAutoResgister(this);
-
                         //render the content
                         renderContent(this);
 
@@ -5849,8 +5857,8 @@ var fwc = function futureWebComponentFactory() {
 
                 attachedCallback: {
                     value: function value() {
-                        for (var _len6 = arguments.length, params = Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
-                            params[_key6] = arguments[_key6];
+                        for (var _len7 = arguments.length, params = Array(_len7), _key7 = 0; _key7 < _len7; _key7++) {
+                            params[_key7] = arguments[_key7];
                         }
 
                         self.trigger.apply(self, ['flow', 'attach', this].concat(params));
@@ -5859,8 +5867,8 @@ var fwc = function futureWebComponentFactory() {
 
                 detachedCallback: {
                     value: function value() {
-                        for (var _len7 = arguments.length, params = Array(_len7), _key7 = 0; _key7 < _len7; _key7++) {
-                            params[_key7] = arguments[_key7];
+                        for (var _len8 = arguments.length, params = Array(_len8), _key8 = 0; _key8 < _len8; _key8++) {
+                            params[_key8] = arguments[_key8];
                         }
 
                         self.trigger.apply(self, ['flow', 'detach', this].concat(params));

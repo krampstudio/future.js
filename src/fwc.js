@@ -53,6 +53,26 @@ const fwc = function futureWebComponentFactory(name = '', { namespace = 'f', aut
         throw new TypeError(`The namespace ${namespace} can contain only letters`);
     }
 
+
+    /**
+     * Lookup for custom element to register in the content.
+     * The lookup is restricted to to same namespace
+     * @param {HTMLElement} elt - the main element instance
+     * @param {DocumentFragment|HTMLElement} content - the content to lookup inside
+     * @fires fwc#flow all flow events from the sub element, namspaced
+     */
+    const lookupAutoResgister = function lookupAutoResgister(elt, content){
+        let pattern = new RegExp('^' + namespace + '-', 'i');
+        Array.from(content.querySelectorAll('*'))
+            .filter( contentElt => contentElt.tagName.match(pattern) && !registry.has(contentElt.tagName.toLowerCase()))
+            .forEach( contentElt => {
+                let contentEltName = contentElt.tagName.toLowerCase().replace(namespace + '-', '');
+                fwc(contentEltName, { namespace })
+                .on('flow', (event, eventElt, ...params) => self.trigger('flow', `${event}.${contentEltName}`, eventElt, elt, ...params))
+                .register();
+            });
+    };
+
     /**
      * Helps you to create a component definition.
      * @typedef fwComponent
@@ -356,30 +376,15 @@ const fwc = function futureWebComponentFactory(name = '', { namespace = 'f', aut
          * @throws Error if the current runtime doesn't support custom elements
          */
         register(){
-            var self = this;
+            let self = this;
             if(!document.registerElement || typeof document.registerElement !== 'function'){
                 throw new Error('The webcomponent polyfill is required on this environment');
             }
 
             //re trigger generic events
-            this.on('flow',  (name, elt) => this.trigger(name, elt));
+            this.on('flow',  (name, elt, ...params) => this.trigger(name, elt, ...params));
             this.on('state', (name, ...params) => this.trigger.call(this, name, ...params));
 
-            let autoRegisterDone = false;
-            const lookupAutoResgister = function lookupAutoResgister(rendered){
-                if(autoRegister && !autoRegisterDone){
-                    let pattern = new RegExp('^' + namespace + '-', 'i');
-                    Array.from(rendered.querySelectorAll('*'))
-                         .filter( elt => elt.tagName.match(pattern) && !registry.has(elt.tagName))
-                         .forEach( elt => {
-                             let eltName = elt.tagName.replace(namespace + '-', '').toLowerCase();
-                             fwc(eltName, { namespace })
-                                .on('flow', (name, ...params) => self.trigger(`${name}.${eltName}`, ...params))
-                                .register();
-                         });
-                    autoRegisterDone = true;
-                }
-            };
 
             /**
              * Render the content of the element
@@ -387,7 +392,7 @@ const fwc = function futureWebComponentFactory(name = '', { namespace = 'f', aut
              * @fires fwc#rendering when content is being rendered
              * @fires fwc#rendered once content is rendered
              */
-            var renderContent = function renderContent(elt){
+            const renderContent = function renderContent(elt){
                 if(typeof data.content === 'function'){
                     let attrs = {};
                     for(let attr of comp.attrs()){
@@ -403,6 +408,10 @@ const fwc = function futureWebComponentFactory(name = '', { namespace = 'f', aut
 
                     if(rendered instanceof DocumentFragment || rendered instanceof HTMLElement){
 
+                        if(autoRegister && !data.autoRegisterDone){
+                            lookupAutoResgister(elt, rendered);
+                            data.autoRegisterDone = true;
+                        }
 
                         elt.innerHTML = '';
                         elt.appendChild(rendered);
@@ -440,9 +449,6 @@ const fwc = function futureWebComponentFactory(name = '', { namespace = 'f', aut
                     value(){
 
                         self.trigger('flow', 'creating', this);
-
-                        lookupAutoResgister(this);
-
 
                         //render the content
                         renderContent(this);
