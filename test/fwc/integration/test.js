@@ -497,6 +497,51 @@ QUnit.test('Component with auto registered content', assert => {
 });
 
 
+QUnit.test('Component with auto registered elements that have attributes', assert => {
+
+    assert.expect(8);
+
+    let done1 = assert.async();
+    let done2 = assert.async();
+
+    let container = document.getElementById('permanent-fixture');
+    assert.ok(container instanceof HTMLElement, 'The container exists');
+
+    fwc('content-autotplattr')
+        .on('create', elt => {
+
+            let contentAutoTplAttr = container.querySelector('content-autotplattr');
+            assert.deepEqual(contentAutoTplAttr, elt, 'The callback elt is the given node');
+
+        })
+        .on('create.autotplattritem', (elt, parent) => {
+            let contentAutoTpl = container.querySelector('content-autotpl');
+            assert.deepEqual(contentAutoTpl, parent, 'The callback parent is the given node');
+
+            let contentAutoTplAttrItem = parent.querySelector('content-autotplattritem');
+            assert.deepEqual(contentAutoTplAttrItem, elt, 'The callback elt is the auto regsitered node');
+
+            assert.ok(elt.hasAttribute('index'), 'The auto registered element instance has the given attribute');
+            assert.ok(elt.index, 'The auto registered element instance has the given attribute defined');
+
+            if(elt.index === '1'){
+                assert.ok( ! elt.hasAttribute('alone'), 'The auto registered element instance has not the given attribute');
+                done1();
+            }
+            if(elt.index === '2'){
+                assert.equal(elt.alone, 'yes', 'The auto registered element has the right attribute value');
+                done2();
+            }
+        })
+        .content( () => `
+            <div>
+                <content-autotplattritem index="1" ></content-autotplattritem>
+                <content-autotplattritem index="2" alone="yes"></content-autotplattritem>
+            </div>
+        `)
+        .register();
+});
+
 QUnit.module('extend');
 
 QUnit.test('Extend an anchor', assert => {

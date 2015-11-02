@@ -63,14 +63,24 @@ const fwc = function futureWebComponentFactory(name = '', { namespace = 'f', aut
      */
     const lookupAutoResgister = function lookupAutoResgister(elt, content){
         let pattern = new RegExp('^' + namespace + '-', 'i');
+        const found = new Map();
         Array.from(content.querySelectorAll('*'))
             .filter( contentElt => contentElt.tagName.match(pattern) && !registry.has(contentElt.tagName.toLowerCase()))
             .forEach( contentElt => {
                 let contentEltName = contentElt.tagName.toLowerCase().replace(namespace + '-', '');
-                fwc(contentEltName, { namespace })
-                .on('flow', (event, eventElt, ...params) => self.trigger('flow', `${event}.${contentEltName}`, eventElt, elt, ...params))
-                .register();
+                let attrs = found.get(contentEltName) || new Set();
+                if(contentElt.hasAttributes()){
+                    Array.from(contentElt.attributes).forEach( attr => attrs.add(attr.name));
+                }
+                found.set(contentEltName, attrs);
+
             });
+        found.forEach( (attrs, contentEltName) => {
+            fwc(contentEltName, { namespace })
+                .on('flow', (event, eventElt, ...params) => self.trigger('flow', `${event}.${contentEltName}`, eventElt, elt, ...params))
+                .attr(...attrs)
+                .register();
+        });
     };
 
     /**
