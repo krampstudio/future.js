@@ -13,6 +13,11 @@
 import 'babel/polyfill';
 
 //re-export Future libraries
-export { fwc as fwc } from './fwc.js';
-export { router as router } from './router.js';
+import fwc from './fwc.js';
+import router from './router.js';
+
+export default {
+    fwc,
+    router
+};
 
