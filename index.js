@@ -10,13 +10,13 @@
  */
 
 //load the ES6 polyfill
-import 'babel/polyfill';
+import 'babel-polyfill';
 
 //re-export Future libraries
-import fwc from './fwc.js';
-import router from './router.js';
+import fwc from './src/fwc.js';
+import router from './src/router.js';
 
-export default {
+export {
     fwc,
     router
 };

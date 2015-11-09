@@ -42,7 +42,10 @@ module.exports = function(grunt) {
         browserify: {
             options: {
                 transform: [
-                    'babelify', ['hbsfy', {
+                    ['babelify', {
+                        'presets' : ['es2015']
+                    }],
+                    ['hbsfy', {
                         'extensions': ['tpl']
                     }]
                 ],
@@ -52,14 +55,11 @@ module.exports = function(grunt) {
             },
             core: {
                 files: {
-                    'dist/future.js': ['src/index.js']
+                    'dist/future.js': ['index.js']
                 },
                 options : {
-                    alias : {
-                        'fwc':          './src/fwc.js',
-                        'eventify':     './src/eventify.js',
-                        'router':       './src/router.js',
-                        'stateMachine': './src/stateMachine.js'
+                    'alias' : {
+                        'future.js': './index.js'
                     }
                 }
             },
@@ -72,7 +72,7 @@ module.exports = function(grunt) {
                     'test/stateMachine/test.bundle.js':     ['test/stateMachine/test.js']
                 },
                 options : {
-                    external : ['fwc', 'eventify', 'router', 'stateMachine']
+                    external : ['future.js']
                 }
             }
         },
