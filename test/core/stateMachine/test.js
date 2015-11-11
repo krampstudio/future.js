@@ -1,6 +1,6 @@
-import '../sauce.js';
+import '../../sauce.js';
 import QUnit from 'qunitjs';
-import stateMachine from '../../src/core/stateMachine.js';
+import stateMachine from '../../../src/core/stateMachine.js';
 
 
 QUnit.module('API');

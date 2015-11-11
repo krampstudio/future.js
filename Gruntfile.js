@@ -65,11 +65,11 @@ module.exports = function(grunt) {
             },
             test: {
                 files: {
-                    'test/eventify/test.bundle.js':         ['test/eventify/test.js'],
-                    'test/fwc/api/test.bundle.js':          ['test/fwc/api/test.js'],
-                    'test/fwc/integration/test.bundle.js':  ['test/fwc/integration/test.js'],
-                    'test/router/test.bundle.js':           ['test/router/test.js'],
-                    'test/stateMachine/test.bundle.js':     ['test/stateMachine/test.js']
+                    'test/core/eventify/test.bundle.js':     ['test/core/eventify/test.js'],
+                    'test/fwc/api/test.bundle.js':           ['test/fwc/api/test.js'],
+                    'test/fwc/integration/test.bundle.js':   ['test/fwc/integration/test.js'],
+                    'test/router/test.bundle.js':            ['test/router/test.js'],
+                    'test/core/stateMachine/test.bundle.js': ['test/core/stateMachine/test.js']
                 },
                 options : {
                     external : ['future.js']
@@ -88,11 +88,11 @@ module.exports = function(grunt) {
             },
             test: {
                 files: {
-                    'test/eventify/test.bundle.js.map':        ['test/eventify/test.bundle.js'],
-                    'test/fwc/api/test.bundle.js.map':         ['test/fwc/api/test.bundle.js'],
-                    'test/fwc/integration/test.bundle.js.map': ['test/fwc/integration/test.bundle.js'],
-                    'test/router/test.bundle.js.map':          ['test/router/test.bundle.js'],
-                    'test/stateMachine/test.bundle.js.map':    ['test/stateMachine/test.bundle.js']
+                    'test/core/eventify/test.bundle.js.map':     ['test/core/eventify/test.bundle.js'],
+                    'test/fwc/api/test.bundle.js.map':           ['test/fwc/api/test.bundle.js'],
+                    'test/fwc/integration/test.bundle.js.map':   ['test/fwc/integration/test.bundle.js'],
+                    'test/router/test.bundle.js.map':            ['test/router/test.bundle.js'],
+                    'test/core/stateMachine/test.bundle.js.map': ['test/core/stateMachine/test.bundle.js']
                 }
             }
         },
@@ -138,11 +138,11 @@ module.exports = function(grunt) {
             test: {
                 options: {
                     urls: [
-                        'http://<%=pkg.config.host%>:<%=pkg.config.port%>/test/eventify/test.html',
+                        'http://<%=pkg.config.host%>:<%=pkg.config.port%>/test/core/eventify/test.html',
                         'http://<%=pkg.config.host%>:<%=pkg.config.port%>/test/fwc/api/test.html',
                         'http://<%=pkg.config.host%>:<%=pkg.config.port%>/test/fwc/integration/test.html',
                         'http://<%=pkg.config.host%>:<%=pkg.config.port%>/test/router/test.html',
-                        'http://<%=pkg.config.host%>:<%=pkg.config.port%>/test/stateMachine/test.html'
+                        'http://<%=pkg.config.host%>:<%=pkg.config.port%>/test/core/stateMachine/test.html'
                     ],
                     testname:            'Future.js tests ' + buildId,
                     build:               '<%=pkg.version%>-' + buildId,
