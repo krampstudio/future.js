@@ -1,8 +1,7 @@
 import 'webcomponents.js/webcomponents.js' ;
 import '../../sauce.js';
 import QUnit from 'qunitjs';
-import fwc from 'fwc';
-
+import { fwc } from 'future.js';
 
 QUnit.module('Register');
 

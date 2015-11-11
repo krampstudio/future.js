@@ -1,6 +1,6 @@
-import '../sauce.js';
+import '../../sauce.js';
 import QUnit from 'qunitjs';
-import eventify from 'eventify';
+import eventify from '../../../src/core/eventify.js';
 
 
 QUnit.module('eventify');

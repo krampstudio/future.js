@@ -1,7 +1,6 @@
 import '../sauce.js';
 import QUnit from 'qunitjs';
-import router from 'router';
-
+import { router } from 'future.js';
 
 QUnit.module('API');
 

@@ -10,7 +10,7 @@
  * @module fwc
  */
 
-import eventify from './eventify.js';
+import eventify from './core/eventify.js';
 import htmlElements from './fwc/elements.json';
 import { caster as attrCaster } from './fwc/attr.js';
 
