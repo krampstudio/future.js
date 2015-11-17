@@ -367,7 +367,6 @@ const fwc = function futureWebComponentFactory(name = '', options = {}){
 
             //re trigger generic events
             this.on('flow',  (name, elt) => this.trigger(name, elt));
-            this.on('state', (name, ...params) => this.trigger.call(this, name, ...params));
 
             /**
              * Render the content of the element
@@ -377,12 +376,11 @@ const fwc = function futureWebComponentFactory(name = '', options = {}){
              */
             var renderContent = function renderContent(elt){
                 if(typeof data.content === 'function'){
+
                     let attrs = {};
                     for(let attr of comp.attrs()){
                         attrs[attr] = elt[attr];   //so the getter is called
                     }
-
-                    self.trigger('rendering', elt);
 
                     let rendered = data.content(attrs);
                     if(rendered instanceof DocumentFragment || rendered instanceof HTMLElement){
@@ -392,7 +390,7 @@ const fwc = function futureWebComponentFactory(name = '', options = {}){
                         elt.innerHTML = rendered;
                     }
 
-                    self.trigger('rendered', elt);
+                    self.trigger('flow', 'render', elt);
                 }
             };
 
