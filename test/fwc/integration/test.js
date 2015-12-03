@@ -300,7 +300,7 @@ QUnit.test('define attributes with accessors', assert => {
             get(val){
                 val = parseInt(val, 10);
                 this.setAttribute('inc', ++val);
-               return val;
+                return val;
             }
         })
         .register();
@@ -532,6 +532,95 @@ QUnit.test('Extend another component', assert => {
 });
 
 
+
+QUnit.module('Lifecycle');
+
+QUnit.test('flow events', assert => {
+    assert.expect(25);
+
+    //ugly int states : 0 not yet, 1 being, 2 done
+    let states = {
+        render : 0,
+        create : 0,
+        attach : 0,
+        detach : 0
+    };
+    let rendered = assert.async();
+    let created = assert.async();
+    let attached = assert.async();
+    let detached = assert.async();
+
+
+    let container = document.getElementById('permanent-fixture');
+    assert.ok(container instanceof HTMLElement, 'The container exists');
+
+    let cycleComp = fwc('lifecycle-flow');
+    cycleComp
+        .on('error', function(e){
+            assert.ok(false, e);
+        })
+        .on('flow', function(name){
+            states[name] = 1;
+        })
+        .on('render', function(elt){
+
+            assert.deepEqual(this, cycleComp, 'We\'re in the component context');
+            assert.equal(elt.nodeName.toLowerCase(), 'lifecycle-flow', 'The 1st arg is the node');
+
+            assert.strictEqual(states.render, 1, 'Render is being called');
+            assert.strictEqual(states.create, 0, 'Create is not yet called');
+            assert.strictEqual(states.attach, 0, 'Attach is not yet called');
+            assert.strictEqual(states.detach, 0, 'Detach is not yet called');
+
+            states.render = 2;
+            rendered();
+        })
+        .on('create', function(elt){
+
+            assert.deepEqual(this, cycleComp, 'We\'re in the component context');
+            assert.equal(elt.nodeName.toLowerCase(), 'lifecycle-flow', 'The 1st arg is the node');
+
+            assert.strictEqual(states.render, 2, 'Render is done');
+            assert.strictEqual(states.create, 1, 'Create is being called');
+            assert.strictEqual(states.attach, 0, 'Attach is not yet called');
+            assert.strictEqual(states.detach, 0, 'Detach is not yet called');
+
+            states.create = 2;
+            created();
+        })
+        .on('attach', function(elt){
+
+            assert.deepEqual(this, cycleComp, 'We\'re in the component context');
+            assert.equal(elt.nodeName.toLowerCase(), 'lifecycle-flow', 'The 1st arg is the node');
+
+            assert.strictEqual(states.render, 2, 'Render is done');
+            assert.strictEqual(states.create, 2, 'Create is done');
+            assert.strictEqual(states.attach, 1, 'Attach is being called');
+            assert.strictEqual(states.detach, 0, 'Detach is not yet called');
+
+            states.attach = 2;
+            attached();
+
+            setTimeout( () => elt.parentNode.removeChild(elt));
+        })
+        .on('detach', function(elt){
+
+            assert.deepEqual(this, cycleComp, 'We\'re in the component context');
+            assert.equal(elt.nodeName.toLowerCase(), 'lifecycle-flow', 'The 1st arg is the node');
+
+            assert.strictEqual(states.render, 2, 'Render is done');
+            assert.strictEqual(states.create, 2, 'Create is done');
+            assert.strictEqual(states.attach, 2, 'Attach is done');
+            assert.strictEqual(states.detach, 1, 'Detach is being called');
+
+            states.detach = 2;
+            detached();
+        })
+        .content('foo')
+        .register();
+});
+
+
 QUnit.module('Native events');
 
 QUnit.test('on click', assert => {
@@ -562,3 +651,4 @@ QUnit.test('on click', assert => {
         })
         .register();
 });
+
